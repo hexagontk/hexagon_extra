@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hexagonkt.store.hashmap.HashMapMapperTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-25T09:51:42" hostname="jamhost" time="0.052">
+  <properties/>
+  <testcase name="A mapper transform a data class to a map and back()" classname="com.hexagonkt.store.hashmap.HashMapMapperTest" time="0.052"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

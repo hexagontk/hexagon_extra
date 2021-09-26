@@ -1,0 +1,1 @@
+/home/jam/Projects/hexagonkt/hexagon/port_messaging/build/classes/kotlin/main/com/hexagonkt/messaging/Message.class:/home/jam/Projects/hexagonkt/hexagon/port_messaging/build/classes/kotlin/main/com/hexagonkt/messaging/MessagingPort$DefaultImpls.class:/home/jam/Projects/hexagonkt/hexagon/port_messaging/build/classes/kotlin/main/com/hexagonkt/messaging/MessagingPort.class

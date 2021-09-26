@@ -1,0 +1,16 @@
+/*
+ * Check usage information at: http://hexagonkt.com/gradle/#detekt
+ */
+
+apply(plugin: "io.gitlab.arturbosch.detekt")
+
+detekt {
+
+    final String detektConfigPath = findProperty("detektConfigPath")
+
+    ignoreFailures = true
+    buildUponDefaultConfig = true
+
+    if (detektConfigPath != null)
+        config = rootProject.files(detektConfigPath)
+}

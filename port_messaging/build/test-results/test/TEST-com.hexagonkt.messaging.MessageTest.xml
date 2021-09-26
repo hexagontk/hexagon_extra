@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hexagonkt.messaging.MessageTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-25T09:51:30" hostname="jamhost" time="0.195">
+  <properties/>
+  <testcase name="Default message load environment properties()" classname="com.hexagonkt.messaging.MessageTest" time="0.195"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

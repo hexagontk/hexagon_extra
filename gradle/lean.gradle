@@ -1,0 +1,26 @@
+/*
+ * Check usage information at: http://hexagonkt.com/gradle/#lean
+ */
+
+apply(plugin: "java")
+
+sourceSets {
+    main { sourceSet ->
+        java {
+            setSrcDirs([sourceSet.name])
+        }
+        resources {
+            setSrcDirs([sourceSet.name])
+            exclude("**/*.kt", "**/*.java")
+        }
+    }
+    test { sourceSet ->
+        java {
+            setSrcDirs([sourceSet.name])
+        }
+        resources {
+            setSrcDirs([sourceSet.name])
+            exclude("**/*.kt", "**/*.java")
+        }
+    }
+}

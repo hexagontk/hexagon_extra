@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - RabbitConnectionTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>RabbitConnectionTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.hexagonkt.messaging.rabbitmq.html">com.hexagonkt.messaging.rabbitmq</a> &gt; RabbitConnectionTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.678s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">call return expected results()</td>
+<td class="success">0.678s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>?[90m11:51:17,270 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | Serialization formats loaded:
+* application/json (json)
+?[90m11:51:18,318 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:18,354 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | Consuming messages in test
+?[90m11:51:18,370 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:18,384 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | Consuming messages in error
+?[90m11:51:18,468 ?[33mWARN ?[0m ?[35m[rabbitmq-0     ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:18,490 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:18,503 ?[33mWARN ?[0m ?[35m[rabbitmq-1     ] ?[36mcom.hexagonkt.messaging.rabbitmq.Handler?[0m | Error processing message (d653655e-28b1-4716-bcdc-93aa79245441) in UTF-8
+?[90m11:51:18,523 ?[33mWARN ?[0m ?[35m[rabbitmq-1     ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:18,526 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:18,534 ?[33mWARN ?[0m ?[35m[AMQP Connection 0:0:0:0:0:0:0:1:5673] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Connection shutdown was caused by broker #method&lt;connection.close&gt;(reply-code=320, reply-text=Connection closed by external action, class-id=0, method-id=0)
+?[90m11:51:18,535 ?[33mWARN ?[0m ?[35m[AMQP Connection 0:0:0:0:0:0:0:1:5673] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Connection shutdown was caused by broker #method&lt;connection.close&gt;(reply-code=320, reply-text=Connection closed by external action, class-id=0, method-id=0)
+?[90m11:51:18,713 ?[31m?[1mERROR?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitConnectionTest?[0m | Consumer error
+?[90m11:51:18,715 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | Serialization formats loaded:
+* application/json (json)
+?[90m11:51:18,931 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | Rabbit connection RESTORED
+?[90m11:51:18,944 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:18,953 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | Consuming messages in test
+?[90m11:51:18,964 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:18,969 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | Consuming messages in error
+?[90m11:51:18,975 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | Rabbit connection RESTORED
+?[90m11:51:19,011 ?[33mWARN ?[0m ?[35m[rabbitmq-2     ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,018 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,038 ?[33mWARN ?[0m ?[35m[rabbitmq-3     ] ?[36mcom.hexagonkt.messaging.rabbitmq.Handler?[0m | Error processing message (133878be-84ef-4044-96e6-5e6059e9e9f5) in UTF-8
+?[90m11:51:19,058 ?[33mWARN ?[0m ?[35m[rabbitmq-3     ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,063 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,077 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,087 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,091 ?[33mWARN ?[0m ?[35m[AMQP Connection 0:0:0:0:0:0:0:1:5673] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Connection shutdown is initiated by application. Ignoring it
+?[90m11:51:19,092 ?[33mWARN ?[0m ?[35m[AMQP Connection 0:0:0:0:0:0:0:1:5673] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Connection shutdown is initiated by application. Ignoring it
+?[90m11:51:19,097 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | RabbitMQ client closed
+?[90m11:51:19,124 ?[33mWARN ?[0m ?[35m[AMQP Connection 0:0:0:0:0:0:0:1:5673] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Connection shutdown was caused by broker #method&lt;connection.close&gt;(reply-code=320, reply-text=Connection closed by external action, class-id=0, method-id=0)
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 7.2</a> at Sep 25, 2021, 11:51:19 AM</p>
+</div>
+</div>
+</body>
+</html>

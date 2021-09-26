@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hexagonkt.messaging.rabbitmq.RabbitTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2021-09-25T09:51:19" hostname="jamhost" time="0.118">
+  <properties/>
+  <testcase name="Call return expected results()" classname="com.hexagonkt.messaging.rabbitmq.RabbitTest" time="0.078"/>
+  <testcase name="Call errors()" classname="com.hexagonkt.messaging.rabbitmq.RabbitTest" time="0.038"/>
+  <system-out><![CDATA[?[90m11:51:19,142 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | Serialization formats loaded:
+* application/json (json)
+?[90m11:51:19,146 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,153 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | Consuming messages in test
+?[90m11:51:19,157 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,159 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | Consuming messages in error
+?[90m11:51:19,194 ?[33mWARN ?[0m ?[35m[rabbitmq-0     ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,204 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,214 ?[33mWARN ?[0m ?[35m[rabbitmq-1     ] ?[36mcom.hexagonkt.messaging.rabbitmq.Handler?[0m | Error processing message (2eed77f9-17e1-46f9-a77c-0f5844b33db0) in UTF-8
+?[90m11:51:19,231 ?[33mWARN ?[0m ?[35m[rabbitmq-1     ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,238 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,250 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | Consuming messages in error
+?[90m11:51:19,253 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,261 ?[33mWARN ?[0m ?[35m[rabbitmq-3     ] ?[36mcom.hexagonkt.messaging.rabbitmq.Handler?[0m | Error processing message (afe59809-5cd4-46e9-9706-1229ee1cc4df) in UTF-8
+?[90m11:51:19,261 ?[33mWARN ?[0m ?[35m[rabbitmq-2     ] ?[36mcom.hexagonkt.messaging.rabbitmq.Handler?[0m | Error processing message (null) in UTF-8
+?[90m11:51:19,274 ?[33mWARN ?[0m ?[35m[rabbitmq-3     ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,278 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,282 ?[31m?[1mERROR?[0m ?[35m[pool-54-thread-4] ?[36mcom.hexagonkt.messaging.rabbitmq.Handler?[0m | Unexpected cancel for the consumer amq.ctag-u3bf1WTBt6ZTf2sF1Asx_Q
+?[90m11:51:19,283 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,287 ?[31m?[1mERROR?[0m ?[35m[pool-54-thread-6] ?[36mcom.hexagonkt.messaging.rabbitmq.Handler?[0m | Unexpected cancel for the consumer amq.ctag-W4mTQwm5kDxt0afvNxn3yw
+?[90m11:51:19,287 ?[31m?[1mERROR?[0m ?[35m[pool-54-thread-7] ?[36mcom.hexagonkt.messaging.rabbitmq.Handler?[0m | Unexpected cancel for the consumer amq.ctag-SlLM4nym39YtiOFGbbgbXQ
+?[90m11:51:19,288 ?[33mWARN ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Channel shutdown is initiated by application. Ignoring it
+?[90m11:51:19,289 ?[33mWARN ?[0m ?[35m[AMQP Connection 127.0.0.1:49154] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Connection shutdown is initiated by application. Ignoring it
+?[90m11:51:19,290 ?[33mWARN ?[0m ?[35m[AMQP Connection 127.0.0.1:49154] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Connection shutdown is initiated by application. Ignoring it
+?[90m11:51:19,290 ?[33mWARN ?[0m ?[35m[AMQP Connection 127.0.0.1:49154] ?[36mcom.hexagonkt.messaging.rabbitmq.ConnectionListener?[0m | Connection shutdown is initiated by application. Ignoring it
+?[90m11:51:19,292 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.messaging.rabbitmq.RabbitMqClient?[0m | RabbitMQ client closed
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

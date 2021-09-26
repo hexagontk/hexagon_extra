@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hexagonkt.store.mongodb.MongoDbMapperTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2021-09-25T09:52:25" hostname="jamhost" time="1.47">
+  <properties/>
+  <testcase name="A mapper transform a data class to a map and back()" classname="com.hexagonkt.store.mongodb.MongoDbMapperTest" time="1.458"/>
+  <testcase name="Mapping a date to an invalid field type results in error()" classname="com.hexagonkt.store.mongodb.MongoDbMapperTest" time="0.011"/>
+  <system-out><![CDATA[?[90m11:52:24,986 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | No serialization formats loaded
+?[90m11:52:25,029 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | Default serialization format set to 'null'
+?[90m11:52:25,030 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | 73 Content types loaded from: serialization/mime.types
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

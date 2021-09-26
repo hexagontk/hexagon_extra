@@ -1,0 +1,6 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+
+com.hexagonkt.store
+com.hexagonkt.store.hashmap
+

@@ -1,0 +1,89 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.hexagonkt",
+    "module": "port_messaging",
+    "version": "1.4.4",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.localToProject": "public",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "com.hexagonkt",
+          "module": "hexagon_core",
+          "version": {
+            "requires": "1.4.4"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "port_messaging-1.4.4.jar",
+          "url": "port_messaging-1.4.4.jar",
+          "size": 4232,
+          "sha512": "81dfc6d4350f7a399341d577f2e7c85a9a429455d2801ed840a5d15b9c015424a357185a89bc319201ff75d2d25831df3aa057715fd06f39e7f19cb7e5525d83",
+          "sha256": "4963e59b951ab53600fc60b86aab95e40327082f0394dca8cee16161ef1571eb",
+          "sha1": "59116990b02835d253222c25ac65f704cb25aadf",
+          "md5": "36ed516ad6b433dd62bbbd8a6f6356ad"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.localToProject": "public",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.5.31"
+          }
+        },
+        {
+          "group": "com.hexagonkt",
+          "module": "hexagon_core",
+          "version": {
+            "requires": "1.4.4"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "port_messaging-1.4.4.jar",
+          "url": "port_messaging-1.4.4.jar",
+          "size": 4232,
+          "sha512": "81dfc6d4350f7a399341d577f2e7c85a9a429455d2801ed840a5d15b9c015424a357185a89bc319201ff75d2d25831df3aa057715fd06f39e7f19cb7e5525d83",
+          "sha256": "4963e59b951ab53600fc60b86aab95e40327082f0394dca8cee16161ef1571eb",
+          "sha1": "59116990b02835d253222c25ac65f704cb25aadf",
+          "md5": "36ed516ad6b433dd62bbbd8a6f6356ad"
+        }
+      ]
+    }
+  ]
+}

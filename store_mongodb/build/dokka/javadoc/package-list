@@ -1,0 +1,5 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:com.hexagonkt.store.mongodb/MongoDbStore.Companion///PointingToDeclaration/com/hexagonkt/store/mongodb/MongoDbStore.Companion.html
+com.hexagonkt.store.mongodb
+

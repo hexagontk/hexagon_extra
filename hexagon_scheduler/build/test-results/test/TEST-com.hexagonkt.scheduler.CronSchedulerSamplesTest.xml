@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hexagonkt.scheduler.CronSchedulerSamplesTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-25T09:49:36" hostname="jamhost" time="1.11">
+  <properties/>
+  <testcase name="callbackExecutedProperly()" classname="com.hexagonkt.scheduler.CronSchedulerSamplesTest" time="1.11"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

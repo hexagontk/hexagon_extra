@@ -1,0 +1,76 @@
+/*
+ * Check usage information at: http://hexagonkt.com/gradle/#icons
+ */
+
+task("icons").doLast {
+    group = "build setup"
+    description =
+        "Create web icons (favicon and thumbnails for browsers/mobile) from image SVGs (logos)."
+
+    final String logoSmall = findProperty("logo")
+    final String logoLarge = findProperty("logoLarge") ?: logoSmall
+    final String logoWide = findProperty("logoWide") ?: logoLarge
+
+    buildDir.mkdirs()
+
+    createIco(logoSmall, "favicon.ico", 16, 32, 48, 64)
+    createPng(logoSmall, "apple-touch-icon.png", 180, 180)
+    createPng(logoSmall, "tile-small.png", 128, 128)
+    createPng(logoLarge, "tile-medium.png", 270, 270)
+    createPng(logoWide, "tile-wide.png", 558, 270)
+    createPng(logoLarge, "tile-large.png", 558, 558)
+}
+
+private void createPng(
+    final String svg,
+    final String out,
+    final int width,
+    final int height
+) {
+
+    exec {
+        final List<Integer> dimensions = getSvgDimensions(svg)
+        if (dimensions[0] > dimensions[1])
+            commandLine("rsvg-convert", "-w", width, "-o", "$buildDir/$out", svg)
+        else
+            commandLine("rsvg-convert", "-h", height, "-o", "$buildDir/$out", svg)
+    }
+
+    exec {
+        commandLine(
+            "convert",
+            "-gravity", "center",
+            "-background", "transparent",
+            "-extent", "${width}x${height}",
+            "$buildDir/$out",
+            "$buildDir/$out"
+        )
+    }
+}
+
+private List<Integer> getSvgDimensions(final String svg) {
+
+    final ByteArrayOutputStream commandOutput = new ByteArrayOutputStream()
+    exec {
+        standardOutput = commandOutput
+        commandLine("magick", "identify", svg)
+    }
+
+    return commandOutput
+        .toString()
+        .find(/\s+\d+x\d+\s+/)
+        .trim()
+        .split("x")
+        .collect {it.toInteger() }
+}
+
+private void createIco(final String svg, final String ico, final int... widths) {
+
+    widths.each { createPng(svg, "_${it}.png", it, it) }
+
+    final List<String> images = widths.collect { "$buildDir/_${it}.png".toString() }
+    final String icoPath = "$buildDir/$ico"
+    exec { commandLine([ "convert", images, icoPath ].flatten().collect { it.toString() }) }
+
+    widths.each { new File("$buildDir/_${it}.png".toString()).delete() }
+}

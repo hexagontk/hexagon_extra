@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hexagonkt.store.hashmap.HashMapStoreTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2021-09-25T09:51:39" hostname="jamhost" time="2.826">
+  <properties/>
+  <testcase name="New records are stored()" classname="com.hexagonkt.store.hashmap.HashMapStoreTest" time="2.707"/>
+  <testcase name="Many records are stored()" classname="com.hexagonkt.store.hashmap.HashMapStoreTest" time="0.085"/>
+  <testcase name="Create index throws UnsupportedOperationException()" classname="com.hexagonkt.store.hashmap.HashMapStoreTest" time="0.01"/>
+  <testcase name="Store type is correct()" classname="com.hexagonkt.store.hashmap.HashMapStoreTest" time="0.001"/>
+  <testcase name="Insert one record returns the proper key()" classname="com.hexagonkt.store.hashmap.HashMapStoreTest" time="0.002"/>
+  <testcase name="Records are replaced correctly()" classname="com.hexagonkt.store.hashmap.HashMapStoreTest" time="0.003"/>
+  <testcase name="Entities are stored()" classname="com.hexagonkt.store.hashmap.HashMapStoreTest" time="0.011"/>
+  <system-out><![CDATA[?[90m11:51:39,666 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | No serialization formats loaded
+?[90m11:51:39,685 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | Default serialization format set to 'null'
+?[90m11:51:39,687 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | 73 Content types loaded from: serialization/mime.types
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

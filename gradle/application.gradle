@@ -1,0 +1,75 @@
+/*
+ * Check usage information at: http://hexagonkt.com/gradle/#application
+ */
+
+apply(plugin: "application")
+
+classes.dependsOn("buildInfo")
+
+task("buildInfo") {
+    group = "build"
+    description =
+        "Add configuration file (`META-INF/build.properties`) with build variables to the package."
+
+    doLast {
+        file("$buildDir/resources/main/META-INF").mkdirs()
+        file("$buildDir/resources/main/META-INF/build.properties").write("""
+        project=$rootProject.name
+        module=$project.name
+        version=${project.version.toString()}
+        group=$project.group
+        description=$project.description
+    """.stripIndent ())
+    }
+}
+
+task("jarAll", type: Jar, dependsOn: "jar") {
+    group = "distribution"
+    description =
+        "Creates a single JAR with all dependencies, and the application main class set up."
+
+    archiveBaseName.set("${archiveBaseName.orNull}-all")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
+    }
+    with(jar)
+
+    doFirst {
+        manifest {
+            attributes("Main-Class": application.mainClass)
+        }
+    }
+}
+
+task("watch", dependsOn: "classes") {
+    group = "application"
+    description =
+        "Run the application in another thread. Allows the possibility to watch source changes."
+
+    doLast {
+        final JavaExec runTask = run
+
+        // NOTE: these two statements are *REQUIRED* to load classpath and main class
+        runTask.classpath.each { it.toString() }
+        runTask.mainClass.toString()
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream()
+        exec {
+            commandLine("jps", "-l")
+            standardOutput = out
+        }
+        out.toString().readLines()
+            .findAll { it.endsWith(runTask.mainClass.get()) }
+            .collect { it.split(" ")[0] }
+            .each { pid -> exec { commandLine("kill", pid) } }
+
+        Thread.startDaemon {
+            runTask.setIgnoreExitValue(true)
+            runTask.actions.each { action -> action.execute(runTask) }
+        }
+    }
+}

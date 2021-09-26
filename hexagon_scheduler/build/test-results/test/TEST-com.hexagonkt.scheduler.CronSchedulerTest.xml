@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hexagonkt.scheduler.CronSchedulerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2021-09-25T09:49:33" hostname="jamhost" time="3.845">
+  <properties/>
+  <testcase name="Failing callback does not prevent future executions()" classname="com.hexagonkt.scheduler.CronSchedulerTest" time="2.722"/>
+  <testcase name="Callback is executed properly()" classname="com.hexagonkt.scheduler.CronSchedulerTest" time="1.117"/>
+  <system-out><![CDATA[?[90m11:49:34,525 ?[31m?[1mERROR?[0m ?[35m[pool-1-thread-1] ?[36mcom.hexagonkt.scheduler.CronScheduler?[0m | Error executing cron job
+?[90m11:49:35,561 ?[31m?[1mERROR?[0m ?[35m[pool-1-thread-2] ?[36mcom.hexagonkt.scheduler.CronScheduler?[0m | Error executing cron job
+?[90m11:49:36,567 ?[31m?[1mERROR?[0m ?[35m[pool-1-thread-2] ?[36mcom.hexagonkt.scheduler.CronScheduler?[0m | Error executing cron job
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

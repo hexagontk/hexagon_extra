@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hexagonkt.store.mongodb.MongoDbStoreCompanyTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2021-09-25T09:52:33" hostname="jamhost" time="3.127">
+  <properties/>
+  <testcase name="New records are stored()" classname="com.hexagonkt.store.mongodb.MongoDbStoreCompanyTest" time="2.668"/>
+  <testcase name="Resources are loaded()" classname="com.hexagonkt.store.mongodb.MongoDbStoreCompanyTest" time="0.097"/>
+  <testcase name="Many records are stored()" classname="com.hexagonkt.store.mongodb.MongoDbStoreCompanyTest" time="0.197"/>
+  <testcase name="Store type is correct()" classname="com.hexagonkt.store.mongodb.MongoDbStoreCompanyTest" time="0.003"/>
+  <testcase name="Indexes creation works ok()" classname="com.hexagonkt.store.mongodb.MongoDbStoreCompanyTest" time="0.038"/>
+  <testcase name="Insert one record returns the proper key()" classname="com.hexagonkt.store.mongodb.MongoDbStoreCompanyTest" time="0.046"/>
+  <testcase name="Collection can be used for custom queries()" classname="com.hexagonkt.store.mongodb.MongoDbStoreCompanyTest" time="0.016"/>
+  <testcase name="Entities are stored()" classname="com.hexagonkt.store.mongodb.MongoDbStoreCompanyTest" time="0.056"/>
+  <system-out><![CDATA[?[90m09:52:33,842 ?[34mINFO ?[0m ?[35m[Test worker    ] ?[36mcom.hexagonkt.serialization.SerializationManager?[0m | Serialization formats loaded:
+* application/json (json)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

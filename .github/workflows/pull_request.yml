@@ -1,0 +1,123 @@
+
+name: Pull Request
+
+on:
+  - pull_request
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+      # SET UP
+      - name: Check Out
+        uses: actions/checkout@v2
+      - name: Install Java
+        uses: actions/setup-java@v2
+        with: { java-version: 11, distribution: adopt }
+      - name: Restore Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle*.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+
+      # PROCESS
+      - name: Build Project
+        run: ./gradlew build
+      - name: Log Build (ON FAILURE)
+        if: failure()
+        run: ./gradlew --info --stacktrace build
+
+      # CLEAN UP
+      - name: Clean Gradle Cache
+        run: rm -f ~/.gradle/caches/modules-2/{modules-2.lock,gc.properties}
+
+  sample_keystores:
+    name: Sample Keystores
+    runs-on: ubuntu-latest
+    steps:
+
+      # SET UP
+      - name: Check Out
+        uses: actions/checkout@v2
+      - name: Install Java
+        uses: actions/setup-java@v2
+        with: { java-version: 11, distribution: adopt }
+      - name: Restore Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle*.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+
+      # PROCESS
+      - name: Create Sample Keystores
+        run: ./gradlew createCa createIdentities
+
+      # CLEAN UP
+      - name: Clean Gradle Cache
+        run: rm -f ~/.gradle/caches/modules-2/{modules-2.lock,gc.properties}
+
+  build_site:
+    name: Build Site
+    runs-on: ubuntu-latest
+    steps:
+
+      # SET UP
+      - name: Check Out
+        uses: actions/checkout@v2
+      - name: Install Java
+        uses: actions/setup-java@v2
+        with: { java-version: 11, distribution: adopt }
+      - name: Restore Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle*.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+
+      # PROCESS
+      - name: Build Site
+        run: |
+          ./gradlew --no-daemon build
+          ./gradlew --no-daemon -x build buildSite
+
+      # CLEAN UP
+      - name: Clean Gradle Cache
+        run: rm -f ~/.gradle/caches/modules-2/{modules-2.lock,gc.properties}
+
+  test_publishing:
+    name: Test Publishing
+    runs-on: ubuntu-latest
+    steps:
+
+      # SET UP
+      - name: Check Out
+        uses: actions/checkout@v2
+      - name: Install Java
+        uses: actions/setup-java@v2
+        with: { java-version: 11, distribution: adopt }
+      - name: Restore Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle*.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+
+      # PROCESS
+      - name: Test Publishing
+        run: ./gradlew --no-daemon publishToMavenLocal
+
+      # CLEAN UP
+      - name: Clean Gradle Cache
+        run: rm -f ~/.gradle/caches/modules-2/{modules-2.lock,gc.properties}

@@ -1,0 +1,179 @@
+/*
+ * Check usage information at: http://hexagonkt.com/gradle/#kotlin
+ */
+
+apply(plugin: "idea")
+apply(plugin: "eclipse")
+apply(plugin: "kotlin")
+apply(plugin: "jacoco")
+apply(plugin: "maven-publish")
+
+defaultTasks("build")
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = sourceCompatibility
+}
+
+idea {
+    module {
+        setDownloadSources(true)
+        setDownloadJavadoc(true)
+    }
+}
+
+eclipse {
+    classpath {
+        setDownloadSources(true)
+        setDownloadJavadoc(true)
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    final String scriptKotlinVersion = findProperty("kotlinVersion") ?: "1.5.31"
+    final String scriptMockkVersion = findProperty("mockkVersion") ?: "1.11.0"
+    final String scriptJunitVersion = findProperty("junitVersion") ?: "5.8.1"
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$scriptKotlinVersion")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:$scriptJunitVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$scriptKotlinVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:$scriptKotlinVersion")
+    testImplementation("io.mockk:mockk:$scriptMockkVersion") {
+        exclude(group: "org.jetbrains.kotlin")
+    }
+}
+
+// Replace build variables in resource files
+processResources {
+    [ "properties", "ini", "cfg", "txt", "html", "xml", "json", "yaml" ].each { String ext ->
+        final Map<String, ?> stringProperties = project.getProperties()
+            .findAll { it.value instanceof String }
+
+        filesMatching("**/*.$ext") {
+            filter {
+                String content = it
+
+                stringProperties.entrySet().forEach { entry ->
+                    content = content.replace("\${project.${entry.key}}", entry.value.toString())
+                }
+
+                content
+            }
+        }
+    }
+}
+
+tasks.compileJava.doFirst {
+    options.compilerArgs = [ "--module-path", classpath.asPath ]
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.compileKotlin.kotlinOptions.jvmTarget = targetCompatibility
+tasks.compileKotlin.kotlinOptions.apiVersion = "1.5"
+
+tasks.compileTestKotlin.kotlinOptions.jvmTarget = tasks.compileKotlin.kotlinOptions.jvmTarget
+tasks.compileTestKotlin.kotlinOptions.apiVersion = tasks.compileKotlin.kotlinOptions.apiVersion
+
+clean {
+    delete("build", "log", "out", ".vertx", "file-uploads")
+
+    delete(
+        fileTree(rootDir) { include "**/*.log" },
+        fileTree(rootDir) { include "**/*.hprof" },
+        fileTree(rootDir) { include "**/.attach_pid*" },
+        fileTree(rootDir) { include "**/hs_err_pid*" }
+    )
+}
+
+test {
+    exclude("**/*IT.*")
+}
+
+task("verify", type: Test) {
+    group = "verification"
+    description = "Runs integration tests."
+
+    shouldRunAfter(test)
+    include("**/*IT.*")
+}
+
+check.dependsOn("test", "verify")
+
+// Show useful testing information while running tests
+tasks.withType(Test) { testTask ->
+    testTask.useJUnitPlatform()
+    testTask.systemProperties(project.getProperties().findAll { it.value instanceof String })
+    testTask.systemProperty("file.encoding", "utf-8")
+
+    testTask.testLogging {
+        if (logger.isInfoEnabled())
+            events("skipped", "failed", "standardOut", "standardError")
+        else
+            events("skipped", "failed")
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+jacocoTestReport {
+    dependsOn("check")
+    doFirst {
+        final String basePackage = findProperty("basePackage")
+        if (basePackage != null) {
+            final String basePackageDirectory = basePackage.tr(".", "/")
+            final String relativePackageDirectory = "build/jacoco/src/$basePackageDirectory"
+            file(relativePackageDirectory).mkdirs()
+            copy {
+                from(project.sourceSets.main.allSource)
+                into(relativePackageDirectory)
+            }
+        }
+    }
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+
+build.dependsOn("jacocoTestReport")
+
+task("sourcesJar", type: Jar) {
+    group = "distribution"
+    description = "Create a jar file with the source code files."
+
+    archiveClassifier.set("sources")
+    from(project.sourceSets.main.allSource)
+}
+
+task("testJar", type: Jar, dependsOn: testClasses) {
+    group = "distribution"
+    description = "Create a jar file with the test classes."
+
+    archiveClassifier.set("test")
+    from(project.sourceSets.test.output.classesDirs)
+}
+
+tasks.withType(Zip).each { zipTask ->
+    zipTask.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from(components.java)
+            artifact(sourcesJar) // To publish in Maven Central, the package need to include sources
+        }
+    }
+}
