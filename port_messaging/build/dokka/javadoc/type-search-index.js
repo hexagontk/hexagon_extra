@@ -1,1 +1,0 @@
-var typeSearchIndex = [{"p":"com.hexagonkt.messaging","l":"Message","url":"com/hexagonkt/messaging/Message.html"}, {"p":"com.hexagonkt.messaging","l":"MessagingPort","url":"com/hexagonkt/messaging/MessagingPort.html"}, {"l":"All classes","url":"allclasses.html"}]
