@@ -19,8 +19,6 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version("1.18.1") apply(false)
 }
 
-apply(from = "gradle/certificates.gradle")
-
 repositories {
     mavenCentral()
 }

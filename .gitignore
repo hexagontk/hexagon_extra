@@ -1,0 +1,49 @@
+
+# Private / Local
+private_*
+local_*
+
+# Maven
+target/
+pom.xml.*
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Gradle
+.gradle/
+build/
+
+# Eclipse
+bin/
+.settings/
+.project
+.classpath
+
+# Idea
+.idea/
+out/
+*.iml
+
+# VS Code
+.vscode/
+
+# Runtime
+log/
+*.log
+*.hprof
+.attach_pid*
+hs_err_pid*
+
+# Other Tools
+node_modules/
+.java-version
+package-lock.json
+.env
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Added because IntelliJ Gradle creates it from Detekt plugin
+/config/

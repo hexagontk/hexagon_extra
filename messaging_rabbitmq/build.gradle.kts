@@ -1,7 +1,9 @@
 
-apply(from = "../gradle/kotlin.gradle")
-apply(from = "../gradle/publish.gradle")
-apply(from = "../gradle/dokka.gradle")
+val gradleScripts = properties["gradleScripts"]
+
+apply(from = "$gradleScripts/gradle/kotlin.gradle")
+apply(from = "$gradleScripts/gradle/publish.gradle")
+apply(from = "$gradleScripts/gradle/dokka.gradle")
 
 extra["basePackage"] = "com.hexagonkt.messaging.rabbitmq"
 
@@ -13,7 +15,7 @@ dependencies {
     val qpidVersion = properties["qpidVersion"]
     val logbackVersion = properties["logbackVersion"]
 
-    "api"(project(":hexagon_http"))
+    "api"("com.hexagonkt:hexagon_http:$version")
     "api"(project(":port_messaging"))
     "api"("com.rabbitmq:amqp-client:$rabbitVersion") {
         exclude(module = "slf4j-api")
@@ -32,7 +34,7 @@ dependencies {
         exclude(module = "qpid-broker-plugins-websocket")
     }
 
-    "testImplementation"(project(":serialization_json"))
+    "testImplementation"("com.hexagonkt:serialization_json:$version")
     "testImplementation"("ch.qos.logback:logback-classic:$logbackVersion") {
         exclude(group = "org.slf4j")
     }

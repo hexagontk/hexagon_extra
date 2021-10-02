@@ -1,7 +1,9 @@
 
-apply(from = "../gradle/kotlin.gradle")
-apply(from = "../gradle/publish.gradle")
-apply(from = "../gradle/dokka.gradle")
+val gradleScripts = properties["gradleScripts"]
+
+apply(from = "$gradleScripts/gradle/kotlin.gradle")
+apply(from = "$gradleScripts/gradle/publish.gradle")
+apply(from = "$gradleScripts/gradle/dokka.gradle")
 
 extra["basePackage"] = "com.hexagonkt.store.mongodb"
 
@@ -12,6 +14,6 @@ dependencies {
     "api"(project(":port_store"))
     "api"("org.mongodb:mongodb-driver-sync:$mongodbVersion")
 
-    "testImplementation"(project(":serialization_json"))
+    "testImplementation"("com.hexagonkt:serialization_json:$version")
     "testImplementation"("org.testcontainers:mongodb:$testcontainersVersion")
 }
