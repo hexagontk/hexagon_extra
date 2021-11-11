@@ -3,11 +3,11 @@ rootProject.name = "hexagon_extra"
 
 include(
     // Internal modules
-    "hexagon_scheduler",
+    "scheduler",
 
     // Ports
-    "port_messaging",
-    "port_store",
+    "messaging",
+    "store",
 
     // Adapters
     "messaging_rabbitmq",

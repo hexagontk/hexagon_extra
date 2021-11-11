@@ -1,6 +1,6 @@
 package com.hexagonkt.store.hashmap
 
-import com.hexagonkt.helpers.filterEmpty
+import com.hexagonkt.core.helpers.filterEmpty
 import com.hexagonkt.store.IndexOrder
 import com.hexagonkt.store.Mapper
 import com.hexagonkt.store.Store

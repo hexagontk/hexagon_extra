@@ -8,5 +8,5 @@ apply(from = "$gradleScripts/gradle/dokka.gradle")
 extra["basePackage"] = "com.hexagonkt.messaging"
 
 dependencies {
-    "api"("com.hexagonkt:hexagon_core:$version")
+    "api"("com.hexagonkt:core:$version")
 }

@@ -11,7 +11,7 @@ dependencies {
     val mongodbVersion = properties["mongodbVersion"]
     val testcontainersVersion = properties["testcontainersVersion"]
 
-    "api"(project(":port_store"))
+    "api"(project(":store"))
     "api"("org.mongodb:mongodb-driver-sync:$mongodbVersion")
 
     "testImplementation"("com.hexagonkt:serialization_json:$version")

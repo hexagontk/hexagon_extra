@@ -1,9 +1,9 @@
 package com.hexagonkt.store.hashmap
 
-import com.hexagonkt.helpers.filterEmpty
-import com.hexagonkt.logging.logger
-import com.hexagonkt.serialization.toFieldsMap
-import com.hexagonkt.serialization.toObject
+import com.hexagonkt.core.helpers.filterEmpty
+import com.hexagonkt.core.logging.logger
+import com.hexagonkt.core.serialization.toFieldsMap
+import com.hexagonkt.core.serialization.toObject
 import com.hexagonkt.store.Mapper
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1

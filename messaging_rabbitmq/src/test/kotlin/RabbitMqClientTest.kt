@@ -1,11 +1,11 @@
 package com.hexagonkt.messaging.rabbitmq
 
-import com.hexagonkt.logging.Logger
+import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.messaging.rabbitmq.RabbitMqClient.Companion.createConnectionFactory
 import com.hexagonkt.messaging.rabbitmq.RabbitTest.Companion.PORT
-import com.hexagonkt.serialization.Json
-import com.hexagonkt.serialization.SerializationManager
-import com.hexagonkt.serialization.serialize
+import com.hexagonkt.serialization.json.Json
+import com.hexagonkt.core.serialization.SerializationManager
+import com.hexagonkt.core.serialization.serialize
 import org.junit.jupiter.api.BeforeAll
 
 import org.junit.jupiter.api.Test

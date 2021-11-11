@@ -2,7 +2,7 @@ package com.hexagonkt.messaging.rabbitmq
 
 import com.hexagonkt.messaging.Message
 import com.hexagonkt.messaging.MessagingPort
-import com.hexagonkt.serialization.serialize
+import com.hexagonkt.core.serialization.serialize
 import java.net.URI
 import kotlin.reflect.KClass
 

@@ -1,9 +1,9 @@
 package com.hexagonkt.messaging.rabbitmq
 
-import com.hexagonkt.logging.Logger
+import com.hexagonkt.core.logging.Logger
 import com.codahale.metrics.MetricRegistry
 import com.hexagonkt.http.parseQueryParameters
-import com.hexagonkt.helpers.*
+import com.hexagonkt.core.helpers.*
 import com.rabbitmq.client.*
 import com.rabbitmq.client.AMQP.BasicProperties
 import com.rabbitmq.client.impl.StandardMetricsCollector

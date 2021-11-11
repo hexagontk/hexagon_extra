@@ -15,8 +15,8 @@ dependencies {
     val qpidVersion = properties["qpidVersion"]
     val logbackVersion = properties["logbackVersion"]
 
-    "api"("com.hexagonkt:hexagon_http:$version")
-    "api"(project(":port_messaging"))
+    "api"("com.hexagonkt:http:$version")
+    "api"(project(":messaging"))
     "api"("com.rabbitmq:amqp-client:$rabbitVersion") {
         exclude(module = "slf4j-api")
     }

@@ -1,7 +1,7 @@
 package com.hexagonkt.store
 
-import com.hexagonkt.helpers.ensureSize
-import com.hexagonkt.serialization.parseObjects
+import com.hexagonkt.core.helpers.ensureSize
+import com.hexagonkt.core.serialization.parseObjects
 import com.hexagonkt.store.IndexOrder.ASCENDING
 import java.io.File
 import java.net.URL

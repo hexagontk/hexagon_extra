@@ -1,5 +1,5 @@
 
-# Module hexagon_scheduler
+# Module scheduler
 
 Provides repeated tasks execution based on [Cron] expressions for Hexagon framework. It uses the
 [Cron-utils Java Library].
@@ -22,7 +22,7 @@ synchronization yourself.
         mavenCentral()
     }
 
-    implementation("com.hexagonkt:hexagon_scheduler:$hexagonVersion")
+    implementation("com.hexagonkt:scheduler:$hexagonVersion")
     ```
 
 === "pom.xml"
@@ -30,7 +30,7 @@ synchronization yourself.
     ```xml
     <dependency>
       <groupId>com.hexagonkt</groupId>
-      <artifactId>hexagon_scheduler</artifactId>
+      <artifactId>scheduler</artifactId>
       <version>$hexagonVersion</version>
     </dependency>
     ```
@@ -39,7 +39,7 @@ synchronization yourself.
 
 You can check a usage example in the following code:
 
-@code hexagon_scheduler/src/test/kotlin/CronSchedulerSamplesTest.kt:sample
+@code scheduler/src/test/kotlin/CronSchedulerSamplesTest.kt:sample
 
 # Package com.hexagonkt.scheduler
 
