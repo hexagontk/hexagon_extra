@@ -2,10 +2,10 @@ package com.hexagonkt.messaging.rabbitmq
 
 import com.hexagonkt.core.helpers.retry
 import com.hexagonkt.core.logging.Logger
-import com.hexagonkt.core.serialization.SerializationManager.formatOf
-import com.hexagonkt.core.serialization.SerializationManager.requireDefaultFormat
-import com.hexagonkt.core.serialization.parse
-import com.hexagonkt.core.serialization.serialize
+import com.hexagonkt.serialization.SerializationManager.formatOf
+import com.hexagonkt.serialization.SerializationManager.requireDefaultFormat
+import com.hexagonkt.serialization.parse
+import com.hexagonkt.serialization.serialize
 import com.rabbitmq.client.AMQP.BasicProperties
 import com.rabbitmq.client.Channel
 import com.rabbitmq.client.ConnectionFactory

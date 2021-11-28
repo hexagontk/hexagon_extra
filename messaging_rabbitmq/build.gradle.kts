@@ -16,6 +16,7 @@ dependencies {
     val logbackVersion = properties["logbackVersion"]
 
     "api"("com.hexagonkt:http:$version")
+    "api"("com.hexagonkt:serialization:$version")
     "api"(project(":messaging"))
     "api"("com.rabbitmq:amqp-client:$rabbitVersion") {
         exclude(module = "slf4j-api")

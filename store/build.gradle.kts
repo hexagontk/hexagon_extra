@@ -11,6 +11,7 @@ dependencies {
     val kotlinVersion = properties["kotlinVersion"]
 
     "api"("com.hexagonkt:core:$version")
+    "api"("com.hexagonkt:serialization:$version")
     "api"("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
     "testImplementation"("com.hexagonkt:serialization_json:$version")

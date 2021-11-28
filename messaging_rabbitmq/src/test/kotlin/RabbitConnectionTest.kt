@@ -3,7 +3,7 @@ package com.hexagonkt.messaging.rabbitmq
 import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.serialization.json.JacksonMapper
 import com.hexagonkt.serialization.json.Json
-import com.hexagonkt.core.serialization.SerializationManager
+import com.hexagonkt.serialization.SerializationManager
 
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll

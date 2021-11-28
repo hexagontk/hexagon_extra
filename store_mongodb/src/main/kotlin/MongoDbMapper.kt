@@ -5,8 +5,8 @@ import com.hexagonkt.core.helpers.filterEmpty
 import com.hexagonkt.core.helpers.toLocalDate
 import com.hexagonkt.core.helpers.toLocalDateTime
 import com.hexagonkt.core.logging.logger
-import com.hexagonkt.core.serialization.toFieldsMap
-import com.hexagonkt.core.serialization.toObject
+import com.hexagonkt.serialization.toFieldsMap
+import com.hexagonkt.serialization.toObject
 import com.hexagonkt.store.Mapper
 import org.bson.BsonBinary
 import org.bson.BsonString
