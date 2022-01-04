@@ -47,8 +47,7 @@ open class MongoDbMapper<T : Any, K : Any>(
         val fieldType = fields[property]?.returnType?.javaType
         return when {
             value is BsonBinary && fieldType == UUID::class.java ->
-                if (value is UUID) value
-                else UUID.nameUUIDFromBytes(value.data)
+                UUID.nameUUIDFromBytes(value.data)
             value is BsonString -> value.value
             value is Date -> when (fields[property]?.returnType?.javaType) {
                 LocalDate::class.java -> value.toLocalDate()
