@@ -4,11 +4,9 @@ import com.codahale.metrics.ConsoleReporter
 import com.codahale.metrics.Meter
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.jmx.JmxReporter
-import com.hexagonkt.logging.Logger
-import com.rabbitmq.client.MetricsCollector
+import com.hexagonkt.core.logging.Logger
 import com.rabbitmq.client.impl.StandardMetricsCollector
 import java.util.concurrent.TimeUnit
-
 
 internal class Metrics(private val metrics: StandardMetricsCollector) {
 

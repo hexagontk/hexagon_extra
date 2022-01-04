@@ -12,6 +12,6 @@ extra["basePackage"] = "com.hexagonkt.scheduler"
 dependencies {
     val cronutilsVersion = properties["cronutilsVersion"]
 
-    "api"("com.hexagonkt:hexagon_core:$version")
+    "api"("com.hexagonkt:core:$version")
     "api"("com.cronutils:cron-utils:$cronutilsVersion")
 }

@@ -1,7 +1,7 @@
 package com.hexagonkt.messaging.rabbitmq
 
-import com.hexagonkt.helpers.retry
-import com.hexagonkt.logging.Logger
+import com.hexagonkt.core.helpers.retry
+import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.serialization.SerializationManager.formatOf
 import com.hexagonkt.serialization.SerializationManager.requireDefaultFormat
 import com.hexagonkt.serialization.parse

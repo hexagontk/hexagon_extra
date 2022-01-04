@@ -2,8 +2,8 @@ package com.hexagonkt.messaging.rabbitmq
 
 import com.hexagonkt.messaging.MessagingPort
 import com.hexagonkt.messaging.rabbitmq.RabbitTest.Companion.PORT
-import com.hexagonkt.serialization.JacksonMapper
-import com.hexagonkt.serialization.Json
+import com.hexagonkt.serialization.json.JacksonMapper
+import com.hexagonkt.serialization.json.Json
 import com.hexagonkt.serialization.SerializationManager
 import org.junit.jupiter.api.Test
 

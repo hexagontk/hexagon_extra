@@ -1,8 +1,8 @@
 package com.hexagonkt.messaging.rabbitmq
 
 import com.hexagonkt.messaging.Message
-import com.hexagonkt.serialization.JacksonMapper
-import com.hexagonkt.serialization.Json
+import com.hexagonkt.serialization.json.JacksonMapper
+import com.hexagonkt.serialization.json.Json
 import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.serialize
 import org.junit.jupiter.api.AfterAll

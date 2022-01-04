@@ -1,6 +1,6 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.serialization.JacksonMapper
+import com.hexagonkt.serialization.json.JacksonMapper
 import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.store.Store
 import com.hexagonkt.store.mongodb.Department.DESIGN

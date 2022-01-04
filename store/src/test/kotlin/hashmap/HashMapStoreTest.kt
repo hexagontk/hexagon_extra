@@ -1,7 +1,7 @@
 package com.hexagonkt.store.hashmap
 
-import com.hexagonkt.helpers.fail
-import com.hexagonkt.serialization.JacksonMapper
+import com.hexagonkt.core.helpers.fail
+import com.hexagonkt.serialization.json.JacksonMapper
 import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.store.Store
 import org.junit.jupiter.api.BeforeAll

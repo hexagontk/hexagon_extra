@@ -1,6 +1,6 @@
 package com.hexagonkt.messaging.rabbitmq
 
-import com.hexagonkt.logging.Logger
+import com.hexagonkt.core.logging.Logger
 import com.rabbitmq.client.*
 
 internal class ConnectionListener : ShutdownListener, RecoveryListener {

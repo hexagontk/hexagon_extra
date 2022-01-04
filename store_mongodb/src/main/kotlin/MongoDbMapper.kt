@@ -1,10 +1,10 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.helpers.fail
-import com.hexagonkt.helpers.filterEmpty
-import com.hexagonkt.helpers.toLocalDate
-import com.hexagonkt.helpers.toLocalDateTime
-import com.hexagonkt.logging.logger
+import com.hexagonkt.core.helpers.fail
+import com.hexagonkt.core.helpers.filterEmpty
+import com.hexagonkt.core.helpers.toLocalDate
+import com.hexagonkt.core.helpers.toLocalDateTime
+import com.hexagonkt.core.logging.logger
 import com.hexagonkt.serialization.toFieldsMap
 import com.hexagonkt.serialization.toObject
 import com.hexagonkt.store.Mapper
@@ -47,8 +47,7 @@ open class MongoDbMapper<T : Any, K : Any>(
         val fieldType = fields[property]?.returnType?.javaType
         return when {
             value is BsonBinary && fieldType == UUID::class.java ->
-                if (value is UUID) value
-                else UUID.nameUUIDFromBytes(value.data)
+                UUID.nameUUIDFromBytes(value.data)
             value is BsonString -> value.value
             value is Date -> when (fields[property]?.returnType?.javaType) {
                 LocalDate::class.java -> value.toLocalDate()
