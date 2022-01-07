@@ -14,6 +14,6 @@ dependencies {
     "api"(project(":store"))
     "api"("org.mongodb:mongodb-driver-sync:$mongodbVersion")
 
-    "testImplementation"("com.hexagonkt:serialization_json:$version")
+    "testImplementation"("com.hexagonkt:serialization_jackson_json:$version")
     "testImplementation"("org.testcontainers:mongodb:$testcontainersVersion")
 }

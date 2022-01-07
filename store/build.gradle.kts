@@ -14,5 +14,5 @@ dependencies {
     "api"("com.hexagonkt:serialization:$version")
     "api"("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
-    "testImplementation"("com.hexagonkt:serialization_json:$version")
+    "testImplementation"("com.hexagonkt:serialization_jackson_json:$version")
 }
