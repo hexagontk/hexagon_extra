@@ -35,7 +35,7 @@ dependencies {
         exclude(module = "qpid-broker-plugins-websocket")
     }
 
-    "testImplementation"("com.hexagonkt:serialization_json:$version")
+    "testImplementation"("com.hexagonkt:serialization_jackson_json:$version")
     "testImplementation"("ch.qos.logback:logback-classic:$logbackVersion") {
         exclude(group = "org.slf4j")
     }
