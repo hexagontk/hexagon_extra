@@ -1,10 +1,7 @@
 package com.hexagonkt.store.mongodb
 
 import com.hexagonkt.core.helpers.fail
-import com.hexagonkt.serialization.json.Json
-import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.store.Store
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
@@ -27,10 +24,6 @@ abstract class StoreTest<T : Any, K : Any> {
     protected abstract fun createTestEntities(): List<T>
 
     protected abstract fun changeObject(obj: T): T
-
-    @BeforeAll fun initialize() {
-        SerializationManager.formats = linkedSetOf(Json)
-    }
 
     @BeforeEach fun dropCollection() {
         store.drop()

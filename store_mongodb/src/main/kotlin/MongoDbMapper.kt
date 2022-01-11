@@ -1,12 +1,11 @@
 package com.hexagonkt.store.mongodb
 
+import com.hexagonkt.core.converters.convert
 import com.hexagonkt.core.helpers.fail
 import com.hexagonkt.core.helpers.filterEmpty
 import com.hexagonkt.core.helpers.toLocalDate
 import com.hexagonkt.core.helpers.toLocalDateTime
 import com.hexagonkt.core.logging.logger
-import com.hexagonkt.serialization.toFieldsMap
-import com.hexagonkt.serialization.toObject
 import com.hexagonkt.store.Mapper
 import org.bson.BsonBinary
 import org.bson.BsonString
@@ -31,7 +30,7 @@ open class MongoDbMapper<T : Any, K : Any>(
     }
 
     override fun toStore(instance: T): Map<String, Any> =
-        (instance.toFieldsMap() + ("_id" to key.get(instance)) - key.name)
+        (instance.convert(Map::class) + ("_id" to key.get(instance)) - key.name)
             .filterEmpty()
             .mapKeys { it.key.toString() }
             .mapValues { toStore(it.key, it.value) }
@@ -41,7 +40,7 @@ open class MongoDbMapper<T : Any, K : Any>(
         (map + (key.name to map["_id"]))
             .filterEmpty()
             .mapValues { fromStore(it.key, it.value) }
-            .toObject(type)
+            .convert(type)
 
     override fun fromStore(property: String, value: Any): Any {
         val fieldType = fields[property]?.returnType?.javaType

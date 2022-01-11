@@ -1,7 +1,8 @@
 package com.hexagonkt.store
 
+import com.hexagonkt.core.converters.convert
 import com.hexagonkt.core.helpers.ensureSize
-import com.hexagonkt.serialization.parseObjects
+import com.hexagonkt.serialization.parse
 import com.hexagonkt.store.IndexOrder.ASCENDING
 import java.io.File
 import java.net.URL
@@ -102,10 +103,10 @@ interface Store<T : Any, K : Any> {
         fields(updates.toMap())
 
     fun import(input: File) {
-        insertMany(input.parseObjects(type))
+        insertMany(input.parse().convert(type))
     }
 
     fun import(input: URL) {
-        insertMany(input.parseObjects(type))
+        insertMany(input.parse().convert(type))
     }
 }

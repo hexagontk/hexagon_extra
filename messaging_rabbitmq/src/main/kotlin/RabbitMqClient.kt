@@ -42,7 +42,7 @@ class RabbitMqClient(
             cf.setUri(uri)
 
             val params = parseQueryParameters(uri.query ?: "")
-            fun value(name: String): String? = params[name]?.firstOrNull { it.isNotBlank() }
+            fun value(name: String): String? = params[name]
             val automaticRecovery = value("automaticRecovery")?.toBoolean()
             val recoveryInterval = value("recoveryInterval")?.toLong()
             val shutdownTimeout = value("shutdownTimeout")?.toInt()
@@ -125,7 +125,7 @@ class RabbitMqClient(
     }
 
     /**
-     * Tries to get a channel for five times. If it do not succeed it throws an
+     * Tries to get a channel for five times. If it does not succeed it throws an
      * IllegalStateException.
      *
      * @return A new channel.
@@ -230,10 +230,10 @@ class RabbitMqClient(
                 }
             }
 
-            val ctag = it.basicConsume(replyQueueName, true, consumer)
+            val consumerTag = it.basicConsume(replyQueueName, true, consumer)
 
             val result: String = response.take() // Wait until there is an element in the array blocking queue
-            it.basicCancel(ctag)
+            it.basicCancel(consumerTag)
             result
         }
 }

@@ -1,8 +1,10 @@
 package com.hexagonkt.messaging.rabbitmq
 
+import com.hexagonkt.core.converters.convert
 import com.hexagonkt.core.helpers.retry
 import com.hexagonkt.core.logging.Logger
-import com.hexagonkt.serialization.SerializationManager.formatOf
+import com.hexagonkt.core.media.MediaType
+import com.hexagonkt.serialization.SerializationManager.formatOfOrNull
 import com.hexagonkt.serialization.SerializationManager.requireDefaultFormat
 import com.hexagonkt.serialization.parse
 import com.hexagonkt.serialization.serialize
@@ -47,14 +49,14 @@ internal class Handler<T : Any, R : Any> internal constructor (
             val charset = properties.contentEncoding ?: defaultCharset().name()
             val correlationId = properties.correlationId
             val replyTo = properties.replyTo
-            val messageContentType = properties.contentType ?: requireDefaultFormat().contentType
-            val contentType = formatOf(messageContentType, requireDefaultFormat())
+            val messageContentType = MediaType(properties.contentType)
+            val contentType = formatOfOrNull(messageContentType) ?: requireDefaultFormat()
 
             try {
                 log.trace { "Received message ($correlationId) in $charset" }
                 val request = String(body, Charset.forName(charset))
                 log.trace { "Message body:\n$request" }
-                val input = request.parse(type, contentType)
+                val input = request.parse(contentType).convert(type)
 
                 val response = handler(input)
 
@@ -114,7 +116,7 @@ internal class Handler<T : Any, R : Any> internal constructor (
 
     private fun handleError(exception: Exception, replyTo: String, correlationId: String?) {
         val message = exception.message ?: ""
-        val errorMessage = if (message.isBlank()) exception.javaClass.name else message
+        val errorMessage = message.ifBlank { exception.javaClass.name }
         client.publish(replyTo, errorMessage, correlationId)
     }
 }

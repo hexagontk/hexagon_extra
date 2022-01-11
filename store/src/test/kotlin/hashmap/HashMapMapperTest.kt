@@ -1,8 +1,5 @@
 package com.hexagonkt.store.hashmap
 
-import com.hexagonkt.serialization.json.JacksonMapper
-import com.hexagonkt.serialization.SerializationManager
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.time.LocalDate
@@ -28,10 +25,6 @@ internal class HashMapMapperTest {
         val localDate: LocalDate = LocalDate.MIN,
         val localDateTime: LocalDateTime = LocalDateTime.MIN
     )
-
-    @BeforeAll fun setUpSerializationManager() {
-        SerializationManager.mapper = JacksonMapper
-    }
 
     @Test fun `A mapper transform a data class to a map and back`() {
         val instance = MappedClass()

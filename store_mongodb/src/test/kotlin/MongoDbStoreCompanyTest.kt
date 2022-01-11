@@ -1,9 +1,6 @@
 package com.hexagonkt.store.mongodb
 
 import com.hexagonkt.core.helpers.fail
-import com.hexagonkt.serialization.json.JacksonMapper
-import com.hexagonkt.serialization.json.Json
-import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.store.IndexOrder.ASCENDING
 import com.hexagonkt.store.IndexOrder.DESCENDING
 import com.hexagonkt.store.Store
@@ -52,8 +49,6 @@ internal class MongoDbStoreCompanyTest {
 
     @BeforeAll fun initialize() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-        SerializationManager.formats = linkedSetOf(Json)
-        SerializationManager.mapper = JacksonMapper
     }
 
     @BeforeEach fun dropCollection() {

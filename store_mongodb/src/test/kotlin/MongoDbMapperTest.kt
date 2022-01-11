@@ -1,8 +1,5 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.serialization.json.JacksonMapper
-import com.hexagonkt.serialization.SerializationManager
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
@@ -26,10 +23,6 @@ internal class MongoDbMapperTest {
         val atHome: Int = 0,
         val onePlus: Char = 'c'
     )
-
-    @BeforeAll fun setUpSerializationManager() {
-        SerializationManager.mapper = JacksonMapper
-    }
 
     @Test fun `A mapper transform a data class to a map and back`() {
         val instance = MappedClass()
