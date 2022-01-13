@@ -49,8 +49,10 @@ internal class Handler<T : Any, R : Any> internal constructor (
             val charset = properties.contentEncoding ?: defaultCharset().name()
             val correlationId = properties.correlationId
             val replyTo = properties.replyTo
-            val messageContentType = MediaType(properties.contentType)
-            val contentType = formatOfOrNull(messageContentType) ?: requireDefaultFormat()
+            val contentType = properties.contentType
+                ?.let { MediaType(it) }
+                ?.let { formatOfOrNull(it) }
+                ?: requireDefaultFormat()
 
             try {
                 log.trace { "Received message ($correlationId) in $charset" }

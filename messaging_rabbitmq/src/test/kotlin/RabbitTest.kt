@@ -1,6 +1,9 @@
 package com.hexagonkt.messaging.rabbitmq
 
+import com.hexagonkt.core.converters.ConvertersManager
 import com.hexagonkt.messaging.Message
+import com.hexagonkt.serialization.SerializationManager
+import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.serialize
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -54,6 +57,8 @@ internal class RabbitTest {
     }
 
     @Test fun `Call return expected results` () {
+        SerializationManager.defaultFormat = Json
+        ConvertersManager.register(Long::class to String::class) { it.toString() }
         val ts = currentTimeMillis().toString()
         assert(client.call(QUEUE, ts) == ts + SUFFIX)
         val result = client.call(QUEUE_ERROR, ts)
@@ -62,6 +67,7 @@ internal class RabbitTest {
 
     @Test
     fun `Call errors` () {
+        SerializationManager.defaultFormat = Json
         consumer.consume(QUEUE_ERROR, Sample::class) {
             if (it.str == "no message error")
                 error("")

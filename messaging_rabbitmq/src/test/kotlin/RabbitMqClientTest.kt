@@ -1,9 +1,13 @@
 package com.hexagonkt.messaging.rabbitmq
 
+import com.hexagonkt.core.converters.ConvertersManager
 import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.messaging.rabbitmq.RabbitMqClient.Companion.createConnectionFactory
 import com.hexagonkt.messaging.rabbitmq.RabbitTest.Companion.PORT
+import com.hexagonkt.serialization.SerializationManager
+import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.serialize
+import org.junit.jupiter.api.BeforeAll
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -15,6 +19,12 @@ import kotlin.test.assertFailsWith
 internal class RabbitMqClientTest {
 
     private val log: Logger = Logger(this::class)
+
+    @BeforeAll fun setUp() {
+        SerializationManager.defaultFormat = Json
+        ConvertersManager.register(Int::class to String::class) { it.toString() }
+        ConvertersManager.register(ArrayList::class to List::class) { it.toList() }
+    }
 
     @Test fun `Create a connection factory with empty URI fails` () {
         assertFailsWith(IllegalArgumentException::class) {

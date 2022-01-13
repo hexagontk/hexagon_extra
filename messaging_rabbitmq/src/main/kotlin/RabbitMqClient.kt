@@ -41,7 +41,7 @@ class RabbitMqClient(
             val cf = ConnectionFactory()
             cf.setUri(uri)
 
-            val params = parseQueryString(uri.query ?: "")
+            val params = parseQueryString(uri.query ?: "").filterNot { it.value.isBlank() }
             fun value(name: String): String? = params[name]
             val automaticRecovery = value("automaticRecovery")?.toBoolean()
             val recoveryInterval = value("recoveryInterval")?.toLong()
