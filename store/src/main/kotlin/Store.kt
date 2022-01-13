@@ -1,7 +1,7 @@
 package com.hexagonkt.store
 
 import com.hexagonkt.core.converters.convert
-import com.hexagonkt.core.helpers.ensureSize
+import com.hexagonkt.core.ensureSize
 import com.hexagonkt.serialization.parse
 import com.hexagonkt.store.IndexOrder.ASCENDING
 import java.io.File

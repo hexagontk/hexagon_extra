@@ -1,6 +1,6 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.core.helpers.fail
+import com.hexagonkt.core.fail
 import com.hexagonkt.store.IndexOrder.ASCENDING
 import com.hexagonkt.store.IndexOrder.DESCENDING
 import com.hexagonkt.store.Store

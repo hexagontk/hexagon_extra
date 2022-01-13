@@ -1,7 +1,7 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.core.helpers.fail
-import com.hexagonkt.core.helpers.filterEmpty
+import com.hexagonkt.core.fail
+import com.hexagonkt.core.filterEmpty
 import com.hexagonkt.store.IndexOrder
 import com.hexagonkt.store.IndexOrder.ASCENDING
 import com.hexagonkt.store.Mapper

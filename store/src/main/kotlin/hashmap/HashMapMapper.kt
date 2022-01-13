@@ -1,7 +1,7 @@
 package com.hexagonkt.store.hashmap
 
 import com.hexagonkt.core.converters.convert
-import com.hexagonkt.core.helpers.filterEmpty
+import com.hexagonkt.core.filterEmpty
 import com.hexagonkt.core.logging.logger
 import com.hexagonkt.store.Mapper
 import kotlin.reflect.KClass

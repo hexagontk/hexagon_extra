@@ -1,6 +1,6 @@
 package com.hexagonkt.store.hashmap
 
-import com.hexagonkt.core.helpers.fail
+import com.hexagonkt.core.fail
 import com.hexagonkt.store.Store
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -1,6 +1,6 @@
 package com.hexagonkt.scheduler
 
-import com.hexagonkt.core.helpers.fail
+import com.hexagonkt.core.fail
 import com.cronutils.model.CronType.QUARTZ
 import com.cronutils.model.definition.CronDefinitionBuilder.instanceDefinitionFor as cronDefinition
 import com.cronutils.model.time.ExecutionTime
