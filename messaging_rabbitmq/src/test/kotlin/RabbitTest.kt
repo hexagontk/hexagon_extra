@@ -30,6 +30,7 @@ internal class RabbitTest {
 
         private const val QUEUE: String = "test"
         private const val QUEUE_ERROR: String = "error"
+        private const val QUEUE_ERROR_SAMPLE: String = "errorSample"
         private const val SUFFIX: String = "DONE"
         private const val DELAY: Long = 10L
     }
@@ -53,6 +54,7 @@ internal class RabbitTest {
     @AfterAll fun deleteTestQueue() {
         consumer.deleteQueue(QUEUE)
         consumer.deleteQueue(QUEUE_ERROR)
+        consumer.deleteQueue(QUEUE_ERROR_SAMPLE)
         consumer.close()
     }
 
@@ -65,25 +67,25 @@ internal class RabbitTest {
         assert(result.contains(ts) && result.contains("Error with: $ts"))
     }
 
-    @Disabled // TODO Fix this case
     @Test fun `Call errors` () {
         LoggingManager.setLoggerLevel("com.hexagonkt", TRACE)
         SerializationManager.defaultFormat = Json
         ConvertersManager.register(Map::class to Sample::class) {
             Sample(
-                str = it.requireKeys(Sample::str::name),
-                int = it.requireKeys(Sample::int::name),
+                str = it.requireKeys(Sample::str.name),
+                int = it.requireKeys(Sample::int.name),
             )
         }
-        consumer.consume(QUEUE_ERROR, Sample::class) {
+        consumer.declareQueue(QUEUE_ERROR_SAMPLE)
+        consumer.consume(QUEUE_ERROR_SAMPLE, Sample::class) {
             if (it.str == "no message error")
                 error("")
             if (it.str == "message error")
                 error("message")
         }
 
-        client.publish(QUEUE_ERROR, Sample("foo", 1).serialize())
-        val result = client.call(QUEUE_ERROR, Sample("no message error", 1).serialize())
+        client.publish(QUEUE_ERROR_SAMPLE, Sample("foo", 1).serialize())
+        val result = client.call(QUEUE_ERROR_SAMPLE, Sample("no message error", 1).serialize())
         assert(result == IllegalStateException::class.java.name)
 
         // TODO Fix the case below
