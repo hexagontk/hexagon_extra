@@ -4,8 +4,8 @@ import java.lang.System.currentTimeMillis
 import java.lang.Thread.currentThread
 import java.time.LocalDateTime
 
-import com.hexagonkt.core.helpers.toNumber
-import com.hexagonkt.core.helpers.Jvm
+import com.hexagonkt.core.toNumber
+import com.hexagonkt.core.Jvm
 
 open class Message (
     val timestamp: Long = currentTimeMillis(),

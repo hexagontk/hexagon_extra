@@ -1,9 +1,9 @@
 package com.hexagonkt.messaging.rabbitmq
 
+import com.hexagonkt.core.converters.ConvertersManager
 import com.hexagonkt.core.logging.Logger
-import com.hexagonkt.serialization.json.JacksonMapper
-import com.hexagonkt.serialization.json.Json
 import com.hexagonkt.serialization.SerializationManager
+import com.hexagonkt.serialization.jackson.json.Json
 
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -37,8 +37,8 @@ internal class RabbitConnectionTest {
     private val client: RabbitMqClient by lazy { RabbitMqClient(URI(URI)) }
 
     @BeforeAll fun startConsumer() {
-        SerializationManager.mapper = JacksonMapper
-        SerializationManager.formats = linkedSetOf(Json)
+        SerializationManager.defaultFormat = Json
+        ConvertersManager.register(Long::class to String::class) { it.toString() }
 
         broker.startup()
 

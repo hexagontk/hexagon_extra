@@ -1,4 +1,4 @@
-package com.hexagonkt.store.hashmap
+package com.hexagonkt.store
 
 import java.net.URL
 import java.nio.ByteBuffer

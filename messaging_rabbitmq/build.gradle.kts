@@ -1,9 +1,9 @@
 
 val gradleScripts = properties["gradleScripts"]
 
-apply(from = "$gradleScripts/gradle/kotlin.gradle")
-apply(from = "$gradleScripts/gradle/publish.gradle")
-apply(from = "$gradleScripts/gradle/dokka.gradle")
+apply(from = "$gradleScripts/kotlin.gradle")
+apply(from = "$gradleScripts/publish.gradle")
+apply(from = "$gradleScripts/dokka.gradle")
 
 extra["basePackage"] = "com.hexagonkt.messaging.rabbitmq"
 

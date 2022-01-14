@@ -1,14 +1,14 @@
 package com.hexagonkt.messaging.rabbitmq
 
+import com.hexagonkt.core.converters.ConvertersManager
+import com.hexagonkt.core.logging.LoggingLevel.TRACE
+import com.hexagonkt.core.logging.LoggingManager
+import com.hexagonkt.core.requireKeys
 import com.hexagonkt.messaging.Message
-import com.hexagonkt.serialization.json.JacksonMapper
-import com.hexagonkt.serialization.json.Json
 import com.hexagonkt.serialization.SerializationManager
+import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.serialize
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.utility.DockerImageName.parse
@@ -30,6 +30,7 @@ internal class RabbitTest {
 
         private const val QUEUE: String = "test"
         private const val QUEUE_ERROR: String = "error"
+        private const val QUEUE_ERROR_SAMPLE: String = "errorSample"
         private const val SUFFIX: String = "DONE"
         private const val DELAY: Long = 10L
     }
@@ -38,9 +39,6 @@ internal class RabbitTest {
     private val client: RabbitMqClient = RabbitMqClient(URI(URI))
 
     @BeforeAll fun startConsumer() {
-        SerializationManager.formats = linkedSetOf(Json)
-        SerializationManager.mapper = JacksonMapper
-
         consumer.declareQueue(QUEUE)
         consumer.consume(QUEUE, String::class) { a ->
             Thread.sleep(DELAY)
@@ -56,27 +54,38 @@ internal class RabbitTest {
     @AfterAll fun deleteTestQueue() {
         consumer.deleteQueue(QUEUE)
         consumer.deleteQueue(QUEUE_ERROR)
+        consumer.deleteQueue(QUEUE_ERROR_SAMPLE)
         consumer.close()
     }
 
     @Test fun `Call return expected results` () {
+        SerializationManager.defaultFormat = Json
+        ConvertersManager.register(Long::class to String::class) { it.toString() }
         val ts = currentTimeMillis().toString()
         assert(client.call(QUEUE, ts) == ts + SUFFIX)
         val result = client.call(QUEUE_ERROR, ts)
         assert(result.contains(ts) && result.contains("Error with: $ts"))
     }
 
-    @Test
-    fun `Call errors` () {
-        consumer.consume(QUEUE_ERROR, Sample::class) {
+    @Test fun `Call errors` () {
+        LoggingManager.setLoggerLevel("com.hexagonkt", TRACE)
+        SerializationManager.defaultFormat = Json
+        ConvertersManager.register(Map::class to Sample::class) {
+            Sample(
+                str = it.requireKeys(Sample::str.name),
+                int = it.requireKeys(Sample::int.name),
+            )
+        }
+        consumer.declareQueue(QUEUE_ERROR_SAMPLE)
+        consumer.consume(QUEUE_ERROR_SAMPLE, Sample::class) {
             if (it.str == "no message error")
                 error("")
             if (it.str == "message error")
                 error("message")
         }
 
-        client.publish(QUEUE_ERROR, Sample("foo", 1).serialize())
-        val result = client.call(QUEUE_ERROR, Sample("no message error", 1).serialize())
+        client.publish(QUEUE_ERROR_SAMPLE, Sample("foo", 1).serialize())
+        val result = client.call(QUEUE_ERROR_SAMPLE, Sample("no message error", 1).serialize())
         assert(result == IllegalStateException::class.java.name)
 
         // TODO Fix the case below

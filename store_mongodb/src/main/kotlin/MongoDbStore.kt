@@ -1,10 +1,11 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.core.helpers.fail
-import com.hexagonkt.core.helpers.filterEmpty
+import com.hexagonkt.core.converters.convert
+import com.hexagonkt.core.fail
+import com.hexagonkt.core.filterEmpty
+import com.hexagonkt.core.toLocalDateTime
 import com.hexagonkt.store.IndexOrder
 import com.hexagonkt.store.IndexOrder.ASCENDING
-import com.hexagonkt.store.Mapper
 import com.hexagonkt.store.Store
 import com.mongodb.ConnectionString
 import com.mongodb.client.FindIterable
@@ -16,8 +17,18 @@ import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.client.model.Updates
+import org.bson.BsonBinary
+import org.bson.BsonString
 import org.bson.Document
 import org.bson.conversions.Bson
+import org.bson.types.Binary
+import java.net.URL
+import java.nio.ByteBuffer
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 
@@ -26,7 +37,6 @@ class MongoDbStore<T : Any, K : Any>(
     override val key: KProperty1<T, K>,
     private val database: MongoDatabase,
     override val name: String = type.java.simpleName,
-    override val mapper: Mapper<T> = MongoDbMapper(type, key)
 ) : Store<T, K> {
 
     companion object {
@@ -76,7 +86,7 @@ class MongoDbStore<T : Any, K : Any>(
 
         @Suppress("UNCHECKED_CAST")
         return if (upsertedId == null) null
-            else mapper.fromStore(key.name, upsertedId as Any) as K
+            else fromStore(upsertedId as Any) as K
     }
 
     override fun saveMany(instances: List<T>): List<K?> =
@@ -125,7 +135,7 @@ class MongoDbStore<T : Any, K : Any>(
 
     override fun findOne(key: K): T? {
         val result = collection.find(createKeyFilter(key)).first()?.filterEmpty()
-        return if (result == null) null else mapper.fromStore(result as Map<String, Any>)
+        return if (result == null) null else fromStore(result as Map<String, Any>)
     }
 
     override fun findOne(key: K, fields: List<String>): Map<String, *>? {
@@ -135,7 +145,7 @@ class MongoDbStore<T : Any, K : Any>(
             .projection(createProjection(fields))
             .first()?.filterEmpty()
 
-        return result?.mapValues { mapper.fromStore(it.key, it.value) }
+        return result?.mapValues { fromStore(it.value) }
     }
 
     override fun findMany(
@@ -152,7 +162,7 @@ class MongoDbStore<T : Any, K : Any>(
         pageQuery(limit, query, skip)
 
         val result = query.into(ArrayList())
-        return result.map { mapper.fromStore(it.filterEmpty()) }
+        return result.map { fromStore(it.filterEmpty()) }
     }
 
     override fun findMany(
@@ -172,10 +182,12 @@ class MongoDbStore<T : Any, K : Any>(
 
         val result = query.into(ArrayList())
 
+        @Suppress("SimplifiableCallChain") // 'associate' don't work properly with MongoDB documents
         return result.map { resultMap ->
             resultMap
-                .map { pair -> pair.key to mapper.fromStore(pair.key, pair.value) }
+                .map { pair -> pair.key to fromStore(pair.value) }
                 .toMap()
+                .filterEmpty()
         }
     }
 
@@ -196,16 +208,12 @@ class MongoDbStore<T : Any, K : Any>(
             query.skip(skip)
     }
 
-    private fun map(instance: T): Document = Document(mapper.toStore(instance))
+    private fun map(instance: T): Document = Document(toStore(instance))
 
     private fun createKeyFilter(key: K) = Filters.eq("_id", key)
 
     private fun createFilter(filter: Map<String, *>): Bson = filter
         .filterEmpty()
-        .filter {
-            val firstKeySegment = it.key.split(".")[0]
-            mapper.fields.keys.contains(firstKeySegment)
-        }
         .map {
             val keyFields = it.key.split(":")
             val key = keyFields.firstOrNull() ?: fail
@@ -239,7 +247,7 @@ class MongoDbStore<T : Any, K : Any>(
         Updates.combine(
             update
                 .filterEmpty()
-                .mapValues { mapper.toStore(it.key, it.value) }
+                .mapValues { toStore(it.value) }
                 .map { Updates.set(it.key, it.value) }
         )
 
@@ -261,4 +269,41 @@ class MongoDbStore<T : Any, K : Any>(
             .toDocument()
 
     private fun Map<String, *>.toDocument() = Document(this)
+
+    private fun toStore(instance: T): Map<String, Any> =
+        (instance.convert(Map::class) + ("_id" to key.get(instance)) - key.name)
+            .filterEmpty()
+            .mapKeys { it.key.toString() }
+            .mapValues { toStore(it.value) }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun fromStore(map: Map<String, Any>): T =
+        (map + (key.name to map["_id"]))
+            .filterEmpty()
+            .mapValues { fromStore(it.value) }
+            .convert(type)
+
+    private fun fromStore(value: Any): Any = when (value) {
+        is Binary -> value.data
+        is BsonBinary -> value.data
+        is BsonString -> value.value
+        is Date -> value.toLocalDateTime()
+        is Iterable<*> -> value.map { i -> i?.let { fromStore(it) } }
+        is Map<*, *> -> value.mapValues { v -> v.value?.let { fromStore(it) } }
+        else -> value
+    }
+
+    private fun toStore(value: Any): Any = when (value) {
+        is Enum<*> -> value.name
+        is ByteArray -> BsonBinary(value)
+        is ByteBuffer -> BsonBinary(value.array())
+        is URL -> value.toString()
+        is LocalDateTime -> value
+            .atZone(ZoneId.systemDefault())
+            .withZoneSameInstant(ZoneOffset.UTC)
+            .toLocalDateTime()
+        is Iterable<*> -> value.map { i -> i?.let { toStore(it) } }
+        is Map<*, *> -> value.mapValues { v -> v.value?.let { toStore(it) } }
+        else -> value
+    }
 }

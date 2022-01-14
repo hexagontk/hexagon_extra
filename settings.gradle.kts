@@ -4,6 +4,7 @@ rootProject.name = "hexagon_extra"
 include(
     // Internal modules
     "scheduler",
+    "web",
 
     // Ports
     "messaging",

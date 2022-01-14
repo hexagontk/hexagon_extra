@@ -1,14 +1,18 @@
 package com.hexagonkt.store.hashmap
 
-import com.hexagonkt.core.helpers.fail
-import com.hexagonkt.serialization.json.JacksonMapper
-import com.hexagonkt.serialization.SerializationManager
+import com.hexagonkt.core.converters.ConvertersManager
+import com.hexagonkt.core.get
+import com.hexagonkt.core.fail
+import com.hexagonkt.core.requireKeys
+import com.hexagonkt.store.Company
+import com.hexagonkt.store.Department
+import com.hexagonkt.store.Person
 import com.hexagonkt.store.Store
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.net.URL
+import java.nio.ByteBuffer
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -17,15 +21,41 @@ import kotlin.test.assertFailsWith
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class HashMapStoreTest {
 
-    @BeforeAll fun setUpSerializationManager() {
-        SerializationManager.mapper = JacksonMapper
-    }
-
     private val store: Store<Company, String> =
         HashMapStore(Company::class, Company::id, "companies")
 
     @BeforeEach fun dropCollection() {
         store.drop()
+        ConvertersManager.register(Map::class to Company::class) { m ->
+            Company(
+                id = m.requireKeys(Company::id.name),
+                foundation = m.requireKeys(Company::foundation.name),
+                closeTime = m.requireKeys(Company::closeTime.name),
+                openTime = m.requireKeys(Company::openTime.name),
+                web = m.requireKeys(Company::web.name),
+                clients = m[Company::clients.name] as? List<URL> ?: emptyList(),
+                logo = m[Company::logo.name] as? ByteBuffer,
+                notes = m[Company::notes.name] as? String,
+                people = m[Company::people.name] as? Set<Person> ?: emptySet(),
+                departments = m[Company::departments.name] as? Set<Department> ?: emptySet(),
+                creationDate = m.requireKeys(Company::creationDate.name),
+            )
+        }
+        ConvertersManager.register(Company::class to Map::class) { c ->
+            mapOf(
+                Company::id.name to c.id,
+                Company::foundation.name to c.foundation,
+                Company::closeTime.name to c.closeTime,
+                Company::openTime.name to c.openTime,
+                Company::web.name to c.web,
+                Company::clients.name to c.clients,
+                Company::logo.name to c.logo,
+                Company::notes.name to c.notes,
+                Company::people.name to c.people,
+                Company::departments.name to c.departments,
+                Company::creationDate.name to c.creationDate,
+            )
+        }
     }
 
     @Test fun `Create index throws UnsupportedOperationException`() {
@@ -166,7 +196,8 @@ internal class HashMapStoreTest {
 
         val changedCompanies = companies.map { it.copy(web = URL("http://change.example.org")) }
         assert(store.replaceMany(*changedCompanies.toTypedArray()).size == companies.size)
-        assert(store.findAll(listOf("web")).all { it["web"] == "http://change.example.org" })
+        val results = store.findAll(listOf("web"))
+        assert(results.all { it["web"] == URL("http://change.example.org") })
 
         // TODO Improve asserts of methods below
         checkFindAllObjects()
@@ -174,7 +205,7 @@ internal class HashMapStoreTest {
         checkFindObjects()
         checkFindFields()
 
-        val updateMany = store.updateMany(mapOf("id" to keys), mapOf("web" to "http://update.example.org"))
+        val updateMany = store.updateMany(mapOf("id" to keys), mapOf("web" to URL("http://update.example.org")))
         assert(updateMany == keys.size.toLong())
         val updatedCompanies = store.findMany(mapOf("id" to keys))
         assert(updatedCompanies.all { it.web.toString() == "http://update.example.org" })
@@ -260,23 +291,23 @@ internal class HashMapStoreTest {
 
         val results = store.findAll(fields, 4, 8, mapOf("id" to false))
         assert(results.size == 2)
-        assert(results.all { it["web"] == "http://change.example.org" })
+        assert(results.all { it["web"] == URL("http://change.example.org") })
 
         val results3 = store.findAll(fields, limit = 4, sort = mapOf("id" to false))
         assert(results3.size == 4)
-        assert(results3.all { it["web"] == "http://change.example.org" })
+        assert(results3.all { it["web"] == URL("http://change.example.org") })
 
         val results4 = store.findAll(fields, skip = 4, sort = mapOf("id" to false))
         assert(results4.size == 6)
-        assert(results4.all { it["web"] == "http://change.example.org" })
+        assert(results4.all { it["web"] == URL("http://change.example.org") })
 
         val results5 = store.findAll(fields, sort = mapOf("id" to false))
         assert(results5.size == 10)
-        assert(results5.all { it["web"] == "http://change.example.org" })
+        assert(results5.all { it["web"] == URL("http://change.example.org") })
 
         val results6 = store.findAll(fields)
         assert(results6.size == 10)
-        assert(results6.all { it["web"] == "http://change.example.org" })
+        assert(results6.all { it["web"] == URL("http://change.example.org") })
     }
 
     private fun checkFindObjects() {
@@ -309,22 +340,22 @@ internal class HashMapStoreTest {
 
         val results = store.findMany(filter, fields, 4, 8, mapOf("id" to false))
         assert(results.size == 2)
-        assert(results.all { it["web"] == "http://change.example.org" })
+        assert(results.all { it["web"] == URL("http://change.example.org") })
 
         val results3 = store.findMany(filter, fields, limit = 4, sort = mapOf("id" to false))
         assert(results3.size == 4)
-        assert(results3.all { it["web"] == "http://change.example.org" })
+        assert(results3.all { it["web"] == URL("http://change.example.org") })
 
         val results4 = store.findMany(filter, fields, skip = 4, sort = mapOf("id" to false))
         assert(results4.size == 6)
-        assert(results4.all { it["web"] == "http://change.example.org" })
+        assert(results4.all { it["web"] == URL("http://change.example.org") })
 
         val results5 = store.findMany(filter, fields, sort = mapOf("id" to false))
         assert(results5.size == 10)
-        assert(results5.all { it["web"] == "http://change.example.org" })
+        assert(results5.all { it["web"] == URL("http://change.example.org") })
 
         val results6 = store.findMany(filter, fields)
         assert(results6.size == 10)
-        assert(results6.all { it["web"] == "http://change.example.org" })
+        assert(results6.all { it["web"] == URL("http://change.example.org") })
     }
 }
