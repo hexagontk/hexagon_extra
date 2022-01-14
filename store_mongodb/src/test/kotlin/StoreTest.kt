@@ -1,22 +1,22 @@
 package com.hexagonkt.store.mongodb
 
+import com.hexagonkt.core.converters.convertObjects
 import com.hexagonkt.core.fail
 import com.hexagonkt.store.Store
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import java.net.URL
-import kotlin.reflect.KProperty1
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @TestInstance(PER_CLASS)
 abstract class StoreTest<T : Any, K : Any> {
 
     protected val store: Store<T, K> by lazy {
         createStore()
-    }
-
-    protected val fields: Map<String, KProperty1<T, *>> by lazy {
-        store.mapper.fields
     }
 
     protected abstract fun createStore(): Store<T, K>
@@ -29,12 +29,20 @@ abstract class StoreTest<T : Any, K : Any> {
         store.drop()
     }
 
+    private val fields: List<String> by lazy {
+        createTestEntities()
+            .convertObjects(Map::class)
+            .flatMap {
+                it.keys.map { k -> k.toString() }
+            }
+    }
+
     fun new_records_are_stored() {
 
         createTestEntities().forEach { entity ->
             store.insertOne(entity)
             val storedEntity = store.findOne(store.key.get(entity))
-            assert(storedEntity == entity)
+            assertEquals(entity, storedEntity)
 
             assert(store.replaceOne(entity)) // Ensures unmodified instance is also "replaced"
             val changedEntity = changeObject(entity)
@@ -43,20 +51,24 @@ abstract class StoreTest<T : Any, K : Any> {
             assert(storedModifiedEntity == changedEntity)
 
             val key = store.key.get(changedEntity)
-            val fields = this.fields.keys.toList()
+            val fields = this.fields.toList()
 
             val keyName = store.key.name
-            assert(store.findOne(key, fields) == store.findOne(mapOf(keyName to key), fields))
-            assert(store.findOne(key) == store.findOne(mapOf(keyName to key)))
+            val expected = store.findOne(key, fields) ?: fail
+            val actual = store.findOne(mapOf(keyName to key), fields) ?: fail
+            store.findOne(mapOf(keyName to key), fields) ?: fail // DEBUG
+            assertTrue((expected["logo"] as? ByteArray).contentEquals(actual["logo"] as? ByteArray))
+            assertEquals(expected - "logo", actual - "logo")
+            assertEquals(store.findOne(key), store.findOne(mapOf(keyName to key)))
 
-            assert(store.count() == 1L)
+            assertEquals(1L, store.count())
             assert(store.deleteOne(key))
-            assert(store.count() == 0L)
-            assert(!store.replaceOne(entity))
-            assert(!store.updateOne(key, mapOf("web" to URL("http://update.example.org"))))
-            assert(!store.deleteOne(key))
-            assert(store.findOne(key) == null)
-            assert(store.findOne(key, listOf("web")) == null)
+            assertEquals(0L, store.count())
+            assertFalse(store.replaceOne(entity))
+            assertFalse(store.updateOne(key, mapOf("web" to URL("http://update.example.org"))))
+            assertFalse(store.deleteOne(key))
+            assertNull(store.findOne(key))
+            assertNull(store.findOne(key, listOf("web")))
         }
     }
 
@@ -101,7 +113,7 @@ abstract class StoreTest<T : Any, K : Any> {
         createTestEntities().forEach { mappedClass ->
             val await = store.insertOne(mappedClass)
             val storedClass = store.findOne(await)
-            assert(mappedClass == storedClass)
+            assertEquals(mappedClass, storedClass)
         }
     }
 
@@ -115,7 +127,7 @@ abstract class StoreTest<T : Any, K : Any> {
     }
 
     private fun checkFindAllFields() {
-        val fields = this.fields.keys.toList()
+        val fields = this.fields.toList()
 
         val results5 = store.findAll(fields, sort = mapOf("id" to false))
         assert(results5.size == createTestEntities().size)
@@ -135,7 +147,7 @@ abstract class StoreTest<T : Any, K : Any> {
     }
 
     private fun checkFindFields() {
-        val fields = this.fields.keys.toList()
+        val fields = this.fields.toList()
         val filter = emptyMap<String, Any>()
 
         val results5 = store.findMany(filter, fields, sort = mapOf("id" to false))

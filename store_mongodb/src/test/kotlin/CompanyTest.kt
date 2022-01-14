@@ -1,18 +1,21 @@
 package com.hexagonkt.store.mongodb
 
+import com.hexagonkt.core.converters.ConvertersManager
+import com.hexagonkt.core.converters.convertObjects
+import com.hexagonkt.core.get
+import com.hexagonkt.core.requireKeys
 import com.hexagonkt.store.Store
 import com.hexagonkt.store.mongodb.Department.DESIGN
 import com.hexagonkt.store.mongodb.Department.DEVELOPMENT
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
-import java.io.File
 import java.net.URL
-import java.nio.ByteBuffer
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlin.test.assertEquals
+import java.util.*
 
 @TestInstance(PER_CLASS)
 internal class CompanyTest : StoreTest<Company, String>() {
@@ -26,7 +29,7 @@ internal class CompanyTest : StoreTest<Company, String>() {
             URL("http://c1.example.org"),
             URL("http://c2.example.org")
         ),
-        logo = ByteBuffer.wrap(byteArrayOf(0, 1, 2)),
+        logo = byteArrayOf(0, 1, 2),
         notes = "notes",
         people = setOf(
             Person(name = "John"),
@@ -58,6 +61,57 @@ internal class CompanyTest : StoreTest<Company, String>() {
     override fun changeObject(obj: Company) =
         obj.copy(web = URL("http://change.example.org"))
 
+    @BeforeAll fun initialize() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+
+        ConvertersManager.register(Map::class to Person::class) {
+            Person(name = it.requireKeys(Person::name.name))
+        }
+        ConvertersManager.register(Person::class to Map::class) {
+            mapOf(Person::name.name to it.name)
+        }
+
+        ConvertersManager.register(String::class to Department::class) { Department.valueOf(it) }
+
+        ConvertersManager.register(Map::class to Company::class) { m ->
+            Company(
+                id = m.requireKeys(Company::id.name),
+                foundation = m.requireKeys<LocalDateTime>(Company::foundation.name).toLocalDate(),
+                closeTime = m.requireKeys<LocalDateTime>(Company::closeTime.name).toLocalTime(),
+                openTime = m.requireKeys<Map<*,*>>(Company::openTime.name).let { otm ->
+                    val s = otm.requireKeys<LocalDateTime>(ClosedRange<*>::start.name).toLocalTime()
+                    val e = otm.requireKeys<LocalDateTime>(ClosedRange<*>::endInclusive.name).toLocalTime()
+                    s..e
+                },
+                web = URL(m.requireKeys(Company::web.name)),
+                clients = (m[Company::clients.name] as? List<String>)?.map { URL(it) } ?: emptyList(),
+                logo = m[Company::logo.name] as? ByteArray,
+                notes = m[Company::notes.name] as? String,
+                people = (m[Company::people.name] as? List<Map<*, *>>)?.convertObjects(Person::class)?.toSet() ?: emptySet(),
+                departments = (m[Company::departments.name] as? List<String>)?.convertObjects(Department::class)?.toSet() ?: emptySet(),
+                creationDate = m.requireKeys(Company::creationDate.name),
+            )
+        }
+        ConvertersManager.register(Company::class to Map::class) { c ->
+            mapOf(
+                Company::id.name to c.id,
+                Company::foundation.name to c.foundation,
+                Company::closeTime.name to c.closeTime,
+                Company::openTime.name to mapOf(
+                    ClosedRange<*>::start.name to c.openTime.start,
+                    ClosedRange<*>::endInclusive.name to c.openTime.endInclusive,
+                ),
+                Company::web.name to c.web,
+                Company::clients.name to c.clients.map { it.toString() },
+                Company::logo.name to c.logo,
+                Company::notes.name to c.notes,
+                Company::people.name to c.people.map { mapOf(Person::name.name to it.name) },
+                Company::departments.name to c.departments,
+                Company::creationDate.name to c.creationDate,
+            )
+        }
+    }
+
     @Test fun `New records are stored`() {
         new_records_are_stored()
     }
@@ -72,47 +126,5 @@ internal class CompanyTest : StoreTest<Company, String>() {
 
     @Test fun `Insert one record returns the proper key`() {
         insert_one_record_returns_the_proper_key()
-    }
-
-
-    @Test fun `Resources are loaded from the file`() {
-        // File paths change from IDE to build tool
-        val file = File("hexagon_core/src/test/resources/data/companies.json").let {
-            if (it.exists()) it
-            else File("src/test/resources/companies.json")
-        }
-        val storedEntity = company.copy(
-            openTime = LocalTime.of(8, 30)..LocalTime.of(14, 51, 3),
-            people = setOf(
-                Person(name = "Mike"),
-                Person(name = "John")
-            ),
-            creationDate = LocalDateTime.of(2016, 8, 25, 17, 17, 4, 210000000)
-        )
-        store.import(file)
-        val entities = store.findAll()
-
-        assert(entities.size == 1)
-        assertEquals(entities.first(), storedEntity)
-
-        store.drop()
-    }
-
-    @Test fun `Resources are loaded from the URL`() {
-        val storedEntity = company.copy(
-            openTime = LocalTime.of(8, 30)..LocalTime.of(14, 51, 3),
-            people = setOf(
-                Person(name = "Mike"),
-                Person(name = "John")
-            ),
-            creationDate = LocalDateTime.of(2016, 8, 25, 17, 17, 4, 210000000)
-        )
-        store.import(URL("classpath:companies.json"))
-        val entities = store.findAll()
-
-        assert(entities.size == 1)
-        assertEquals(entities.first(), storedEntity)
-
-        store.drop()
     }
 }

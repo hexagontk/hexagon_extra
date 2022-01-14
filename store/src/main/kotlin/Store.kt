@@ -17,7 +17,6 @@ interface Store<T : Any, K : Any> {
     val type: KClass<T>
     val key: KProperty1<T, K>
     val name: String
-    val mapper: Mapper<T>
 
     fun createIndex(unique: Boolean, fields: Map<String, IndexOrder>): String
 

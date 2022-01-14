@@ -1,8 +1,8 @@
 package com.hexagonkt.store.hashmap
 
+import com.hexagonkt.core.converters.convert
 import com.hexagonkt.core.filterEmpty
 import com.hexagonkt.store.IndexOrder
-import com.hexagonkt.store.Mapper
 import com.hexagonkt.store.Store
 import kotlin.UnsupportedOperationException
 import kotlin.reflect.KClass
@@ -13,7 +13,7 @@ class HashMapStore<T : Any, K : Any>(
     override val key: KProperty1<T, K>,
     override val name: String = type.java.simpleName,
     private val store: HashMap<K, Map<String, Any>> = hashMapOf(),
-    override val mapper: Mapper<T> = HashMapMapper(type)) : Store<T, K> {
+) : Store<T, K> {
 
     override fun createIndex(unique: Boolean, fields: Map<String, IndexOrder>): String {
         throw UnsupportedOperationException("Cannot create index on HashMap")
@@ -40,7 +40,7 @@ class HashMapStore<T : Any, K : Any>(
 
         store[key.get(instance)] = map(instance)
         @Suppress("UNCHECKED_CAST")
-        return mapper.fromStore(key.name, key.get(instance)) as K
+        return fromStore(key.get(instance)) as K
     }
 
     override fun saveMany(instances: List<T>): List<K?> {
@@ -63,7 +63,7 @@ class HashMapStore<T : Any, K : Any>(
         updates
             .filterEmpty()
             .forEach {
-                instance[it.key] = mapper.toStore(it.key, it.value)
+                instance[it.key] = toStore(it.value)
             }
 
         return store.replace(key, instance) != null
@@ -86,13 +86,13 @@ class HashMapStore<T : Any, K : Any>(
 
     override fun findOne(key: K): T? {
         val result = store[key]
-        return result?.let { mapper.fromStore(result) }
+        return result?.let { fromStore(result) }
     }
 
     override fun findOne(key: K, fields: List<String>): Map<String, *>? {
         val instance = store[key]
 
-        return if (instance == null) null else fields.map { it to instance[it] }.toMap()
+        return if (instance == null) null else fields.associateWith { instance[it] }
     }
 
     override fun findMany(
@@ -101,14 +101,14 @@ class HashMapStore<T : Any, K : Any>(
         skip: Int?,
         sort: Map<String, Boolean>
     ): List<T> {
-        val filteredInstances = store.filter(filter)
+        val filteredKeys = store.filter(filter)
+        val filteredInstances = filteredKeys.map { store[it]!! }
 
         @Suppress("UNCHECKED_CAST")
         return filteredInstances
-            .map { store[it]!! }
             .sort(sort)
-            .paginate(skip ?: 0, limit ?: filteredInstances.size)
-            .map { mapper.fromStore(it as Map<String, Any>) }
+            .paginate(skip ?: 0, limit ?: filteredKeys.size)
+            .map { fromStore(it as Map<String, Any>) }
     }
 
     override fun findMany(
@@ -119,8 +119,8 @@ class HashMapStore<T : Any, K : Any>(
         sort: Map<String, Boolean>
     ): List<Map<String, *>> {
         val filteredInstances = store.filter(filter)
-
         val result = filteredInstances.mapNotNull { findOne(it, fields) }
+
         return result
             .paginate(skip ?: 0, limit ?: result.size)
             .sort(sort)
@@ -132,7 +132,7 @@ class HashMapStore<T : Any, K : Any>(
     override fun drop() =
         store.clear()
 
-    private fun map(instance: T): Map<String, Any> = mapper.toStore(instance)
+    private fun map(instance: T): Map<String, Any> = toStore(instance)
 
     private fun HashMap<K, Map<String, Any>>.filter(filter: Map<String, *>): List<K> =
         filter { it.value.containsValues(filter) }
@@ -168,4 +168,19 @@ class HashMapStore<T : Any, K : Any>(
                 else
                     error("Not comparable value")
             }
+
+    private fun toStore(instance: T): Map<String, Any>  =
+        instance.convert(Map::class)
+            .filterEmpty()
+            .mapKeys { it.key.toString() }
+            .mapValues { it.value }
+
+    private fun toStore(value: Any): Any = value
+
+    @Suppress("UNCHECKED_CAST")
+    private fun fromStore(map: Map<String, Any>): T =
+        map.filterEmpty().convert(type)
+
+    private fun fromStore(value: Any): Any =
+        value
 }
