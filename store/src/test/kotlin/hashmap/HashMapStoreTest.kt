@@ -1,18 +1,17 @@
 package com.hexagonkt.store.hashmap
 
 import com.hexagonkt.core.converters.ConvertersManager
-import com.hexagonkt.core.get
+import com.hexagonkt.core.invoke
 import com.hexagonkt.core.fail
+import com.hexagonkt.core.fieldsMapOf
 import com.hexagonkt.core.requireKeys
 import com.hexagonkt.store.Company
-import com.hexagonkt.store.Department
 import com.hexagonkt.store.Person
 import com.hexagonkt.store.Store
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.net.URL
-import java.nio.ByteBuffer
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -33,27 +32,28 @@ internal class HashMapStoreTest {
                 closeTime = m.requireKeys(Company::closeTime.name),
                 openTime = m.requireKeys(Company::openTime.name),
                 web = m.requireKeys(Company::web.name),
-                clients = m[Company::clients.name] as? List<URL> ?: emptyList(),
-                logo = m[Company::logo.name] as? ByteBuffer,
-                notes = m[Company::notes.name] as? String,
-                people = m[Company::people.name] as? Set<Person> ?: emptySet(),
-                departments = m[Company::departments.name] as? Set<Department> ?: emptySet(),
-                creationDate = m.requireKeys(Company::creationDate.name),
+                clients = m(Company::clients) ?: emptyList(),
+                logo = m(Company::logo),
+                notes = m(Company::notes),
+                people = m(Company::people) ?: emptySet(),
+                departments = m(Company::departments) ?: emptySet(),
+                creationDate = m.requireKeys(Company::creationDate),
             )
         }
+
         ConvertersManager.register(Company::class to Map::class) { c ->
-            mapOf(
-                Company::id.name to c.id,
-                Company::foundation.name to c.foundation,
-                Company::closeTime.name to c.closeTime,
-                Company::openTime.name to c.openTime,
-                Company::web.name to c.web,
-                Company::clients.name to c.clients,
-                Company::logo.name to c.logo,
-                Company::notes.name to c.notes,
-                Company::people.name to c.people,
-                Company::departments.name to c.departments,
-                Company::creationDate.name to c.creationDate,
+            fieldsMapOf(
+                Company::id to c.id,
+                Company::foundation to c.foundation,
+                Company::closeTime to c.closeTime,
+                Company::openTime to c.openTime,
+                Company::web to c.web,
+                Company::clients to c.clients,
+                Company::logo to c.logo,
+                Company::notes to c.notes,
+                Company::people to c.people,
+                Company::departments to c.departments,
+                Company::creationDate to c.creationDate,
             )
         }
     }
