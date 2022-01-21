@@ -2,7 +2,8 @@ package com.hexagonkt.store.mongodb
 
 import com.hexagonkt.core.converters.ConvertersManager
 import com.hexagonkt.core.converters.convertObjects
-import com.hexagonkt.core.get
+import com.hexagonkt.core.fieldsMapOf
+import com.hexagonkt.core.invoke
 import com.hexagonkt.core.requireKeys
 import com.hexagonkt.store.Store
 import com.hexagonkt.store.mongodb.Department.DESIGN
@@ -75,39 +76,46 @@ internal class CompanyTest : StoreTest<Company, String>() {
 
         ConvertersManager.register(Map::class to Company::class) { m ->
             Company(
-                id = m.requireKeys(Company::id.name),
-                foundation = m.requireKeys<LocalDateTime>(Company::foundation.name).toLocalDate(),
-                closeTime = m.requireKeys<LocalDateTime>(Company::closeTime.name).toLocalTime(),
-                openTime = m.requireKeys<Map<*,*>>(Company::openTime.name).let { otm ->
-                    val s = otm.requireKeys<LocalDateTime>(ClosedRange<*>::start.name).toLocalTime()
-                    val e = otm.requireKeys<LocalDateTime>(ClosedRange<*>::endInclusive.name).toLocalTime()
+                id = m.requireKeys(Company::id),
+                foundation = m.requireKeys<LocalDateTime>(Company::foundation).toLocalDate(),
+                closeTime = m.requireKeys<LocalDateTime>(Company::closeTime).toLocalTime(),
+                openTime = m.requireKeys<Map<*,*>>(Company::openTime).let { t ->
+                    val s = t.requireKeys<LocalDateTime>(ClosedRange<*>::start).toLocalTime()
+                    val e = t.requireKeys<LocalDateTime>(ClosedRange<*>::endInclusive).toLocalTime()
                     s..e
                 },
-                web = URL(m.requireKeys(Company::web.name)),
-                clients = (m[Company::clients.name] as? List<String>)?.map { URL(it) } ?: emptyList(),
-                logo = m[Company::logo.name] as? ByteArray,
-                notes = m[Company::notes.name] as? String,
-                people = (m[Company::people.name] as? List<Map<*, *>>)?.convertObjects(Person::class)?.toSet() ?: emptySet(),
-                departments = (m[Company::departments.name] as? List<String>)?.convertObjects(Department::class)?.toSet() ?: emptySet(),
-                creationDate = m.requireKeys(Company::creationDate.name),
+                web = URL(m.requireKeys(Company::web)),
+                clients = m<List<String>>(Company::clients)?.map { URL(it) } ?: emptyList(),
+                logo = m(Company::logo),
+                notes = m(Company::notes),
+                people = m<List<Map<*, *>>>(Company::people)
+                    ?.convertObjects(Person::class)
+                    ?.toSet()
+                    ?: emptySet(),
+                departments = m<List<String>>(Company::departments)
+                    ?.convertObjects(Department::class)
+                    ?.toSet()
+                    ?: emptySet(),
+                creationDate = m.requireKeys(Company::creationDate),
             )
         }
+
         ConvertersManager.register(Company::class to Map::class) { c ->
-            mapOf(
-                Company::id.name to c.id,
-                Company::foundation.name to c.foundation,
-                Company::closeTime.name to c.closeTime,
-                Company::openTime.name to mapOf(
-                    ClosedRange<*>::start.name to c.openTime.start,
-                    ClosedRange<*>::endInclusive.name to c.openTime.endInclusive,
+            fieldsMapOf(
+                Company::id to c.id,
+                Company::foundation to c.foundation,
+                Company::closeTime to c.closeTime,
+                Company::openTime to fieldsMapOf(
+                    ClosedRange<*>::start to c.openTime.start,
+                    ClosedRange<*>::endInclusive to c.openTime.endInclusive,
                 ),
-                Company::web.name to c.web,
-                Company::clients.name to c.clients.map { it.toString() },
-                Company::logo.name to c.logo,
-                Company::notes.name to c.notes,
-                Company::people.name to c.people.map { mapOf(Person::name.name to it.name) },
-                Company::departments.name to c.departments,
-                Company::creationDate.name to c.creationDate,
+                Company::web to c.web,
+                Company::clients to c.clients.map { it.toString() },
+                Company::logo to c.logo,
+                Company::notes to c.notes,
+                Company::people to c.people.map { mapOf(Person::name.name to it.name) },
+                Company::departments to c.departments,
+                Company::creationDate to c.creationDate,
             )
         }
     }

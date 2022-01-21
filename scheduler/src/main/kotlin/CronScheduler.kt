@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit.SECONDS
  * Scheduler to execute tasks repeatedly. After using it, you should call the [shutdown] method. If
  * the JVM finishes without calling [shutdown], it will be called upon JVM termination.
  *
- * @param threads Number of threads used by the thread pool. By default it is equals to the number
+ * @param threads Number of threads used by the thread pool. By default, it is equals to the number
  *  of processors.
  *
  * @sample com.hexagonkt.scheduler.CronSchedulerSamplesTest.callbackExecutedProperly
@@ -33,7 +33,7 @@ class CronScheduler(threads: Int = getRuntime().availableProcessors()) {
 
     /**
      * Schedules a block of code to be executed repeatedly by a
-     * [Cron](https://en.wikipedia.org/wiki/Cron) expresion.
+     * [Cron](https://en.wikipedia.org/wiki/Cron) expression.
      *
      * @param cronExpression Periodicity of the task in Cron format.
      * @param callback Task code to be executed periodically.

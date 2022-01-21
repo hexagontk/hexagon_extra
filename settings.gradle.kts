@@ -5,6 +5,7 @@ include(
     // Internal modules
     "scheduler",
     "web",
+    "models",
 
     // Ports
     "messaging",
