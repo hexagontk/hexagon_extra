@@ -25,7 +25,6 @@ import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parse
 import com.hexagonkt.serialization.serialize
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -170,26 +169,26 @@ abstract class TodoTest(adapter: HttpServerPort) {
         client.stop()
     }
 
-    @Test fun `Create task`() = runBlocking {
+    @Test fun `Create task`() {
         val body = Task(101, "Tidy Things", "Tidy everything").serialize(Json)
         val result = client.post("/tasks", body)
         assert(Integer.valueOf(result.bodyString()) == 101)
         assert(CREATED == result.status)
     }
 
-    @Test fun `List tasks`() = runBlocking {
+    @Test fun `List tasks`() {
         val body = Task(101, "Tidy Things", "Tidy everything").serialize(Json)
         assertResponseContains(client.post("/tasks", body), CREATED)
         val result = client.get("/tasks")
         assertResponseContains(result, "1", "101")
     }
 
-    @Test fun `Get task`() = runBlocking {
+    @Test fun `Get task`() {
         val result = client.get("/tasks/101")
         assertResponseContains(result, "Tidy Things", "Tidy everything")
     }
 
-    @Test fun `Update task`() = runBlocking {
+    @Test fun `Update task`() {
         val body = Task(103, "Changed Task", "Change of plans").serialize(Json)
         val resultPut = client.put("/tasks", body)
         assertResponseContains(resultPut, "103", "updated")
@@ -198,12 +197,12 @@ abstract class TodoTest(adapter: HttpServerPort) {
         assertResponseContains(resultGet, "Changed Task", "Change of plans")
     }
 
-    @Test fun `Delete task`() = runBlocking {
+    @Test fun `Delete task`() {
         val result = client.delete("/tasks/102")
         assertResponseContains(result, "102", "deleted")
     }
 
-    @Test fun `Task not found`() = runBlocking {
+    @Test fun `Task not found`() {
         val result = client.get("/tasks/9999")
         assertResponseContains(result, NOT_FOUND, "not found")
     }

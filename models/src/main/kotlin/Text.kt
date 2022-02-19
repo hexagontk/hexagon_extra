@@ -13,6 +13,7 @@ class Text(
     val text: String by lazy { translations.entries.first().value }
 
     constructor(value: String) : this(mapOf(Locale.ENGLISH to value))
+
     constructor(vararg translations: Pair<String, String>) :
         this(translations.associate { (k, v) -> Locale.forLanguageTag(k) to v })
 

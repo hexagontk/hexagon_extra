@@ -10,7 +10,6 @@ import com.hexagonkt.http.server.handlers.path
 import com.hexagonkt.http.server.jetty.JettyServletAdapter
 import com.hexagonkt.templates.TemplateManager
 import com.hexagonkt.templates.pebble.PebbleAdapter
-import kotlinx.coroutines.runBlocking
 import kotlinx.html.body
 import kotlinx.html.p
 import org.junit.jupiter.api.AfterAll
@@ -75,17 +74,17 @@ internal class WebTest {
         client.stop()
     }
 
-    @Test fun template() = runBlocking {
+    @Test fun template() {
         val response = client.get("/template")
         assertEquals(OK, response.status)
     }
 
-    @Test fun templateAdapter() = runBlocking {
+    @Test fun templateAdapter() {
         val response = client.get("/template/adapter")
         assertEquals(OK, response.status)
     }
 
-    @Test fun html() = runBlocking {
+    @Test fun html() {
         val response = client.get("/html")
         assertEquals("text/html", response.contentType?.mediaType?.fullType)
         assertEquals(OK, response.status)
