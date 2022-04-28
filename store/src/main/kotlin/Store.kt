@@ -21,7 +21,7 @@ interface Store<T : Any, K : Any> {
     fun createIndex(unique: Boolean, fields: Map<String, IndexOrder>): String
 
     fun createIndex(unique: Boolean, vararg fields: Pair<KProperty1<T, *>, IndexOrder>): String =
-        createIndex(unique, fields.map { it.first.name to it.second }.toMap())
+        createIndex(unique, fields.associate { it.first.name to it.second })
 
     fun createIndex(unique: Boolean, vararg fields: KProperty1<T, *>): String =
         createIndex(unique, *fields.map { it to ASCENDING }.toTypedArray())
