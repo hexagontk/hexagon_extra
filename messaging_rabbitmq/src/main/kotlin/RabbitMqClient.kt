@@ -4,6 +4,7 @@ import com.hexagonkt.core.logging.Logger
 import com.codahale.metrics.MetricRegistry
 import com.hexagonkt.http.parseQueryString
 import com.hexagonkt.core.*
+import com.hexagonkt.http.model.HttpFields
 import com.rabbitmq.client.*
 import com.rabbitmq.client.AMQP.BasicProperties
 import com.rabbitmq.client.impl.StandardMetricsCollector
@@ -41,7 +42,8 @@ class RabbitMqClient(
             val cf = ConnectionFactory()
             cf.setUri(uri)
 
-            val params = parseQueryString(uri.query ?: "").filterNot { it.value.isBlank() }
+            val queryParameters = parseQueryString(uri.query ?: "").httpFields.values
+            val params = HttpFields(queryParameters.filterNot { it.values.first().isBlank() })
             fun value(name: String): String? = params[name]
             val automaticRecovery = value("automaticRecovery")?.toBoolean()
             val recoveryInterval = value("recoveryInterval")?.toLong()
