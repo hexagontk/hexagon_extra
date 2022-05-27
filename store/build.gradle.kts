@@ -1,4 +1,8 @@
 
+plugins {
+    id("java-library")
+}
+
 val gradleScripts = properties["gradleScripts"]
 
 apply(from = "$gradleScripts/kotlin.gradle")
@@ -8,8 +12,6 @@ apply(from = "$gradleScripts/dokka.gradle")
 extra["basePackage"] = "com.hexagonkt.store"
 
 dependencies {
-    val kotlinVersion = properties["kotlinVersion"]
-
     "api"("com.hexagonkt:core:$version")
     "api"("com.hexagonkt:serialization:$version")
 

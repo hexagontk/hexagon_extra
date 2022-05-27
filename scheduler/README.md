@@ -1,6 +1,5 @@
 
 # Module scheduler
-
 Provides repeated tasks execution based on [Cron] expressions for Hexagon framework. It uses the
 [Cron-utils Java Library].
 
@@ -36,13 +35,11 @@ synchronization yourself.
     ```
 
 ### Example
-
 You can check a usage example in the following code:
 
 @code scheduler/src/test/kotlin/CronSchedulerSamplesTest.kt:sample
 
 # Package com.hexagonkt.scheduler
-
 Classes for scheduling blocks of code repeatedly based on a [Cron] expression.
 
 [Cron]: https://en.wikipedia.org/wiki/Cron
