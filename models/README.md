@@ -25,4 +25,4 @@ Classes that model common data objects (shared across multiple domains). I.e.: A
     ```
 
 # Package com.hexagonkt.models
-TODO
+Classes modeling common data objects.
