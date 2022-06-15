@@ -6,6 +6,7 @@ include(
     "scheduler",
     "web",
     "models",
+    "rest",
 
     // Ports
     "messaging",

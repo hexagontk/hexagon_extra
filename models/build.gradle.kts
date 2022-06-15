@@ -1,4 +1,8 @@
 
+plugins {
+    id("java-library")
+}
+
 val gradleScripts = properties["gradleScripts"]
 
 apply(from = "$gradleScripts/kotlin.gradle")
