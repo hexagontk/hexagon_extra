@@ -2,8 +2,8 @@ package com.hexagonkt.rest
 
 import com.hexagonkt.core.media.ApplicationMedia
 import com.hexagonkt.core.media.ApplicationMedia.YAML
+import com.hexagonkt.http.client.model.HttpClientResponse
 import com.hexagonkt.http.model.ContentType
-import com.hexagonkt.http.server.handlers.HttpServerContext
 import com.hexagonkt.http.server.model.HttpServerRequest
 import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.jackson.json.Json
@@ -15,27 +15,40 @@ internal class RestTest {
 
     @Test fun `Media type is calculated properly`() {
         SerializationManager.defaultFormat = null
-        assertFailsWith<IllegalStateException> { HttpServerContext().mediaType() }
+        assertFailsWith<IllegalStateException> { HttpServerRequest().mediaType() }
+        assertFailsWith<IllegalStateException> { HttpClientResponse().mediaType() }
         SerializationManager.defaultFormat = Json
-        assertEquals(ApplicationMedia.JSON, HttpServerContext().mediaType())
-        val request = HttpServerRequest(contentType = ContentType(YAML))
-        val context = HttpServerContext(request = request)
-        assertEquals(YAML, context.mediaType())
+        assertEquals(ApplicationMedia.JSON, HttpServerRequest().mediaType())
+        assertEquals(ApplicationMedia.JSON, HttpClientResponse().mediaType())
+        HttpServerRequest(contentType = ContentType(YAML)).apply {
+            assertEquals(YAML, mediaType())
+        }
+        HttpClientResponse(contentType = ContentType(YAML)).apply {
+            assertEquals(YAML, mediaType())
+        }
     }
 
     @Test fun `Body is parsed to list`() {
         SerializationManager.defaultFormat = Json
-        val request = HttpServerRequest(body = """[ "a", "b", "c" ]""")
-        val context = HttpServerContext(request = request)
-        assertEquals(ApplicationMedia.JSON, context.mediaType())
-        assertEquals(listOf("a", "b", "c"), context.bodyList())
+        HttpServerRequest(body = """[ "a", "b", "c" ]""").apply {
+            assertEquals(ApplicationMedia.JSON, mediaType())
+            assertEquals(listOf("a", "b", "c"), bodyList())
+        }
+        HttpClientResponse(body = """[ "a", "b", "c" ]""").apply {
+            assertEquals(ApplicationMedia.JSON, mediaType())
+            assertEquals(listOf("a", "b", "c"), bodyList())
+        }
     }
 
     @Test fun `Body is parsed to map`() {
         SerializationManager.defaultFormat = Json
-        val request = HttpServerRequest(body = """{ "a" : 0, "b" : 1, "c" : 2 }""")
-        val context = HttpServerContext(request = request)
-        assertEquals(ApplicationMedia.JSON, context.mediaType())
-        assertEquals(mapOf("a" to 0, "b" to 1, "c" to 2), context.bodyMap())
+        HttpServerRequest(body = """{ "a" : 0, "b" : 1, "c" : 2 }""").apply {
+            assertEquals(ApplicationMedia.JSON, mediaType())
+            assertEquals(mapOf("a" to 0, "b" to 1, "c" to 2), bodyMap())
+        }
+        HttpClientResponse(body = """{ "a" : 0, "b" : 1, "c" : 2 }""").apply {
+            assertEquals(ApplicationMedia.JSON, mediaType())
+            assertEquals(mapOf("a" to 0, "b" to 1, "c" to 2), bodyMap())
+        }
     }
 }
