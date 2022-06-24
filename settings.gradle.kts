@@ -7,6 +7,7 @@ include(
     "web",
     "models",
     "rest",
+    "injection",
 
     // Ports
     "messaging",
