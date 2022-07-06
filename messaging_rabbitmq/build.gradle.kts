@@ -22,13 +22,10 @@ dependencies {
     "api"("com.hexagonkt:http:$version")
     "api"("com.hexagonkt:serialization:$version")
     "api"(project(":messaging"))
-    "api"("com.rabbitmq:amqp-client:$rabbitVersion") {
-        exclude(module = "slf4j-api")
-    }
+    "api"("com.rabbitmq:amqp-client:$rabbitVersion")
     "api"("io.dropwizard.metrics:metrics-jmx:$metricsJmxVersion")
 
     "testImplementation"("org.apache.qpid:qpid-broker:$qpidVersion") {
-        exclude(module = "logback-classic")
         exclude(module = "jackson-databind")
         exclude(module = "jackson-core")
         exclude(module = "slf4j-api")
@@ -40,8 +37,5 @@ dependencies {
     }
 
     "testImplementation"("com.hexagonkt:serialization_jackson_json:$version")
-    "testImplementation"("ch.qos.logback:logback-classic:$logbackVersion") {
-        exclude(group = "org.slf4j")
-    }
     "testImplementation"("org.testcontainers:rabbitmq:$testcontainersVersion")
 }
