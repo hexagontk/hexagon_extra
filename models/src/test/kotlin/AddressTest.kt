@@ -9,7 +9,7 @@ internal class AddressTest {
 
     @Test
     fun `Valid addresses can be created`() {
-        Address("C/", "28021", "ES", "Madrid", "Provincia", "Comunidad").apply {
+        Address("28021", "ES", "C/", "Madrid", "Provincia", "Comunidad").apply {
             assertEquals("C/", addressLine)
             assertEquals("28021", postalCode)
             assertEquals("ES", countryIso)
@@ -18,10 +18,19 @@ internal class AddressTest {
             assertEquals("Comunidad", region)
         }
 
-        Address("C/", "28021", "ES").apply {
+        Address("28021", "ES", "C/").apply {
             assertEquals("C/", addressLine)
             assertEquals("28021", postalCode)
             assertEquals("ES", countryIso)
+            assertNull(locality)
+            assertNull(subregion)
+            assertNull(region)
+        }
+
+        Address("28021", "ES").apply {
+            assertEquals("28021", postalCode)
+            assertEquals("ES", countryIso)
+            assertNull(addressLine)
             assertNull(locality)
             assertNull(subregion)
             assertNull(region)
@@ -30,13 +39,13 @@ internal class AddressTest {
 
     @Test
     fun `Invalid addresses throw exceptions on creation`() {
-        assertFailsWith<IllegalArgumentException> { Address(" ", "28021", "ES") }
-        assertFailsWith<IllegalArgumentException> { Address("C/", " ", "ES") }
-        assertFailsWith<IllegalArgumentException> { Address("C/", "28021", " ") }
-        assertFailsWith<IllegalArgumentException> { Address("C/", "28021", "ES", " ") }
-        assertFailsWith<IllegalArgumentException> { Address("C/", "28021", "ES", "Madrid", " ") }
+        assertFailsWith<IllegalArgumentException> { Address("28021", "ES", " ") }
+        assertFailsWith<IllegalArgumentException> { Address(" ", "ES", "C/") }
+        assertFailsWith<IllegalArgumentException> { Address("28021", " ", "C/") }
+        assertFailsWith<IllegalArgumentException> { Address("28021", "ES", "C/", " ") }
+        assertFailsWith<IllegalArgumentException> { Address("28021", "ES", "C/", "Madrid", " ") }
         assertFailsWith<IllegalArgumentException> {
-            Address("C/", "28021", "ES", "Madrid", "Madrid", " ")
+            Address("28021", "ES", "C/", "Madrid", "Madrid", " ")
         }
     }
 }
