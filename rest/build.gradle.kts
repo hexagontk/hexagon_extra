@@ -9,8 +9,6 @@ apply(from = "$gradleScripts/kotlin.gradle")
 apply(from = "$gradleScripts/publish.gradle")
 apply(from = "$gradleScripts/dokka.gradle")
 
-extra["basePackage"] = "com.hexagonkt.rest"
-
 dependencies {
     "api"("com.hexagonkt:http:$version")
     "api"("com.hexagonkt:serialization:$version")
