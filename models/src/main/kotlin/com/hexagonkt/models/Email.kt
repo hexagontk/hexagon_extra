@@ -13,4 +13,6 @@ data class Email(val email: String) {
     }
 
     val user: String by lazy { email.substringBeforeLast('@') }
+
+    val domain: String by lazy { email.substringAfterLast('@') }
 }
