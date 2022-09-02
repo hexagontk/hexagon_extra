@@ -10,5 +10,6 @@ internal class EmailTest {
         assertFailsWith<IllegalArgumentException> { Email(" ") }
         assertFailsWith<IllegalArgumentException> { Email("foo") }
         assertEquals("foo", Email("foo@bar.com").user)
+        assertEquals("bar.com", Email("foo@bar.com").domain)
     }
 }

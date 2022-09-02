@@ -1,14 +1,10 @@
 package com.hexagonkt.web
 
-import com.hexagonkt.core.media.TextMedia
 import com.hexagonkt.core.media.mediaTypeOfOrNull
 import com.hexagonkt.http.model.ContentType
 import com.hexagonkt.http.server.handlers.HttpServerContext
 import com.hexagonkt.templates.TemplateManager
 import com.hexagonkt.templates.TemplatePort
-import kotlinx.html.HTML
-import kotlinx.html.html
-import kotlinx.html.stream.createHTML
 import java.net.URL
 import java.nio.charset.Charset.defaultCharset
 import java.util.Locale
@@ -54,9 +50,3 @@ fun HttpServerContext.template(
     locale: Locale = obtainLocale(),
 ): HttpServerContext =
     ok(TemplateManager.render(url, context, locale), contentType = templateType(url))
-
-/**
- * Return HTML setting the proper content type.
- */
-fun HttpServerContext.html(block: HTML.() -> Unit): HttpServerContext =
-    ok(createHTML().html { block() }, contentType = ContentType(TextMedia.HTML))

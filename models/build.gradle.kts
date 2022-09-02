@@ -11,8 +11,6 @@ apply(from = "$gradleScripts/dokka.gradle")
 
 description = "Commonly used data models (like addresses)."
 
-extra["basePackage"] = "com.hexagonkt.models"
-
 dependencies {
     val javamailVersion = properties["javamailVersion"]
 

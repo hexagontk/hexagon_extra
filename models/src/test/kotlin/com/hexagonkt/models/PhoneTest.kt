@@ -10,25 +10,25 @@ internal class PhoneTest {
 
     @Test
     fun `Valid phones can be created`() {
-        Phone("6543210", "+34", landLine = true, personal = true).apply {
+        Phone("6543210", "+34", landLine = true, description = "Personal").apply {
             assertEquals("6543210", number)
             assertEquals("+34", countryCode)
             assertEquals(true, landLine)
-            assertEquals(true, personal)
+            assertEquals("Personal", description)
         }
 
         Phone("6543210", "+34").apply {
             assertEquals("6543210", number)
             assertEquals("+34", countryCode)
             assertNull(landLine)
-            assertNull(personal)
+            assertNull(description)
         }
 
         Phone("6543210").apply {
             assertEquals("6543210", number)
             assertNull(countryCode)
             assertNull(landLine)
-            assertNull(personal)
+            assertNull(description)
         }
     }
 

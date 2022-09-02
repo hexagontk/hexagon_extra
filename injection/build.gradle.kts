@@ -11,8 +11,6 @@ apply(from = "$gradleScripts/dokka.gradle")
 
 description = "."
 
-extra["basePackage"] = "com.hexagonkt.injection"
-
 dependencies {
     "api"("com.hexagonkt:core:$version")
 }

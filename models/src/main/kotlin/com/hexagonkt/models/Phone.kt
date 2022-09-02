@@ -7,7 +7,7 @@ data class Phone(
     val number: String,
     val countryCode: String? = null,
     val landLine: Boolean? = null,
-    val personal: Boolean? = null,
+    val description: String? = null,
 ) {
 
     init {
