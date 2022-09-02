@@ -10,8 +10,6 @@ import com.hexagonkt.http.server.handlers.path
 import com.hexagonkt.http.server.jetty.JettyServletAdapter
 import com.hexagonkt.templates.TemplateManager
 import com.hexagonkt.templates.pebble.PebbleAdapter
-import kotlinx.html.body
-import kotlinx.html.p
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -40,14 +38,6 @@ internal class WebTest {
                 url = URL("classpath:templates/pebble_template.html"),
                 context = fullContext() + ("date" to LocalDateTime.now())
             )
-        }
-
-        get("/html") {
-            html {
-                body {
-                    p { +"Hello HTML DSL" }
-                }
-            }
         }
     }
 
@@ -82,12 +72,5 @@ internal class WebTest {
     @Test fun templateAdapter() {
         val response = client.get("/template/adapter")
         assertEquals(OK, response.status)
-    }
-
-    @Test fun html() {
-        val response = client.get("/html")
-        assertEquals("text/html", response.contentType?.mediaType?.fullType)
-        assertEquals(OK, response.status)
-        assert(response.bodyString().contains("<p>Hello HTML DSL</p>"))
     }
 }
