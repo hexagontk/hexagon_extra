@@ -2,9 +2,7 @@ package com.hexagonkt.store.hashmap
 
 import com.hexagonkt.core.converters.convert
 import com.hexagonkt.core.filterEmpty
-import com.hexagonkt.store.IndexOrder
 import com.hexagonkt.store.Store
-import kotlin.UnsupportedOperationException
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 
@@ -14,10 +12,6 @@ class HashMapStore<T : Any, K : Any>(
     override val name: String = type.java.simpleName,
     private val store: HashMap<K, Map<String, Any>> = hashMapOf(),
 ) : Store<T, K> {
-
-    override fun createIndex(unique: Boolean, fields: Map<String, IndexOrder>): String {
-        throw UnsupportedOperationException("Cannot create index on HashMap")
-    }
 
     override fun insertOne(instance: T): K {
         store[key.get(instance)] = map(instance)
@@ -177,7 +171,6 @@ class HashMapStore<T : Any, K : Any>(
 
     private fun toStore(value: Any): Any = value
 
-    @Suppress("UNCHECKED_CAST")
     private fun fromStore(map: Map<String, Any>): T =
         map.filterEmpty().convert(type)
 
