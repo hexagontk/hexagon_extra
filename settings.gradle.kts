@@ -16,4 +16,7 @@ include(
     // Adapters
     "messaging_rabbitmq",
     "store_mongodb",
+
+    // Tools
+    "dokka_json",
 )

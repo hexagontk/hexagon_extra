@@ -15,7 +15,6 @@ import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlin.test.assertFailsWith
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class HashMapStoreTest {
@@ -55,12 +54,6 @@ internal class HashMapStoreTest {
                 Company::departments to c.departments,
                 Company::creationDate to c.creationDate,
             )
-        }
-    }
-
-    @Test fun `Create index throws UnsupportedOperationException`() {
-        assertFailsWith<UnsupportedOperationException> {
-            store.createIndex(true, emptyMap())
         }
     }
 

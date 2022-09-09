@@ -4,8 +4,6 @@ import com.hexagonkt.core.converters.convert
 import com.hexagonkt.core.fail
 import com.hexagonkt.core.filterEmpty
 import com.hexagonkt.core.toLocalDateTime
-import com.hexagonkt.store.IndexOrder
-import com.hexagonkt.store.IndexOrder.ASCENDING
 import com.hexagonkt.store.Store
 import com.mongodb.ConnectionString
 import com.mongodb.client.FindIterable
@@ -13,8 +11,6 @@ import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters
-import com.mongodb.client.model.IndexOptions
-import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.client.model.Updates
 import org.bson.BsonBinary
@@ -51,22 +47,6 @@ class MongoDbStore<T : Any, K : Any>(
         type: KClass<T>, key: KProperty1<T, K>, url: String, name: String = type.java.simpleName
     ) :
         this(type, key, database(url), name)
-
-    override fun createIndex(unique: Boolean, fields: Map<String, IndexOrder>): String {
-        val indexes = fields.entries.map {
-            if (it.value == ASCENDING) Indexes.ascending(it.key)
-            else Indexes.descending(it.key)
-        }
-
-        val name = fields.entries.joinToString("_") {
-            it.key + "_" + it.value.toString().lowercase()
-        }
-
-        val compoundIndex = Indexes.compoundIndex(indexes)
-        val indexOptions = IndexOptions().unique(unique).background(true).name(name)
-
-        return collection.createIndex(compoundIndex, indexOptions)
-    }
 
     override fun insertOne(instance: T): K {
         collection.insertOne(map(instance))
@@ -182,7 +162,6 @@ class MongoDbStore<T : Any, K : Any>(
 
         val result = query.into(ArrayList())
 
-        @Suppress("SimplifiableCallChain") // 'associate' don't work properly with MongoDB documents
         return result.map { resultMap ->
             resultMap
                 .map { pair -> pair.key to fromStore(pair.value) }
@@ -276,7 +255,6 @@ class MongoDbStore<T : Any, K : Any>(
             .mapKeys { it.key.toString() }
             .mapValues { toStore(it.value) }
 
-    @Suppress("UNCHECKED_CAST")
     private fun fromStore(map: Map<String, Any>): T =
         (map + (key.name to map["_id"]))
             .filterEmpty()

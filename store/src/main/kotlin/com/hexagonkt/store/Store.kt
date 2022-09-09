@@ -3,7 +3,6 @@ package com.hexagonkt.store
 import com.hexagonkt.core.converters.convert
 import com.hexagonkt.core.ensureSize
 import com.hexagonkt.serialization.parse
-import com.hexagonkt.store.IndexOrder.ASCENDING
 import java.io.File
 import java.net.URL
 import kotlin.reflect.KClass
@@ -17,14 +16,6 @@ interface Store<T : Any, K : Any> {
     val type: KClass<T>
     val key: KProperty1<T, K>
     val name: String
-
-    fun createIndex(unique: Boolean, fields: Map<String, IndexOrder>): String
-
-    fun createIndex(unique: Boolean, vararg fields: Pair<KProperty1<T, *>, IndexOrder>): String =
-        createIndex(unique, fields.associate { it.first.name to it.second })
-
-    fun createIndex(unique: Boolean, vararg fields: KProperty1<T, *>): String =
-        createIndex(unique, *fields.map { it to ASCENDING }.toTypedArray())
 
     fun insertOne(instance: T): K
 

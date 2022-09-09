@@ -19,21 +19,13 @@ jobs:
     steps:
 
       # SET UP
-      # TODO Use composite GitHub action (in `github_action` tag) when `uses` and `if` are supported
+      # TODO Use composite GitHub action when sharing across organizations is allowed
       - name: Check Out
         uses: actions/checkout@v3
         with: { ref: develop }
       - name: Install Java
         uses: actions/setup-java@v3
-        with: { java-version: 11, distribution: adopt }
-      - name: Restore Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle*.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
+        with: { java-version: 17, distribution: temurin, cache: gradle }
 
       # PROCESS
       - name: Build Project
@@ -48,13 +40,6 @@ jobs:
       - name: Log Build WITHOUT Docker (ON FAILURE)
         if: matrix.os != 'ubuntu-latest' && failure()
         run: ./gradlew -is build -x store_mongodb:test -x messaging_rabbitmq:test
-
-      # CLEAN UP
-      - name: Clean Gradle Cache
-        run: |
-          ./gradlew --stop
-          sleep 3
-          rm -f ~/.gradle/caches/modules-2/{modules-2.lock,gc.properties}
 
   test_publishing:
     defaults:
@@ -74,15 +59,7 @@ jobs:
         with: { ref: develop }
       - name: Install Java
         uses: actions/setup-java@v3
-        with: { java-version: 11, distribution: adopt }
-      - name: Restore Cache
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle*.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
+        with: { java-version: 17, distribution: temurin, cache: gradle }
 
       # PROCESS
       - name: Test Publishing
@@ -90,7 +67,3 @@ jobs:
       - name: Test Publishing (ON FAILURE)
         if: failure()
         run: ./gradlew --info --stacktrace --no-daemon publishToMavenLocal -x test
-
-      # CLEAN UP
-      - name: Clean Gradle Cache
-        run: ./gradlew --stop && rm -f ~/.gradle/caches/modules-2/{modules-2.lock,gc.properties}

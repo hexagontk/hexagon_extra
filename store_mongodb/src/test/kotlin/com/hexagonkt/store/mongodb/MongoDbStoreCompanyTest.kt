@@ -6,8 +6,6 @@ import com.hexagonkt.core.fail
 import com.hexagonkt.core.fieldsMapOf
 import com.hexagonkt.core.invoke
 import com.hexagonkt.core.requireKeys
-import com.hexagonkt.store.IndexOrder.ASCENDING
-import com.hexagonkt.store.IndexOrder.DESCENDING
 import com.hexagonkt.store.Store
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.BeforeAll
@@ -115,11 +113,6 @@ internal class MongoDbStoreCompanyTest {
 
     @Test fun `Store type is correct`() {
         assert(store.type == Company::class)
-    }
-
-    @Test fun `Indexes creation works ok`() {
-        store.createIndex(true, Company::foundation to DESCENDING)
-        store.createIndex(true, Company::creationDate to ASCENDING)
     }
 
     @Test fun `New records are stored`() {
