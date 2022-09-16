@@ -41,6 +41,14 @@ task("setUp") {
     description = "Set up project for development. Creates the Git pre push hook (run build task)."
 
     doLast {
+        exec { commandLine("docker version".split(" ")) }
+
+        val dotfiles = "https://raw.githubusercontent.com/hexagonkt/.github/master"
+        exec { commandLine("curl $dotfiles/.gitignore -o .gitignore".split(" ")) }
+        exec { commandLine("curl $dotfiles/commit_template.txt -o .git/message".split(" ")) }
+        exec { commandLine("curl $dotfiles/.editorconfig -o .editorconfig".split(" ")) }
+        exec { commandLine("git config commit.template .git/message".split(" ")) }
+
         val prePush = file(".git/hooks/pre-push")
         prePush.writeText("""
             #!/usr/bin/env sh
@@ -48,9 +56,6 @@ task("setUp") {
             ./gradlew clean build
         """.trimIndent() + "\n")
         prePush.setExecutable(true)
-
-        exec { commandLine("docker version".split(" ")) }
-        exec { commandLine("git config commit.template ../.github/commit_template.txt".split(" ")) }
     }
 }
 

@@ -9,6 +9,7 @@ pom.xml.*
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
+*.versionsBackup
 
 # Gradle
 .gradle/
@@ -32,12 +33,13 @@ out/
 log/
 *.log
 *.hprof
+*.build_artifacts.txt
 .attach_pid*
 hs_err_pid*
 
 # Other Tools
+kotlin-js-store/
 node_modules/
-.java-version
 package-lock.json
 .env
 
@@ -45,5 +47,3 @@ package-lock.json
 .DS_Store
 Thumbs.db
 
-# Added because IntelliJ Gradle creates it from Detekt plugin
-/config/
