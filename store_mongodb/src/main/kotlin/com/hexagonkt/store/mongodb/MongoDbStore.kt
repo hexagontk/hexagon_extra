@@ -33,6 +33,8 @@ class MongoDbStore<T : Any, K : Any>(
     override val key: KProperty1<T, K>,
     private val database: MongoDatabase,
     override val name: String = type.java.simpleName,
+    private val encoder: (T) -> Map<*, *> = { it.convert(Map::class) },
+    private val decoder: (Map<*, *>) -> T = { it.convert(type) },
 ) : Store<T, K> {
 
     companion object {
@@ -250,7 +252,7 @@ class MongoDbStore<T : Any, K : Any>(
     private fun Map<String, *>.toDocument() = Document(this)
 
     private fun toStore(instance: T): Map<String, Any> =
-        (instance.convert(Map::class) + ("_id" to key.get(instance)) - key.name)
+        (encoder(instance) + ("_id" to key.get(instance)) - key.name)
             .filterEmpty()
             .mapKeys { it.key.toString() }
             .mapValues { toStore(it.value) }
@@ -259,7 +261,7 @@ class MongoDbStore<T : Any, K : Any>(
         (map + (key.name to map["_id"]))
             .filterEmpty()
             .mapValues { fromStore(it.value) }
-            .convert(type)
+            .let(decoder)
 
     private fun fromStore(value: Any): Any = when (value) {
         is Binary -> value.data
