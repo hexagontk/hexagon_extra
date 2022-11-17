@@ -1,38 +1,36 @@
 package com.hexagonkt.dokka.json
 
+import com.hexagonkt.core.println
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.serialize
 import org.jetbrains.dokka.CoreExtensions
-import org.jetbrains.dokka.base.DokkaBase
-import org.jetbrains.dokka.pages.ClasslikePageNode
-import org.jetbrains.dokka.pages.MemberPageNode
-import org.jetbrains.dokka.pages.RootPageNode
+import org.jetbrains.dokka.model.DClass
+import org.jetbrains.dokka.model.DModule
 import org.jetbrains.dokka.plugability.DokkaContext
 import org.jetbrains.dokka.plugability.DokkaPlugin
-import org.jetbrains.dokka.renderers.Renderer
+import org.jetbrains.dokka.transformers.documentation.DocumentableTransformer
 
+/**
+ * Marker text. Extended text.
+ */
 class JsonPlugin : DokkaPlugin() {
-
-    private val dokkaBase by lazy { plugin<DokkaBase>() }
 
     @Suppress("unused") // This field (even being not used) is required for the Dokka plugin to work
     internal val extension by extending {
-        CoreExtensions.renderer providing ::renderer override dokkaBase.htmlRenderer
+        CoreExtensions.documentableTransformer providing {
+            DocumentableTransformer { module, context ->
+                process(module, context)
+                module
+            }
+        }
     }
 
-    private fun renderer(context: DokkaContext): Renderer =
-        Renderer { root -> render(context, root) }
-
-    private fun render(context: DokkaContext, root: RootPageNode) {
-        val children = root.children
-            .flatMap { it.children }
-            .map {
-                when (it) {
-                    is MemberPageNode -> "Member ${it.name} ${it.content}"
-                    is ClasslikePageNode -> "Type ${it.name} ${it.content}"
-                    else -> "-"
-                }
-            }
+    private fun process(module: DModule, context: DokkaContext) {
+        val children = (module.packages[0].children[0] as DClass).documentation.map { (k, v) ->
+            k.displayName.println("DDDDDDDDDDD> ")
+            k.println("KKKKKKKKKK>")
+            v.println("VVVVVVVVVV>")
+        }
 
         val outFile = context.configuration.outputDir.resolve("dokka.json")
         val json = children.serialize(Json)
