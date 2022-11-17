@@ -19,4 +19,5 @@ include(
 
     // Tools
     "dokka_json",
+    "data_processor",
 )
