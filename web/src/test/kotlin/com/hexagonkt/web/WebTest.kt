@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 @TestInstance(PER_CLASS)
 internal class WebTest {
 
-    private val templateEngine = PebbleAdapter
+    private val templateEngine = PebbleAdapter()
 
     private val router: PathHandler = path {
         get("/template") {
@@ -54,7 +54,7 @@ internal class WebTest {
     }
 
     @BeforeAll fun start() {
-        TemplateManager.adapters = mapOf(".*\\.html".toRegex() to PebbleAdapter)
+        TemplateManager.adapters = mapOf(".*\\.html".toRegex() to PebbleAdapter())
         server.start()
         client.start()
     }
