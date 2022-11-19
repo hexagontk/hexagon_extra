@@ -21,7 +21,6 @@ class Injector(private val module: Module = Module()) {
             .map { it.key.tag to it.value.provide() as T }
             .associate { it.first to it.second }
 
-    @Suppress("UNCHECKED_CAST") // bind operation takes care of type matching
     fun <T : Any> inject(type: KClass<T>, tag: Any): T =
         injectOrNull(type, tag) ?: error("${type.java.name} generator missing")
 

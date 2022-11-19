@@ -1,4 +1,4 @@
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
     id("java-library")
@@ -21,7 +21,7 @@ dependencies {
     "compileOnly"("org.jetbrains.dokka:dokka-core:$dokkaVersion")
 }
 
-tasks.register<DokkaTask>("dokkaJson") {
+tasks.named<DokkaTaskPartial>("dokkaHtmlPartial") {
     dependencies {
         plugins(project(":dokka_json"))
     }
