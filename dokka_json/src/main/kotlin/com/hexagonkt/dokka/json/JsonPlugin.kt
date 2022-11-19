@@ -1,5 +1,6 @@
 package com.hexagonkt.dokka.json
 
+import com.hexagonkt.core.filterEmptyRecursive
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.serialize
 import org.jetbrains.dokka.CoreExtensions
@@ -64,13 +65,14 @@ class JsonPlugin : DokkaPlugin() {
             "documentation" to renderDocumentation(documentation.documentation),
             "properties" to documentation.properties.associate { renderDocumentation(it) },
             "types" to documentation.classlikes.associate { renderDocumentation(it) },
-            "other" to (documentation.children - documentation.properties.toSet() - documentation.classlikes.toSet()).associate { renderDocumentation(it) },
+            "functions" to documentation.functions.associate { renderDocumentation(it) },
         )
 
     private fun renderDocumentation(
         documentation: Documentable
     ): Pair<String, Map<String, Map<String,String>>> =
-        (documentation.name ?: error("")) to mapOf("documentation" to renderDocumentation(documentation.documentation))
+        (documentation.name ?: error("Documentable must have a name")) to
+            mapOf("documentation" to renderDocumentation(documentation.documentation))
 
     private fun renderDocumentation(
         documentation: SourceSetDependent<DocumentationNode>
@@ -97,7 +99,7 @@ class JsonPlugin : DokkaPlugin() {
             }
             .trim()
 
-    private fun File.write(data: Any) {
-        writeText(data.serialize(Json))
+    private fun File.write(data: Map<String, Any>) {
+        writeText(data.filterEmptyRecursive().serialize(Json))
     }
 }
