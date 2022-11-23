@@ -6,6 +6,9 @@ import com.hexagonkt.injection.Provider.Instance
 import com.hexagonkt.core.logging.Logger
 import kotlin.reflect.KClass
 
+/**
+ * Set of bindings from types with tags to instances' generators.
+ */
 class Module {
 
     internal val logger: Logger by lazy { Logger(this::class) }
