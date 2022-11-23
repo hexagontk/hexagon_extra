@@ -20,8 +20,12 @@ dependencies {
     "api"("org.jetbrains.dokka:dokka-base:$dokkaVersion")
     "compileOnly"("org.jetbrains.dokka:dokka-core:$dokkaVersion")
 
-    "testImplementation"("org.jetbrains.dokka:dokka-test-api:$dokkaVersion") { exclude("org.jetbrains.kotlin") }
-    "testImplementation"("org.jetbrains.dokka:dokka-base-test-utils:$dokkaVersion") { exclude("org.jetbrains.kotlin") }
+    "testImplementation"("org.jetbrains.dokka:dokka-test-api:$dokkaVersion") {
+        exclude("org.jetbrains.kotlin")
+    }
+    "testImplementation"("org.jetbrains.dokka:dokka-base-test-utils:$dokkaVersion") {
+        exclude("org.jetbrains.kotlin")
+    }
 }
 
 tasks.named<DokkaTaskPartial>("dokkaHtmlPartial") {

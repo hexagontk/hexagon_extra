@@ -9,83 +9,88 @@ import org.jetbrains.dokka.model.doc.*
 import org.jetbrains.dokka.plugability.DokkaContext
 import org.jetbrains.dokka.plugability.DokkaPlugin
 import org.jetbrains.dokka.transformers.documentation.DocumentableTransformer
-import java.io.File
+
+typealias MapPair = Pair<String, Map<String, Map<String, *>>>
 
 /**
- * Marker text. Extended text.
+ * JSON Dokka plugin implementation. This plugin is a document transformer that
  */
 class JsonPlugin : DokkaPlugin() {
 
     @Suppress("unused") // This field (even being not used) is required for the Dokka plugin to work
     internal val extension by extending {
         CoreExtensions.documentableTransformer providing {
-            DocumentableTransformer { module, context ->
-                processModule(module, context)
-                module.packages.map { processPackage(it, context) }
-                module
-            }
+            DocumentableTransformer(::processModule)
         }
     }
 
-    private fun processModule(module: DModule, context: DokkaContext) {
-        val name = module.name
-        val packages = module.packages.map { it.name }
-        val documentation = renderDocumentation(module.documentation)
-        val map = mapOf("name" to name, "packages" to packages, "documentation" to documentation)
+    private fun processModule(module: DModule, context: DokkaContext): DModule =
+        module.apply {
+            val name = module.name
+            val documentation = processDocumentation(module.documentation)
+            val packages = module.packages
+                .associateBy { it.name }
+                .mapValues { processPackage(it.value) }
 
-        context.configuration.outputDir.resolve("module_$name.json").write(map)
-    }
+            val file = context.configuration.outputDir.resolve("module_$name.json")
+            val map = mapOf(
+                "name" to name,
+                "documentation" to documentation,
+                "packages" to packages
+            )
 
-    private fun processPackage(pack: DPackage, context: DokkaContext) {
+            file.writeText(map.filterEmptyRecursive().serialize(Json))
+        }
+
+    private fun processPackage(pack: DPackage): Map<String, *> {
         val name = pack.name
-        val documentation = renderDocumentation(pack.documentation)
-        val map = mapOf(
+        val documentation = processDocumentation(pack.documentation)
+        return mapOf(
             "name" to name,
             "documentation" to documentation,
-            "properties" to pack.properties.associate { renderDocumentation(it) },
-            "functions" to pack.functions.associate { renderDocumentation(it) },
-            "types" to pack.classlikes.associate { renderDocumentation(it) },
+            "properties" to pack.properties.associate { processDocumentable(it) },
+            "functions" to pack.functions.associate { processFunction(it) },
+            "types" to pack.classlikes.associate { processType(it) },
         )
-
-        context.configuration.outputDir.resolve("package_$name.json").write(map)
     }
 
-    private fun renderDocumentation(
-        documentation: DFunction
-    ): Pair<String, Map<String, Map<String, *>>> =
-        documentation.name to mapOf(
-            "documentation" to renderDocumentation(documentation.documentation),
-            "parameters" to documentation.parameters.associate { renderDocumentation(it) },
+    private fun processFunction(function: DFunction): MapPair =
+        function.name to mapOf(
+            "documentation" to processDocumentation(function.documentation),
+            "parameters" to function.parameters.associate { processDocumentable(it) },
         )
 
-    private fun renderDocumentation(
-        documentation: DClasslike
-    ): Pair<String, Map<String, Map<String, *>>> =
-        (documentation.name ?: error("")) to mapOf(
-            "documentation" to renderDocumentation(documentation.documentation),
-            "properties" to documentation.properties.associate { renderDocumentation(it) },
-            "types" to documentation.classlikes.associate { renderDocumentation(it) },
-            "functions" to documentation.functions.associate { renderDocumentation(it) },
+    private fun processType(type: DClasslike): MapPair =
+        (type.name ?: error("Type must have a name")) to mapOf(
+            "documentation" to processDocumentation(type.documentation),
+            "properties" to type.properties.associate { processDocumentable(it) },
+            "types" to type.classlikes.associate { processType(it) },
+            "functions" to type.functions.associate { processFunction(it) },
         )
 
-    private fun renderDocumentation(
-        documentation: Documentable
-    ): Pair<String, Map<String, Map<String,String>>> =
-        (documentation.name ?: error("Documentable must have a name")) to
-            mapOf("documentation" to renderDocumentation(documentation.documentation))
+    private fun processDocumentable(documentable: Documentable): MapPair =
+        (documentable.name ?: error("Documentable must have a name")) to
+            mapOf("documentation" to processDocumentation(documentable.documentation))
 
-    private fun renderDocumentation(
+    private fun processDocumentation(
         documentation: SourceSetDependent<DocumentationNode>
     ): Map<String, String> =
         documentation
             .mapKeys { it.key.displayName }
-            .mapValues { renderDocumentation(it.value) }
+            .mapValues { renderText(it.value) }
 
-    private fun renderDocumentation(documentation: DocumentationNode): String =
+    private fun renderText(documentation: DocumentationNode): String =
         documentation.children
             .flatMap { it.children }
             .joinToString("\n") {
-                val text = it.childrenOfType<Text>().map(Text::body).joinToString(" ")
+                val text = it.children.joinToString("") { c ->
+                    when (c) {
+                        is Text -> c.body
+                        is DocumentationLink ->
+                            c.childrenOfType<Text>().joinToString(transform = Text::body).trim()
+                        else -> ""
+                    }
+                }
                 when (it) {
                     is P -> "\n$text"
                     is H1 -> "# $text"
@@ -98,8 +103,4 @@ class JsonPlugin : DokkaPlugin() {
                 }
             }
             .trim()
-
-    private fun File.write(data: Map<String, Any>) {
-        writeText(data.filterEmptyRecursive().serialize(Json))
-    }
 }
