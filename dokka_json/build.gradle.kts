@@ -26,6 +26,9 @@ dependencies {
     "testImplementation"("org.jetbrains.dokka:dokka-base-test-utils:$dokkaVersion") {
         exclude("org.jetbrains.kotlin")
     }
+    "testImplementation"("org.jetbrains:markdown:0.3.1") {
+        exclude("org.jetbrains.kotlin")
+    }
 }
 
 tasks.named<DokkaTaskPartial>("dokkaHtmlPartial") {

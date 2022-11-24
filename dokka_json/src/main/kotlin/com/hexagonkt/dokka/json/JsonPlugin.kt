@@ -9,21 +9,30 @@ import org.jetbrains.dokka.model.doc.*
 import org.jetbrains.dokka.plugability.DokkaContext
 import org.jetbrains.dokka.plugability.DokkaPlugin
 import org.jetbrains.dokka.transformers.documentation.DocumentableTransformer
+import java.io.File
 
 typealias MapPair = Pair<String, Map<String, Map<String, *>>>
 
 /**
- * JSON Dokka plugin implementation. This plugin is a document transformer that
+ * JSON Dokka plugin implementation. This plugin is a document transformer which create a file
+ * without altering the documentation model.
  */
 class JsonPlugin : DokkaPlugin() {
 
-    @Suppress("unused") // This field (even being not used) is required for the Dokka plugin to work
+    internal companion object {
+        val outputDirectory: File = File("build/dokka").apply {
+            if (!exists())
+                mkdirs()
+        }
+    }
+
     internal val extension by extending {
         CoreExtensions.documentableTransformer providing {
             DocumentableTransformer(::processModule)
         }
     }
 
+    @Suppress("UNUSED_PARAMETER") // This processor doesn't use Dokka context
     private fun processModule(module: DModule, context: DokkaContext): DModule =
         module.apply {
             val name = module.name
@@ -32,7 +41,7 @@ class JsonPlugin : DokkaPlugin() {
                 .associateBy { it.name }
                 .mapValues { processPackage(it.value) }
 
-            val file = context.configuration.outputDir.resolve("module_$name.json")
+            val file = outputDirectory.resolve("module_$name.json")
             val map = mapOf(
                 "name" to name,
                 "documentation" to documentation,
@@ -43,10 +52,8 @@ class JsonPlugin : DokkaPlugin() {
         }
 
     private fun processPackage(pack: DPackage): Map<String, *> {
-        val name = pack.name
         val documentation = processDocumentation(pack.documentation)
         return mapOf(
-            "name" to name,
             "documentation" to documentation,
             "properties" to pack.properties.associate { processDocumentable(it) },
             "functions" to pack.functions.associate { processFunction(it) },
@@ -70,25 +77,26 @@ class JsonPlugin : DokkaPlugin() {
 
     private fun processDocumentable(documentable: Documentable): MapPair =
         (documentable.name ?: error("Documentable must have a name")) to
-            mapOf("documentation" to processDocumentation(documentable.documentation))
+            mapOf("documentation" to processDocumentation(documentable.documentation) { true })
 
     private fun processDocumentation(
-        documentation: SourceSetDependent<DocumentationNode>
+        documentation: SourceSetDependent<DocumentationNode>,
+        filter: (TagWrapper) -> Boolean = { it is Description },
     ): Map<String, String> =
         documentation
             .mapKeys { it.key.displayName }
-            .mapValues { renderText(it.value) }
+            .mapValues { renderText(it.value.children.filter(filter)) }
 
-    private fun renderText(documentation: DocumentationNode): String =
-        documentation.children
+    private fun renderText(documentation: List<TagWrapper>): String =
+        documentation
             .flatMap { it.children }
             .joinToString("\n") {
                 val text = it.children.joinToString("") { c ->
                     when (c) {
                         is Text -> c.body
-                        is DocumentationLink ->
-                            c.childrenOfType<Text>().joinToString(transform = Text::body).trim()
-                        else -> ""
+                        is DocumentationLink -> joinBodies(c)
+                        is CodeInline -> joinBodies(c).let { x -> "`$x`" }
+                        else -> error("Invalid node: $c")
                     }
                 }
                 when (it) {
@@ -103,4 +111,7 @@ class JsonPlugin : DokkaPlugin() {
                 }
             }
             .trim()
+
+    private fun joinBodies(c: DocTag) =
+        c.childrenOfType<Text>().joinToString(transform = Text::body)
 }
