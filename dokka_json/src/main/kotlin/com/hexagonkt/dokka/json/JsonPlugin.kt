@@ -19,20 +19,12 @@ typealias MapPair = Pair<String, Map<String, Map<String, *>>>
  */
 class JsonPlugin : DokkaPlugin() {
 
-    internal companion object {
-        val outputDirectory: File = File("build/dokka").apply {
-            if (!exists())
-                mkdirs()
-        }
-    }
-
     internal val extension by extending {
         CoreExtensions.documentableTransformer providing {
             DocumentableTransformer(::processModule)
         }
     }
 
-    @Suppress("UNUSED_PARAMETER") // This processor doesn't use Dokka context
     private fun processModule(module: DModule, context: DokkaContext): DModule =
         module.apply {
             val name = module.name
@@ -41,6 +33,12 @@ class JsonPlugin : DokkaPlugin() {
                 .associateBy { it.name }
                 .mapValues { processPackage(it.value) }
 
+            val configurationOutput = context.configuration.outputDir
+            val outputDirectory =
+                if (configurationOutput.absolutePath.startsWith("/tmp")) File("build/dokka")
+                else configurationOutput
+            if (!outputDirectory.exists())
+                outputDirectory.mkdirs()
             val file = outputDirectory.resolve("module_$name.json")
             val map = mapOf(
                 "name" to name,
@@ -91,12 +89,12 @@ class JsonPlugin : DokkaPlugin() {
         documentation
             .flatMap { it.children }
             .joinToString("\n") {
-                val text = it.children.joinToString("") { c ->
-                    when (c) {
-                        is Text -> c.body
-                        is DocumentationLink -> joinBodies(c)
-                        is CodeInline -> joinBodies(c).let { x -> "`$x`" }
-                        else -> error("Invalid node: $c")
+                val text = it.children.joinToString("") { node ->
+                    when (node) {
+                        is Text -> node.body
+                        is DocumentationLink -> joinBodies(node)
+                        is CodeInline -> joinBodies(node).let { x -> "`$x`" }
+                        else -> joinBodies(node)
                     }
                 }
                 when (it) {

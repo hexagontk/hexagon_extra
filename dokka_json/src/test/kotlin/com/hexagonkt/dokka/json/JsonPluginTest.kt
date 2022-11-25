@@ -8,6 +8,7 @@ import com.hexagonkt.serialization.parseMap
 import com.hexagonkt.serialization.serialize
 import org.jetbrains.dokka.base.testApi.testRunner.BaseAbstractTest
 import org.junit.jupiter.api.Test
+import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -42,6 +43,21 @@ class JsonPluginTest : BaseAbstractTest() {
             |   */
             |  fun docFun(parameter: String): Int = 1
             |}
+            |/**
+            | *  # Header
+            | *  * List item
+            | *
+            | *  ## Numbers
+            | *  1. Numbered item
+            | *
+            | *  ### Paragraphs
+            | *  `file.json` contains settings.
+            | *
+            | *  #### Nested items
+            | *  5. Section
+            | *      * Subsection
+            | */
+            |data class Class2(val property: Int)
             """.trimIndent(), configuration
         ) {
             documentablesTransformationStage = { module ->
@@ -52,7 +68,7 @@ class JsonPluginTest : BaseAbstractTest() {
         }
 
         SerializationManager.defaultFormat = Json
-        val json = JsonPlugin.outputDirectory.resolve("module_mod.json").parseMap()
+        val json = File("build/dokka").resolve("module_mod.json").parseMap()
         json.serialize(Json).println("JSON>\n")
         assertEquals("mod", json.requireKeys("name"))
     }
