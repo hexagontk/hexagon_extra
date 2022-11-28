@@ -1,7 +1,7 @@
 package com.hexagonkt.web.examples
 
-import com.hexagonkt.core.converters.ConvertersManager
-import com.hexagonkt.core.converters.convert
+import com.hexagonkt.converters.ConvertersManager
+import com.hexagonkt.converters.convert
 import com.hexagonkt.core.require
 import com.hexagonkt.core.requireKeys
 import com.hexagonkt.core.logging.Logger

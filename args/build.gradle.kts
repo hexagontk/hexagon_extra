@@ -9,10 +9,8 @@ apply(from = "$gradleScripts/kotlin.gradle")
 apply(from = "$gradleScripts/publish.gradle")
 apply(from = "$gradleScripts/dokka.gradle")
 
-dependencies {
-    "api"(project(":converters"))
-    "api"("com.hexagonkt:core:$version")
-    "api"("com.hexagonkt:serialization:$version")
+description = "."
 
-    "testImplementation"("com.hexagonkt:serialization_jackson_json:$version")
+dependencies {
+    "api"("com.hexagonkt:core:$version")
 }

@@ -19,6 +19,7 @@ dependencies {
 
     "api"("com.hexagonkt:http:$version")
     "api"("com.hexagonkt:serialization:$version")
+    "api"(project(":converters"))
     "api"(project(":messaging"))
     "api"("com.rabbitmq:amqp-client:$rabbitVersion")
     "api"("io.dropwizard.metrics:metrics-jmx:$metricsJmxVersion")

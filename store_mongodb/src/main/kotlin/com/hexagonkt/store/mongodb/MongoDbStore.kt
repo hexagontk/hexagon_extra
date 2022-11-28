@@ -1,6 +1,6 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.core.converters.convert
+import com.hexagonkt.converters.convert
 import com.hexagonkt.core.fail
 import com.hexagonkt.core.filterEmpty
 import com.hexagonkt.core.toLocalDateTime

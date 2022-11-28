@@ -1,6 +1,6 @@
 package com.hexagonkt.store
 
-import com.hexagonkt.core.converters.convert
+import com.hexagonkt.converters.convert
 import com.hexagonkt.core.ensureSize
 import com.hexagonkt.serialization.parse
 import java.io.File

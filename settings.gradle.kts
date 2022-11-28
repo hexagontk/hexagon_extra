@@ -3,6 +3,8 @@ rootProject.name = "hexagon_extra"
 
 include(
     // Internal modules
+    "args",
+    "converters",
     "scheduler",
     "web",
     "models",

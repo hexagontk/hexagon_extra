@@ -1,6 +1,6 @@
 package com.hexagonkt.messaging.rabbitmq
 
-import com.hexagonkt.core.converters.ConvertersManager
+import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.core.logging.LoggingLevel.TRACE
 import com.hexagonkt.core.logging.LoggingManager
 import com.hexagonkt.core.requireKeys

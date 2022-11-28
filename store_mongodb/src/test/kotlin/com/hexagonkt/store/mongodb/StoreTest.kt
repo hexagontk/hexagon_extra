@@ -1,6 +1,6 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.core.converters.convertObjects
+import com.hexagonkt.converters.convertObjects
 import com.hexagonkt.core.fail
 import com.hexagonkt.store.Store
 import org.junit.jupiter.api.BeforeEach

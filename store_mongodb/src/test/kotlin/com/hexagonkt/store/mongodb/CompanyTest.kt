@@ -1,7 +1,7 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.core.converters.ConvertersManager
-import com.hexagonkt.core.converters.convertObjects
+import com.hexagonkt.converters.ConvertersManager
+import com.hexagonkt.converters.convertObjects
 import com.hexagonkt.core.fieldsMapOf
 import com.hexagonkt.core.invoke
 import com.hexagonkt.core.requireKeys
