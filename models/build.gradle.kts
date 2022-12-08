@@ -1,3 +1,4 @@
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
     id("java-library")
@@ -16,4 +17,10 @@ dependencies {
 
     "api"("com.hexagonkt:core:$version")
     "api"("com.sun.mail:javax.mail:$javamailVersion")
+}
+
+tasks.named<DokkaTaskPartial>("dokkaHtmlPartial") {
+    dependencies {
+        plugins(project(":dokka_json"))
+    }
 }
