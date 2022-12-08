@@ -17,6 +17,7 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import java.net.URL
 import java.time.LocalDateTime
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 @TestInstance(PER_CLASS)
@@ -67,6 +68,7 @@ internal class WebTest {
     @Test fun template() {
         val response = client.get("/template")
         assertEquals(OK, response.status)
+        assertContains(response.bodyString(), "<p>path : /template</p>")
     }
 
     @Test fun templateAdapter() {

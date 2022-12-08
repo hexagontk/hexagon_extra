@@ -18,8 +18,8 @@ fun HttpServerContext.templateType(url: URL): ContentType? =
 
 fun HttpServerContext.fullContext(): Map<String, *> =
     mapOf(
-        "path" to request.path.removeSuffix("/"), // Do not allow trailing slash
-        "lang" to obtainLocale().language
+        "_path_" to request.path.removeSuffix("/"), // Do not allow trailing slash
+        "_lang_" to obtainLocale().language,
     )
 
 /**
