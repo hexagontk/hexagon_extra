@@ -1,6 +1,6 @@
 package com.hexagonkt.dokka.json
 
-import com.hexagonkt.core.filterEmptyRecursive
+import com.hexagonkt.core.filterNotEmptyRecursive
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.serialize
 import org.jetbrains.dokka.CoreExtensions
@@ -46,7 +46,7 @@ class JsonPlugin : DokkaPlugin() {
                 "packages" to packages
             )
 
-            file.writeText(map.filterEmptyRecursive().serialize(Json))
+            file.writeText(map.filterNotEmptyRecursive().serialize(Json))
         }
 
     private fun processPackage(pack: DPackage): Map<String, *> {

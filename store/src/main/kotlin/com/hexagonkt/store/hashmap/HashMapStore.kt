@@ -1,7 +1,7 @@
 package com.hexagonkt.store.hashmap
 
 import com.hexagonkt.converters.convert
-import com.hexagonkt.core.filterEmpty
+import com.hexagonkt.core.filterNotEmpty
 import com.hexagonkt.store.Store
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
@@ -55,7 +55,7 @@ class HashMapStore<T : Any, K : Any>(
         val instance = store[key]!!.toMutableMap()
 
         updates
-            .filterEmpty()
+            .filterNotEmpty()
             .forEach {
                 instance[it.key] = toStore(it.value)
             }
@@ -165,14 +165,14 @@ class HashMapStore<T : Any, K : Any>(
 
     private fun toStore(instance: T): Map<String, Any>  =
         instance.convert(Map::class)
-            .filterEmpty()
+            .filterNotEmpty()
             .mapKeys { it.key.toString() }
             .mapValues { it.value }
 
     private fun toStore(value: Any): Any = value
 
     private fun fromStore(map: Map<String, Any>): T =
-        map.filterEmpty().convert(type)
+        map.filterNotEmpty().convert(type)
 
     private fun fromStore(value: Any): Any =
         value

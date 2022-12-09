@@ -9,6 +9,7 @@ include(
     "web",
     "models",
     "rest",
+    "rest_test",
     "injection",
 
     // Ports
