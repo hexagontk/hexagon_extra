@@ -17,12 +17,13 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import java.net.URL
 import java.time.LocalDateTime
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 @TestInstance(PER_CLASS)
 internal class WebTest {
 
-    private val templateEngine = PebbleAdapter
+    private val templateEngine = PebbleAdapter()
 
     private val router: PathHandler = path {
         get("/template") {
@@ -54,7 +55,7 @@ internal class WebTest {
     }
 
     @BeforeAll fun start() {
-        TemplateManager.adapters = mapOf(".*\\.html".toRegex() to PebbleAdapter)
+        TemplateManager.adapters = mapOf(".*\\.html".toRegex() to PebbleAdapter())
         server.start()
         client.start()
     }
@@ -67,6 +68,7 @@ internal class WebTest {
     @Test fun template() {
         val response = client.get("/template")
         assertEquals(OK, response.status)
+        assertContains(response.bodyString(), "<p>path : /template</p>")
     }
 
     @Test fun templateAdapter() {

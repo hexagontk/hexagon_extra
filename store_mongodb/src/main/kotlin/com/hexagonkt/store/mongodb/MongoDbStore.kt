@@ -1,8 +1,8 @@
 package com.hexagonkt.store.mongodb
 
-import com.hexagonkt.core.converters.convert
+import com.hexagonkt.converters.convert
 import com.hexagonkt.core.fail
-import com.hexagonkt.core.filterEmpty
+import com.hexagonkt.core.filterNotEmpty
 import com.hexagonkt.core.toLocalDateTime
 import com.hexagonkt.store.Store
 import com.mongodb.ConnectionString
@@ -33,6 +33,8 @@ class MongoDbStore<T : Any, K : Any>(
     override val key: KProperty1<T, K>,
     private val database: MongoDatabase,
     override val name: String = type.java.simpleName,
+    private val encoder: (T) -> Map<*, *> = { it.convert(Map::class) },
+    private val decoder: (Map<*, *>) -> T = { it.convert(type) },
 ) : Store<T, K> {
 
     companion object {
@@ -114,7 +116,7 @@ class MongoDbStore<T : Any, K : Any>(
     }
 
     override fun findOne(key: K): T? {
-        val result = collection.find(createKeyFilter(key)).first()?.filterEmpty()
+        val result = collection.find(createKeyFilter(key)).first()?.filterNotEmpty()
         return if (result == null) null else fromStore(result as Map<String, Any>)
     }
 
@@ -123,7 +125,7 @@ class MongoDbStore<T : Any, K : Any>(
         val result = collection
             .find(filter)
             .projection(createProjection(fields))
-            .first()?.filterEmpty()
+            .first()?.filterNotEmpty()
 
         return result?.mapValues { fromStore(it.value) }
     }
@@ -142,7 +144,7 @@ class MongoDbStore<T : Any, K : Any>(
         pageQuery(limit, query, skip)
 
         val result = query.into(ArrayList())
-        return result.map { fromStore(it.filterEmpty()) }
+        return result.map { fromStore(it.filterNotEmpty()) }
     }
 
     override fun findMany(
@@ -166,7 +168,7 @@ class MongoDbStore<T : Any, K : Any>(
             resultMap
                 .map { pair -> pair.key to fromStore(pair.value) }
                 .toMap()
-                .filterEmpty()
+                .filterNotEmpty()
         }
     }
 
@@ -192,7 +194,7 @@ class MongoDbStore<T : Any, K : Any>(
     private fun createKeyFilter(key: K) = Filters.eq("_id", key)
 
     private fun createFilter(filter: Map<String, *>): Bson = filter
-        .filterEmpty()
+        .filterNotEmpty()
         .map {
             val keyFields = it.key.split(":")
             val key = keyFields.firstOrNull() ?: fail
@@ -225,7 +227,7 @@ class MongoDbStore<T : Any, K : Any>(
     private fun createUpdate(update: Map<String, *>): Bson =
         Updates.combine(
             update
-                .filterEmpty()
+                .filterNotEmpty()
                 .mapValues { toStore(it.value) }
                 .map { Updates.set(it.key, it.value) }
         )
@@ -250,16 +252,16 @@ class MongoDbStore<T : Any, K : Any>(
     private fun Map<String, *>.toDocument() = Document(this)
 
     private fun toStore(instance: T): Map<String, Any> =
-        (instance.convert(Map::class) + ("_id" to key.get(instance)) - key.name)
-            .filterEmpty()
+        (encoder(instance) + ("_id" to key.get(instance)) - key.name)
+            .filterNotEmpty()
             .mapKeys { it.key.toString() }
             .mapValues { toStore(it.value) }
 
     private fun fromStore(map: Map<String, Any>): T =
         (map + (key.name to map["_id"]))
-            .filterEmpty()
+            .filterNotEmpty()
             .mapValues { fromStore(it.value) }
-            .convert(type)
+            .let(decoder)
 
     private fun fromStore(value: Any): Any = when (value) {
         is Binary -> value.data

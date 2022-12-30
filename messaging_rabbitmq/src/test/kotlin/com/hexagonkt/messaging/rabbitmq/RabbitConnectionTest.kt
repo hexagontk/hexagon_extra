@@ -1,6 +1,6 @@
 package com.hexagonkt.messaging.rabbitmq
 
-import com.hexagonkt.core.converters.ConvertersManager
+import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.jackson.json.Json

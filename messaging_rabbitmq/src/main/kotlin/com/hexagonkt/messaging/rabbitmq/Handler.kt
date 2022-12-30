@@ -1,6 +1,6 @@
 package com.hexagonkt.messaging.rabbitmq
 
-import com.hexagonkt.core.converters.convert
+import com.hexagonkt.converters.convert
 import com.hexagonkt.core.retry
 import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.core.media.MediaType

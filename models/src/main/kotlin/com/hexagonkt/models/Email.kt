@@ -2,17 +2,17 @@ package com.hexagonkt.models
 
 import javax.mail.internet.InternetAddress
 
-data class Email(val email: String) {
+data class Email(val address: String) {
 
     init {
         try {
-            InternetAddress(email).validate()
+            InternetAddress(address).validate()
         } catch (e: Exception) {
             throw IllegalArgumentException(e.message, e)
         }
     }
 
-    val user: String by lazy { email.substringBeforeLast('@') }
+    val user: String by lazy { address.substringBeforeLast('@') }
 
-    val domain: String by lazy { email.substringAfterLast('@') }
+    val domain: String by lazy { address.substringAfterLast('@') }
 }

@@ -10,6 +10,7 @@ apply(from = "$gradleScripts/publish.gradle")
 apply(from = "$gradleScripts/dokka.gradle")
 
 dependencies {
+    "api"(project(":converters"))
     "api"("com.hexagonkt:core:$version")
     "api"("com.hexagonkt:serialization:$version")
 

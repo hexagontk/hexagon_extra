@@ -2,8 +2,20 @@ package com.hexagonkt.injection
 
 import kotlin.reflect.KClass
 
+/**
+ * Inject type instances based on the suppliers defined in the [Module].
+ */
 class Injector(private val module: Module = Module()) {
 
+    /**
+     * Inject an instance of the type class and the supplied tag. If the injector's module doesn't
+     * have a matching binding, then `null` is returned.
+     *
+     * @param T Generic type of the instance that will be created.
+     * @param type Class for the instance to create (class of T).
+     * @param tag Tag used to search the binding in the [Module].
+     * @return An instance of T or `null` if no binding for that type with the passed tag is found.
+     */
     @Suppress("UNCHECKED_CAST") // bind operation takes care of type matching
     fun <T : Any> injectOrNull(type: KClass<T>, tag: Any): T? =
         module.bindings[Target(type, tag)]?.provide() as? T
@@ -21,7 +33,6 @@ class Injector(private val module: Module = Module()) {
             .map { it.key.tag to it.value.provide() as T }
             .associate { it.first to it.second }
 
-    @Suppress("UNCHECKED_CAST") // bind operation takes care of type matching
     fun <T : Any> inject(type: KClass<T>, tag: Any): T =
         injectOrNull(type, tag) ?: error("${type.java.name} generator missing")
 

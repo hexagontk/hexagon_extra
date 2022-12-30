@@ -1,6 +1,6 @@
 package com.hexagonkt.store.hashmap
 
-import com.hexagonkt.core.converters.ConvertersManager
+import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.core.invoke
 import com.hexagonkt.core.fail
 import com.hexagonkt.core.fieldsMapOf
