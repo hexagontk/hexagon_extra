@@ -16,7 +16,7 @@ fun HttpServerContext.templateType(url: URL): ContentType? =
         mimeType?.let { ContentType(it, charset = defaultCharset()) }
     }
 
-fun HttpServerContext.fullContext(): Map<String, *> =
+fun HttpServerContext.callContext(): Map<String, *> =
     mapOf(
         "_path_" to request.path.removeSuffix("/"), // Do not allow trailing slash
         "_lang_" to obtainLocale().language,
@@ -39,14 +39,14 @@ fun HttpServerContext.obtainLocale(): Locale = when {
 fun HttpServerContext.template(
     templateEngine: TemplatePort,
     url: URL,
-    context: Map<String, *> = fullContext(),
+    context: Map<String, *> = callContext(),
     locale: Locale = obtainLocale(),
 ): HttpServerContext =
     ok(templateEngine.render(url, context, locale), contentType = templateType(url))
 
 fun HttpServerContext.template(
     url: URL,
-    context: Map<String, *> = fullContext(),
+    context: Map<String, *> = callContext(),
     locale: Locale = obtainLocale(),
 ): HttpServerContext =
     ok(TemplateManager.render(url, context, locale), contentType = templateType(url))

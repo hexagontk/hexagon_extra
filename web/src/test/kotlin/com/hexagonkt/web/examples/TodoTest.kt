@@ -7,7 +7,7 @@ import com.hexagonkt.core.requireKeys
 import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.core.logging.LoggingLevel.DEBUG
 import com.hexagonkt.core.logging.LoggingManager
-import com.hexagonkt.core.logging.jul.JulLoggingAdapter
+import com.hexagonkt.logging.jul.JulLoggingAdapter
 import com.hexagonkt.core.media.ApplicationMedia.JSON
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.HttpClientSettings

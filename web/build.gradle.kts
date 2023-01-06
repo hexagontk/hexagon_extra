@@ -14,6 +14,7 @@ dependencies {
     "api"("com.hexagonkt:templates:$version")
 
     "testImplementation"(project(":converters"))
+    "testImplementation"("com.hexagonkt:logging_jul:$version")
     "testImplementation"("com.hexagonkt:http_client_jetty:$version")
     "testImplementation"("com.hexagonkt:http_server_jetty:$version")
     "testImplementation"("com.hexagonkt:templates_pebble:$version")
