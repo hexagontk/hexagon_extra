@@ -227,8 +227,8 @@ class MongoDbStore<T : Any, K : Any>(
     private fun createUpdate(update: Map<String, *>): Bson =
         Updates.combine(
             update
-                .filterNotEmpty()
-                .mapValues { toStore(it.value) }
+                .filter { it.value != null }
+                .mapValues { toStore(it.value as Any) }
                 .map { Updates.set(it.key, it.value) }
         )
 

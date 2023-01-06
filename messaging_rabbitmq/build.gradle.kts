@@ -15,7 +15,6 @@ dependencies {
     val metricsJmxVersion = properties["metricsJmxVersion"]
 
     val qpidVersion = properties["qpidVersion"]
-    val logbackVersion = properties["logbackVersion"]
 
     "api"("com.hexagonkt:http:$version")
     "api"("com.hexagonkt:serialization:$version")

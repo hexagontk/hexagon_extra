@@ -29,7 +29,7 @@ internal class WebTest {
         get("/template") {
             template(
                 url = URL("classpath:templates/pebble_template.html"),
-                context = fullContext() + ("date" to LocalDateTime.now())
+                context = callContext() + ("date" to LocalDateTime.now())
             )
         }
 
@@ -37,7 +37,7 @@ internal class WebTest {
             template(
                 templateEngine = templateEngine,
                 url = URL("classpath:templates/pebble_template.html"),
-                context = fullContext() + ("date" to LocalDateTime.now())
+                context = callContext() + ("date" to LocalDateTime.now())
             )
         }
     }
