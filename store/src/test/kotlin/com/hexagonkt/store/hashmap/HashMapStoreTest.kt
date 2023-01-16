@@ -9,7 +9,7 @@ import com.hexagonkt.store.Company
 import com.hexagonkt.store.Person
 import com.hexagonkt.store.Store
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import java.net.URL
 import java.time.LocalDate

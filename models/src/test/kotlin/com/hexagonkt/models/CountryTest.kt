@@ -1,8 +1,8 @@
 package com.hexagonkt.models
 
 import com.hexagonkt.core.parseLocale
-import org.junit.jupiter.api.Test
-import java.lang.IllegalArgumentException
+import kotlin.test.Test
+import kotlin.IllegalArgumentException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 

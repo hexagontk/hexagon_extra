@@ -6,7 +6,7 @@ import com.hexagonkt.injection.InjectionManager.module
 import com.hexagonkt.injection.InjectionManager.injector
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
 import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.junit.jupiter.api.TestMethodOrder
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

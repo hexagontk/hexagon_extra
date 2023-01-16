@@ -1,8 +1,8 @@
 package com.hexagonkt.args
 
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import java.lang.IllegalStateException
+import kotlin.test.Test
+import kotlin.IllegalStateException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 

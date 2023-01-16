@@ -1,6 +1,6 @@
 package com.hexagonkt.messaging
 
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 internal class MessageTest {
 

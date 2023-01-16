@@ -2,7 +2,7 @@ package com.hexagonkt.messaging.rabbitmq
 
 import com.hexagonkt.messaging.MessagingPort
 import com.hexagonkt.messaging.rabbitmq.RabbitTest.Companion.PORT
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 internal class RabbitMqAdapterTest {
     /**

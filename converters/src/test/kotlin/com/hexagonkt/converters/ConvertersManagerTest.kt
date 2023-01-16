@@ -4,8 +4,8 @@ import com.hexagonkt.converters.ConvertersManager.convertObjects
 import com.hexagonkt.core.keys
 import com.hexagonkt.core.fail
 import com.hexagonkt.core.requireKeys
-import org.junit.jupiter.api.Test
-import java.lang.IllegalStateException
+import kotlin.test.Test
+import kotlin.IllegalStateException
 import java.net.URL
 import java.nio.ByteBuffer
 import java.time.LocalDate

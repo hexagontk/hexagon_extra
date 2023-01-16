@@ -7,7 +7,7 @@ import com.hexagonkt.http.model.ContentType
 import com.hexagonkt.http.server.model.HttpServerRequest
 import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.jackson.json.Json
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
