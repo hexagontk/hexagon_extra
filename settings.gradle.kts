@@ -2,7 +2,7 @@
 rootProject.name = "hexagon_extra"
 
 include(
-    // Internal modules
+    // Utility modules
     "args",
     "converters",
     "scheduler",
@@ -11,6 +11,7 @@ include(
     "rest",
     "rest_test",
     "injection",
+    "terminal",
 
     // Ports
     "messaging",
@@ -22,4 +23,7 @@ include(
 
     // Tools
     "dokka_json",
+
+    // Testing
+    "application_test",
 )
