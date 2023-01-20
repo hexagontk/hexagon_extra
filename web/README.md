@@ -13,14 +13,14 @@ Adds utilities for serving HTML pages over HTTP servers. Includes [kotlinx.html]
         mavenCentral()
     }
 
-    implementation("com.hexagonkt:web:$hexagonVersion")
+    implementation("com.hexagonkt.extra:web:$hexagonVersion")
     ```
 
 === "pom.xml"
 
     ```xml
     <dependency>
-      <groupId>com.hexagonkt</groupId>
+      <groupId>com.hexagonkt.extra</groupId>
       <artifactId>web</artifactId>
       <version>$hexagonVersion</version>
     </dependency>

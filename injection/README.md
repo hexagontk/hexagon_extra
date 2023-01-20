@@ -11,14 +11,14 @@ Basic dependency injection support.
         mavenCentral()
     }
 
-    implementation("com.hexagonkt:injection:$hexagonVersion")
+    implementation("com.hexagonkt.extra:injection:$hexagonVersion")
     ```
 
 === "pom.xml"
 
     ```xml
     <dependency>
-      <groupId>com.hexagonkt</groupId>
+      <groupId>com.hexagonkt.extra</groupId>
       <artifactId>injection</artifactId>
       <version>$hexagonVersion</version>
     </dependency>

@@ -11,14 +11,14 @@ TODO.
         mavenCentral()
     }
 
-    implementation("com.hexagonkt:terminal:$hexagonVersion")
+    implementation("com.hexagonkt.extra:terminal:$hexagonVersion")
     ```
 
 === "pom.xml"
 
     ```xml
     <dependency>
-      <groupId>com.hexagonkt</groupId>
+      <groupId>com.hexagonkt.extra</groupId>
       <artifactId>terminal</artifactId>
       <version>$hexagonVersion</version>
     </dependency>

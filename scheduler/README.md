@@ -21,14 +21,14 @@ synchronization yourself.
         mavenCentral()
     }
 
-    implementation("com.hexagonkt:scheduler:$hexagonVersion")
+    implementation("com.hexagonkt.extra:scheduler:$hexagonVersion")
     ```
 
 === "pom.xml"
 
     ```xml
     <dependency>
-      <groupId>com.hexagonkt</groupId>
+      <groupId>com.hexagonkt.extra</groupId>
       <artifactId>scheduler</artifactId>
       <version>$hexagonVersion</version>
     </dependency>
