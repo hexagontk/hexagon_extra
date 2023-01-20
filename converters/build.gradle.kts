@@ -12,5 +12,5 @@ apply(from = "$gradleScripts/dokka.gradle")
 description = "."
 
 dependencies {
-    "api"("com.hexagonkt:core:$version")
+    "testImplementation"("com.hexagonkt:core:$version")
 }

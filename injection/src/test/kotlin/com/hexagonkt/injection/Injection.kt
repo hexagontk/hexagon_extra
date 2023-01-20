@@ -15,7 +15,6 @@ fun <T : Any> Module.forceBind(type: KClass<T>, providers: List<Provider<T>>) {
 fun <T : Any> Module.forceBind(target: Target<T>, provider: Provider<T>) {
 
     if (bindings.containsKey(target)) {
-        logger.info { "$target already bound. Will be DELETED to allow OVERWRITING" }
         bindings = bindings - target // Required to change order
     }
 

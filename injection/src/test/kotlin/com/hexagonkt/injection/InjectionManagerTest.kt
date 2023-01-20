@@ -55,7 +55,7 @@ internal class InjectionManagerTest {
                 block()
             }
             catch (e: IllegalStateException){
-                InjectionManager.logger.error(e) { "Attempt to redefine binding not allowed" }
+                e.printStackTrace()
             }
         }
 

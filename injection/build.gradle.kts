@@ -10,7 +10,3 @@ apply(from = "$gradleScripts/publish.gradle")
 apply(from = "$gradleScripts/dokka.gradle")
 
 description = "."
-
-dependencies {
-    "api"("com.hexagonkt:core:$version")
-}
