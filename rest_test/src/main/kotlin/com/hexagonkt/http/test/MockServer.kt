@@ -19,7 +19,7 @@ data class MockServer(
         HttpServer(adapter) {
             after(pattern = "*", status = NOT_FOUND) {
                 HttpServerContext(
-                    context = context.copy(
+                    context = context.with(
                         event = context.event.copy(
                             response = this@MockServer.path.process(request)
                         )

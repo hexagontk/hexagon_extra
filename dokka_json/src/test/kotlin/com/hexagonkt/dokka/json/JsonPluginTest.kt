@@ -1,6 +1,6 @@
 package com.hexagonkt.dokka.json
 
-import com.hexagonkt.core.println
+import com.hexagonkt.core.out
 import com.hexagonkt.core.requireKeys
 import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.jackson.json.Json
@@ -73,7 +73,7 @@ class JsonPluginTest : BaseAbstractTest() {
 
         SerializationManager.defaultFormat = Json
         val json = File("build/dokka").resolve("module_mod.json").parseMap()
-        json.serialize(Json).println("JSON>\n")
+        json.serialize(Json).out("JSON>\n")
         assertEquals("mod", json.requireKeys("name"))
     }
 }

@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeAll
 import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
+import org.testcontainers.containers.RabbitMQContainer
+import org.testcontainers.utility.DockerImageName
 import java.lang.System.currentTimeMillis
 import java.net.URI
 
@@ -17,21 +19,20 @@ import java.net.URI
 internal class RabbitConnectionTest {
 
     private companion object {
-        private const val port = 5673
-        private const val user = "guest"
-        private const val password = "guest"
-        private const val vhost = "test"
+        val rabbitMq: RabbitMQContainer = RabbitMQContainer(DockerImageName.parse("rabbitmq:3.11-alpine"))
+            .withExposedPorts(5672)
+            .apply { start() }
 
-        private const val URI = "amqp://$user:$password@localhost:$port/$vhost"
-        private const val QUEUE = "test"
-        private const val QUEUE_ERROR = "error"
-        private const val SUFFIX = "DONE"
-        private const val DELAY = 10L
+        val PORT: Int = rabbitMq.getMappedPort(5672)
+        val URI: String = "amqp://guest:guest@localhost:$PORT"
+
+        private const val QUEUE: String = "test"
+        private const val QUEUE_ERROR: String = "error"
+        private const val SUFFIX: String = "DONE"
+        private const val DELAY: Long = 10L
     }
 
     private val log: Logger = Logger(this::class)
-
-    private val broker = EmbeddedAMQPBroker(port, user, password, vhost)
 
     private val consumer: RabbitMqClient by lazy { RabbitMqClient(URI(URI)) }
     private val client: RabbitMqClient by lazy { RabbitMqClient(URI(URI)) }
@@ -40,7 +41,7 @@ internal class RabbitConnectionTest {
         SerializationManager.defaultFormat = Json
         ConvertersManager.register(Long::class to String::class) { it.toString() }
 
-        broker.startup()
+        rabbitMq.start()
 
         consumer.declareQueue(QUEUE)
         consumer.consume(QUEUE, String::class) { a ->
@@ -59,7 +60,7 @@ internal class RabbitConnectionTest {
         consumer.deleteQueue(QUEUE_ERROR)
         consumer.close()
 
-        broker.shutdown()
+        rabbitMq.stop()
     }
 
     @Test fun `call return expected results`() {
@@ -68,7 +69,7 @@ internal class RabbitConnectionTest {
         val result = client.call(QUEUE_ERROR, ts)
         assert(result.contains(ts) && result.contains("Error with: $ts"))
 
-        broker.shutdown()
+        rabbitMq.stop()
         try {
             client.call(QUEUE_ERROR, ts)
         }

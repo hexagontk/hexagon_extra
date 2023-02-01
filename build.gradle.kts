@@ -19,21 +19,10 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version("1.22.0") apply(false)
 }
 
+ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagonkt/hexagon/$version/gradle")
+
 repositories {
     mavenCentral()
-}
-
-tasks.register<Delete>("clean") {
-    group = "build"
-    description = "Delete root project's generated artifacts, logs and error dumps."
-
-    delete("build", "log", "out", ".vertx", "file-uploads", "config")
-    delete(
-        fileTree(rootDir) { include("**/*.log") },
-        fileTree(rootDir) { include("**/*.hprof") },
-        fileTree(rootDir) { include("**/.attach_pid*") },
-        fileTree(rootDir) { include("**/hs_err_pid*") }
-    )
 }
 
 task("setUp") {
