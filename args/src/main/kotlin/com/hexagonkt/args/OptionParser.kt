@@ -1,6 +1,6 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.core.toOrNull
+import com.hexagonkt.core.parseOrNull
 
 object OptionParser {
 
@@ -23,11 +23,11 @@ object OptionParser {
 
             if (isLong) {
                 val split = optionWithoutPrefixedDashes.split("=")
-                val option = options.find { split.first() == it.longName }
+                val option = options.find { split.first() == it.name }
                     ?: error("InvalidOptionException")
 
                 result[option] = when {
-                    split.size > 1 -> split[1].toOrNull(option.type) ?: error("Null not allowed")
+                    split.size > 1 -> split[1].parseOrNull(option.type) ?: error("Null not allowed")
                     option.type == Boolean::class -> true
                     else -> error("OptionNeedsAValueException")
                 }

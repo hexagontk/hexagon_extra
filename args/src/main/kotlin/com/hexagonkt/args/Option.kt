@@ -1,45 +1,88 @@
 package com.hexagonkt.args
 
-import java.net.InetAddress
-import java.net.URI
-import java.net.URL
 import kotlin.reflect.KClass
 
 data class Option<T : Any>(
-    val type: KClass<T>,
+    val parameter: Parameter<T>,
     val shortName: Char? = null,
-    val longName: String? = null,
-    val description: String? = null,
-    val optional: Boolean = true,
-    val list: Boolean = false,
-    val defaultValue: T? = null,
-) {
-    internal companion object {
-        val allowedTargetTypes: Set<KClass<*>> = setOf(
-            Boolean::class,
-            Int::class,
-            Long::class,
-            Float::class,
-            Double::class,
-            String::class,
-            InetAddress::class,
-            URL::class,
-            URI::class,
-        )
-    }
+) : Property<T> by parameter {
+
+    private val typeName: String? = if (parameter.regex != null) "REGEX" else parameter.typeName
+
+    constructor(
+        type: KClass<T>,
+        shortName: Char? = null,
+        name: String? = null,
+        description: String? = null,
+        regex: Regex? = null,
+        optional: Boolean = true,
+        multiple: Boolean = false,
+        values: List<T> = emptyList(),
+    ) : this(Parameter(type, name, description, regex, optional, multiple, values), shortName)
+
+    constructor(
+        type: KClass<T>,
+        shortName: Char? = null,
+        name: String? = null,
+        description: String? = null,
+        regex: Regex? = null,
+        optional: Boolean = true,
+        multiple: Boolean = false,
+        value: T,
+    ) : this(Parameter(type, name, description, regex, optional, multiple, listOf(value)), shortName)
 
     init {
-        require(type in allowedTargetTypes) {
-            "Type $type not in allowed types: $allowedTargetTypes"
-        }
         require(shortName?.isLetterOrDigit() ?: true) {
             "Short name must be a letter or a digit: $shortName"
         }
-        require((longName?.trim()?.length ?: 2) > 1) {
-            "Long name must be at least two characters: $longName"
-        }
-        require(description?.isNotBlank() ?: true) {
-            "Description cannot be blank"
+        require(shortName != null || name != null) {
+            "Option requires a short name, a long name or both. Short: $shortName, Long: $name"
         }
     }
+
+    fun copy(
+        type: KClass<T> = this.type,
+        name: String? = this.name,
+        description: String? = this.description,
+        regex: Regex? = this.regex,
+        optional: Boolean = this.optional,
+        multiple: Boolean = this.multiple,
+        values: List<T> = this.values,
+        shortName: Char? = this.shortName,
+    ): Option<T> =
+        copy(
+            parameter = parameter.copy(
+                type = type,
+                name = name,
+                description = description,
+                regex = regex,
+                optional = optional,
+                multiple = multiple,
+                values = values,
+            ),
+            shortName = shortName
+        )
+
+    override fun summary(): String =
+        format(
+            aliases()
+                .map { if (parameter.hasValue) "$it $typeName" else it }
+                .first()
+        )
+
+    override fun definition(): String =
+        aliases().joinToString(", ") { if (parameter.hasValue) "$it $typeName" else it }
+
+    private fun aliases() = listOfNotNull(
+        shortName?.let { "-$it" },
+        name?.let { "--$it" }
+    )
+
+    override fun detail(): String =
+        listOfNotNull(
+            description?.let { if (it.endsWith('.')) it else "$it." },
+            (regex?.pattern ?: parameter.typeName)?.let(::format),
+            values.ifEmpty { null }?.map(Any::toString)?.let { "Default: " + if (multiple) values else value },
+        )
+        .joinToString(" ")
 }

@@ -83,7 +83,7 @@ class OptionParserTest {
 
     @Test fun `Parse both long and short named options`() {
         val shortFlag = Option(type = Boolean::class, 's')
-        val longFlag = Option(type = Boolean::class, 'l', longName = "long")
+        val longFlag = Option(type = Boolean::class, 'l', name = "long")
         val longValue = Option(String::class, 'v', "value")
         val options = listOf(shortFlag, longFlag, longValue)
 
@@ -95,7 +95,7 @@ class OptionParserTest {
     }
 
     @Test fun `Parse long named flag with false as value`() {
-        val longFlag = Option(type = Boolean::class, 'l', longName = "long")
+        val longFlag = Option(type = Boolean::class, 'l', name = "long")
 
         val actual = optionParser.parse(listOf(longFlag), arrayOf("--long=false"))
         val expected: Map<Option<*>, *> = mapOf(longFlag to false)
@@ -104,7 +104,7 @@ class OptionParserTest {
     }
 
     @Test fun `Parse options with int values`() {
-        val level = Option(type = Int::class, 'l', longName = "level")
+        val level = Option(type = Int::class, 'l', name = "level")
         val another = Option(Boolean::class, 'a', "another-arg")
         val options = listOf(level, another)
 
@@ -115,7 +115,7 @@ class OptionParserTest {
     }
 
     @Test fun `Parse options with double values`() {
-        val time = Option(type = Double::class, 't', longName = "time")
+        val time = Option(type = Double::class, 't', name = "time")
         val another = Option(Boolean::class, 'a', "another-arg")
         val options = listOf(time, another)
 

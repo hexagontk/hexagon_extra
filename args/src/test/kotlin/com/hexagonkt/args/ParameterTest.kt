@@ -1,94 +1,75 @@
 package com.hexagonkt.args
 
-import kotlin.test.Test
-import kotlin.IllegalArgumentException
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import com.hexagonkt.args.ParameterTest.Companion.assert
 import com.hexagonkt.core.camelToWords
 import com.hexagonkt.core.wordsToSnake
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.net.InetAddress
 import java.net.URI
 import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
-internal class OptionTest {
+internal class ParameterTest {
 
-    @Test fun `Options with null optional values are correct`() {
-        assertEquals(Option(Boolean::class, 'b'), Option(Boolean::class, 'b', name = null))
-        assertEquals(Option(Boolean::class, 'b'), Option(Boolean::class, 'b', description = null))
+    companion object {
+        fun <T : Any, P : Property<T>> P.assert(
+            summary: String, definition: String, detail: String
+        ) : P =
+            apply {
+                assertEquals(summary, summary())
+                assertEquals(definition, definition())
+                assertEquals(detail, detail())
+            }
     }
 
-    @Test fun `Invalid options raise errors`() {
-        listOf('#', ' ').forEach {
-            assertEquals(
-                "Short name must be a letter or a digit: $it",
-                assertFailsWith<IllegalArgumentException> { Option(String::class, it) }.message
-            )
+    @Test fun `Invalid parameters fail with exceptions`() {
+        assertFailsWith<IllegalArgumentException> { Parameter(Regex::class) }
+            .message.let { assert(it?.contains("not in allowed types") ?: false) }
+
+        setOf("", " ", "a", "Ab", "ab_c").forEach { n ->
+            assertFailsWith<IllegalArgumentException> { Parameter(String::class, n) }
+                .message.let { assert(it?.contains("Name must comply with") ?: false) }
         }
+
+        assertFailsWith<IllegalArgumentException> { Parameter(Int::class, regex = Regex(".*")) }
+            .message.let { assert(it?.contains("Regex can only be used for 'string'") ?: false) }
+
+        assertFailsWith<IllegalArgumentException> { Parameter(String::class, regex = Regex("A"), values = listOf("a")) }
+            .message.let { assert(it?.contains("Value should match the 'A' regex: a") ?: false) }
+
+        assertFailsWith<IllegalArgumentException> { Parameter(Int::class, description = " ") }
     }
 
-    @Test fun `Options have utility constructor`() {
+    @Test fun `Parameters have utility constructor`() {
         val re = "NAME|SIZE|DATE"
-        Option(String::class, 's', "sort", "The field used to sort items", Regex(re), value = "NAME")
-            .assert(
-                "[-s REGEX]",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. [$re] Default: NAME"
-            )
+        Parameter(String::class, "sort", "The field used to sort items", Regex(re), value = "NAME")
+            .assert("[<sort>]", "<sort>", "The field used to sort items. [$re] Default: NAME")
     }
 
-    @Test fun `Options with regular expressions are described correctly`() {
+    @Test fun `Parameters with regular expressions are described correctly`() {
         val re = "NAME|SIZE|DATE"
-        val str = Option(String::class, 's', "sort", "The field used to sort items", Regex(re))
-            .assert(
-                "[-s REGEX]",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. [$re]"
-            )
+        val str = Parameter(String::class, "sort", "The field used to sort items", Regex(re))
+            .assert("[<sort>]", "<sort>", "The field used to sort items. [$re]")
         str.copy(multiple = true)
-            .assert(
-                "[-s REGEX]...",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. [$re]..."
-            )
+            .assert("[<sort>]...", "<sort>", "The field used to sort items. [$re]...")
         str.copy(optional = false)
-            .assert(
-                "-s REGEX",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. $re"
-            )
+            .assert("<sort>", "<sort>", "The field used to sort items. $re")
         str.copy(optional = false, multiple = true)
-            .assert(
-                "-s REGEX...",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. $re..."
-            )
+            .assert("<sort>...", "<sort>", "The field used to sort items. $re...")
         str.copy(optional = false, multiple = true)
-            .assert(
-                "-s REGEX...",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. $re..."
-            )
+            .assert("<sort>...", "<sort>", "The field used to sort items. $re...")
         str.copy(multiple = true, values = listOf("NAME", "SIZE"))
-            .assert(
-                "[-s REGEX]...",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. [$re]... Default: [NAME, SIZE]"
-            )
+            .assert("[<sort>]...", "<sort>", "The field used to sort items. [$re]... Default: [NAME, SIZE]")
         str.copy(values = listOf("NAME", "SIZE"))
-            .assert(
-                "[-s REGEX]",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. [$re] Default: NAME"
-            )
+            .assert("[<sort>]", "<sort>", "The field used to sort items. [$re] Default: NAME")
     }
 
-    // TODO ------------------------------------------------------------------------------------------------------------
-    @Test fun `Options are described correctly`() {
+    @Test fun `Parameters are described correctly`() {
         val file = Parameter(File::class, "file", "The file whose checksum to calculate")
             .assert("[<file>]", "<file>", "The file whose checksum to calculate. [FILE]")
         file.copy(name = null)
@@ -111,7 +92,7 @@ internal class OptionTest {
             .assert("[<file>]", "<file>", "The file whose checksum to calculate. [FILE] Default: ./a")
     }
 
-    @Test fun `Options is formatted correctly for all types`() {
+    @Test fun `Summary is formatted correctly for all types`() {
         listOf(
             Boolean::class,
             Int::class,
