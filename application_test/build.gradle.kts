@@ -17,4 +17,5 @@ extensions.configure<JavaApplication> {
 
 dependencies {
     "api"(project(":terminal"))
+    "api"(project(":args"))
 }
