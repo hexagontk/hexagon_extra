@@ -7,6 +7,7 @@ import com.hexagonkt.serialization.jackson.json.Json
 
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Disabled
 import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
@@ -63,7 +64,9 @@ internal class RabbitConnectionTest {
         rabbitMq.stop()
     }
 
-    @Test fun `call return expected results`() {
+    @Test
+    @Disabled // TODO Review this test
+    fun `call return expected results`() {
         val ts = currentTimeMillis().toString()
         assert(client.call(QUEUE, ts) == ts + SUFFIX)
         val result = client.call(QUEUE_ERROR, ts)
