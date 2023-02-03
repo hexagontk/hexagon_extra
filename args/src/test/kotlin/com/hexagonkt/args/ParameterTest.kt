@@ -70,6 +70,7 @@ internal class ParameterTest {
     }
 
     @Test fun `Parameters are described correctly`() {
+        val files = listOf(File("./a"), File("./b"))
         val file = Parameter(File::class, "file", "The file whose checksum to calculate")
             .assert("[<file>]", "<file>", "The file whose checksum to calculate. [FILE]")
         file.copy(name = null)
@@ -86,10 +87,10 @@ internal class ParameterTest {
             .assert("<file>...", "<file>", "The file whose checksum to calculate. FILE...")
         file.copy(optional = false, multiple = true)
             .assert("<file>...", "<file>", "The file whose checksum to calculate. FILE...")
-        file.copy(multiple = true, values = listOf(File("./a"), File("./b")))
-            .assert("[<file>]...", "<file>", "The file whose checksum to calculate. [FILE]... Default: [./a, ./b]")
-        file.copy(values = listOf(File("./a"), File("./b")))
-            .assert("[<file>]", "<file>", "The file whose checksum to calculate. [FILE] Default: ./a")
+        file.copy(multiple = true, values = files)
+            .assert("[<file>]...", "<file>", "The file whose checksum to calculate. [FILE]... Default: $files")
+        file.copy(values = files)
+            .assert("[<file>]", "<file>", "The file whose checksum to calculate. [FILE] Default: ${files.first()}")
     }
 
     @Test fun `Summary is formatted correctly for all types`() {

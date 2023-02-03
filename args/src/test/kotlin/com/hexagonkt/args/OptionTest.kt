@@ -44,76 +44,58 @@ internal class OptionTest {
     @Test fun `Options with regular expressions are described correctly`() {
         val re = "NAME|SIZE|DATE"
         val str = Option(String::class, 's', "sort", "The field used to sort items", Regex(re))
-            .assert(
-                "[-s REGEX]",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. [$re]"
-            )
+            .assert( "[-s REGEX]", "-s REGEX, --sort REGEX", "The field used to sort items. [$re]")
         str.copy(multiple = true)
-            .assert(
-                "[-s REGEX]...",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. [$re]..."
-            )
+            .assert("[-s REGEX]...", "-s REGEX, --sort REGEX", "The field used to sort items. [$re]...")
         str.copy(optional = false)
-            .assert(
-                "-s REGEX",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. $re"
-            )
+            .assert("-s REGEX", "-s REGEX, --sort REGEX", "The field used to sort items. $re")
         str.copy(optional = false, multiple = true)
-            .assert(
-                "-s REGEX...",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. $re..."
-            )
+            .assert("-s REGEX...", "-s REGEX, --sort REGEX", "The field used to sort items. $re...")
         str.copy(optional = false, multiple = true)
-            .assert(
-                "-s REGEX...",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. $re..."
-            )
+            .assert("-s REGEX...", "-s REGEX, --sort REGEX", "The field used to sort items. $re...")
+        str.copy(values = listOf("NAME", "SIZE"))
+            .assert("[-s REGEX]", "-s REGEX, --sort REGEX", "The field used to sort items. [$re] Default: NAME")
         str.copy(multiple = true, values = listOf("NAME", "SIZE"))
             .assert(
                 "[-s REGEX]...",
                 "-s REGEX, --sort REGEX",
                 "The field used to sort items. [$re]... Default: [NAME, SIZE]"
             )
-        str.copy(values = listOf("NAME", "SIZE"))
+    }
+
+    @Test fun `Options are described correctly`() {
+        val f = File("./a")
+        val files = listOf(f, File("./b"))
+        val file = Option(File::class, 'f', "file", "The file whose checksum to calculate")
+            .assert("[-f FILE]", "-f FILE, --file FILE", "The file whose checksum to calculate. [FILE]")
+        file.copy(name = null)
+            .assert("[-f FILE]", "-f FILE", "The file whose checksum to calculate. [FILE]")
+        file.copy(description = null)
+            .assert("[-f FILE]", "-f FILE, --file FILE", "[FILE]")
+        file.copy(name = null, description = null)
+            .assert("[-f FILE]", "-f FILE", "[FILE]")
+        file.copy(multiple = true)
+            .assert("[-f FILE]...", "-f FILE, --file FILE", "The file whose checksum to calculate. [FILE]...")
+        file.copy(optional = false)
+            .assert("-f FILE", "-f FILE, --file FILE", "The file whose checksum to calculate. FILE")
+        file.copy(optional = false, multiple = true)
+            .assert("-f FILE...", "-f FILE, --file FILE", "The file whose checksum to calculate. FILE...")
+        file.copy(optional = false, multiple = true)
+            .assert("-f FILE...", "-f FILE, --file FILE", "The file whose checksum to calculate. FILE...")
+        file.copy(values = files)
+            .assert("[-f FILE]", "-f FILE, --file FILE", "The file whose checksum to calculate. [FILE] Default: $f")
+        file.copy(shortName = null)
+            .assert("[--file FILE]", "--file FILE", "The file whose checksum to calculate. [FILE]")
+        file.copy(multiple = true, values = files)
             .assert(
-                "[-s REGEX]",
-                "-s REGEX, --sort REGEX",
-                "The field used to sort items. [$re] Default: NAME"
+                "[-f FILE]...",
+                "-f FILE, --file FILE",
+                "The file whose checksum to calculate. [FILE]... Default: $files"
             )
     }
 
-    // TODO ------------------------------------------------------------------------------------------------------------
-    @Test fun `Options are described correctly`() {
-        val file = Parameter(File::class, "file", "The file whose checksum to calculate")
-            .assert("[<file>]", "<file>", "The file whose checksum to calculate. [FILE]")
-        file.copy(name = null)
-            .assert("[<null>]", "<null>", "The file whose checksum to calculate. [FILE]")
-        file.copy(description = null)
-            .assert("[<file>]", "<file>", "[FILE]")
-        file.copy(name = null, description = null)
-            .assert("[<null>]", "<null>", "[FILE]")
-        file.copy(multiple = true)
-            .assert("[<file>]...", "<file>", "The file whose checksum to calculate. [FILE]...")
-        file.copy(optional = false)
-            .assert("<file>", "<file>", "The file whose checksum to calculate. FILE")
-        file.copy(optional = false, multiple = true)
-            .assert("<file>...", "<file>", "The file whose checksum to calculate. FILE...")
-        file.copy(optional = false, multiple = true)
-            .assert("<file>...", "<file>", "The file whose checksum to calculate. FILE...")
-        file.copy(multiple = true, values = listOf(File("./a"), File("./b")))
-            .assert("[<file>]...", "<file>", "The file whose checksum to calculate. [FILE]... Default: [./a, ./b]")
-        file.copy(values = listOf(File("./a"), File("./b")))
-            .assert("[<file>]", "<file>", "The file whose checksum to calculate. [FILE] Default: ./a")
-    }
-
-    @Test fun `Options is formatted correctly for all types`() {
+    @Test fun `Options are formatted correctly for all types`() {
         listOf(
-            Boolean::class,
             Int::class,
             Long::class,
             Float::class,
@@ -127,13 +109,22 @@ internal class OptionTest {
             LocalTime::class,
             LocalDateTime::class,
         )
-        .map { Parameter(it, it.simpleName?.camelToWords()?.joinToString("-")) }
-        .forEach {
-            val n = it.name
-            val t = it.type.simpleName
-            assertEquals("[<$n>]", it.summary())
-            assertEquals("<$n>", it.definition())
-            assertEquals("[${t?.camelToWords()?.wordsToSnake()?.uppercase()}]", it.detail())
+        .map {
+            val simpleName = it.simpleName
+            Option(it, simpleName?.first()?.lowercaseChar(), simpleName?.camelToWords()?.joinToString("-"))
         }
+        .forEach {
+            val t = it.type.simpleName
+            val ts = t?.camelToWords()?.wordsToSnake()?.uppercase()
+            val sn = t?.first()?.lowercaseChar()
+            val ln = t?.camelToWords()?.joinToString("-")
+            assertEquals("[-$sn $ts]", it.summary())
+            assertEquals("-$sn $ts, --$ln $ts", it.definition())
+            assertEquals("[$ts]", it.detail())
+        }
+    }
+
+    @Test fun `Boolean option is formatted correctly for all types`() {
+        Option(Boolean::class, 'b', "boolean", "Flag option").assert("[-b]", "-b, --boolean", "Flag option. [BOOLEAN]")
     }
 }
