@@ -52,6 +52,9 @@ data class Parameter<T : Any>(
             values.forEach {
                 require(regex.matches(it as String)) { "Value should match the '${regex.pattern}' regex: $it" }
             }
+
+        if (!multiple)
+            require(values.size <= 1) { "Single parameter can only have one value: $values" }
     }
 
     override fun summary(): String =

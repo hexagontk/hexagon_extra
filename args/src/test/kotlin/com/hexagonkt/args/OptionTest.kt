@@ -53,7 +53,7 @@ internal class OptionTest {
             .assert("-s REGEX...", "-s REGEX, --sort REGEX", "The field used to sort items. $re...")
         str.copy(optional = false, multiple = true)
             .assert("-s REGEX...", "-s REGEX, --sort REGEX", "The field used to sort items. $re...")
-        str.copy(values = listOf("NAME", "SIZE"))
+        str.copy(values = listOf("NAME"))
             .assert("[-s REGEX]", "-s REGEX, --sort REGEX", "The field used to sort items. [$re] Default: NAME")
         str.copy(multiple = true, values = listOf("NAME", "SIZE"))
             .assert(
@@ -82,7 +82,7 @@ internal class OptionTest {
             .assert("-f FILE...", "-f FILE, --file FILE", "The file whose checksum to calculate. FILE...")
         file.copy(optional = false, multiple = true)
             .assert("-f FILE...", "-f FILE, --file FILE", "The file whose checksum to calculate. FILE...")
-        file.copy(values = files)
+        file.copy(values = listOf(f))
             .assert("[-f FILE]", "-f FILE, --file FILE", "The file whose checksum to calculate. [FILE] Default: $f")
         file.copy(shortName = null)
             .assert("[--file FILE]", "--file FILE", "The file whose checksum to calculate. [FILE]")

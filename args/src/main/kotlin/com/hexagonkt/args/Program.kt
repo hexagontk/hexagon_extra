@@ -5,16 +5,10 @@ import com.hexagonkt.core.requireNotBlank
 import java.io.BufferedReader
 
 data class Program(
-    val version: String?,
-    val programCommand: Command,
-    val commands: LinkedHashSet<Command>,
-) : Operation by programCommand {
-
-    val commandsMap: Map<String, Command> by lazy {
-        commands
-            .associateBy { it.name }
-            .mapValues { (_, v) -> v.copy(properties = LinkedHashSet(properties + v.properties)) }
-    }
+    val version: String? = null,
+    val command: Command,
+) {
+//    val subcommandsMap: Map<String, Command> = subcommands.associateBy { it.name }
 
     constructor(
         name: String,
@@ -22,8 +16,16 @@ data class Program(
         title: String? = null,
         description: String? = null,
         properties: LinkedHashSet<Property<*>> = linkedSetOf(),
-        commands: LinkedHashSet<Command> = linkedSetOf(),
-    ) : this(version, Command(name, title, description, properties), commands)
+    ) : this(version, Command(name, title, description, properties))
+
+    constructor(
+        name: String,
+        version: String? = null,
+        title: String? = null,
+        description: String? = null,
+        properties: LinkedHashSet<Property<*>> = linkedSetOf(),
+        commands: LinkedHashSet<Command>,
+    ) : this(version, Command(name, title, description, properties, commands))
 
     init {
         requireNotBlank(Program::version)
@@ -35,6 +37,13 @@ data class Program(
             else null
         }
 
+    fun headline(): String =
+        listOfNotNull(
+            command.name,
+            command.title?.let { "- $it" },
+            version?.let { "(version $version)" }
+        ).joinToString(" ")
+
     fun parse(args: Array<String>): Command {
         // Convert to canonical form "-abc param --long value p1 p2" to "-a -b -c=param --long=value p1 p2"
         // Split properties from commands / parameters
@@ -43,7 +52,8 @@ data class Program(
         TODO()
     }
 
-    private fun canonical(args: Array<String>): List<String> = emptyList()
+    private fun canonical(args: Array<String>): List<String> =
+        emptyList()
 
     private fun commands(): Map<String, Command> {
         TODO()

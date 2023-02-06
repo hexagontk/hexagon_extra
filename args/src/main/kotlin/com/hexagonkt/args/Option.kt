@@ -63,6 +63,9 @@ data class Option<T : Any>(
             shortName = shortName
         )
 
+    fun keys(): List<String> =
+        listOfNotNull(shortName?.toString(), name)
+
     override fun summary(): String =
         format(
             aliases()

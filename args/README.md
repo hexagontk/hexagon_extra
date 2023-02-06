@@ -12,12 +12,15 @@ TODO .
 7. Support - and --
 8. Take care of environment variables and .env files in current dir
 9. Support interactive settings prompt if mandatory options are missing
+10. Support @files for long list of parameters
 
 Program, can have stream input, config files (XDG dirs), and parameters
 
 Check: https://clig.dev/#the-basics
 
 TODO Handle standard options like --help, help command -q --quiet, -v verbose, etc.
+
+TODO Control rendering with flags on `ArgsManager`
 
 ## Install the Dependency
 

@@ -65,7 +65,7 @@ internal class ParameterTest {
             .assert("<sort>...", "<sort>", "The field used to sort items. $re...")
         str.copy(multiple = true, values = listOf("NAME", "SIZE"))
             .assert("[<sort>]...", "<sort>", "The field used to sort items. [$re]... Default: [NAME, SIZE]")
-        str.copy(values = listOf("NAME", "SIZE"))
+        str.copy(values = listOf("NAME"))
             .assert("[<sort>]", "<sort>", "The field used to sort items. [$re] Default: NAME")
     }
 
@@ -89,7 +89,7 @@ internal class ParameterTest {
             .assert("<file>...", "<file>", "The file whose checksum to calculate. FILE...")
         file.copy(multiple = true, values = files)
             .assert("[<file>]...", "<file>", "The file whose checksum to calculate. [FILE]... Default: $files")
-        file.copy(values = files)
+        file.copy(values = files.dropLast(1))
             .assert("[<file>]", "<file>", "The file whose checksum to calculate. [FILE] Default: ${files.first()}")
     }
 
