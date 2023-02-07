@@ -7,7 +7,7 @@ data class Option<T : Any>(
     val shortName: Char? = null,
 ) : Property<T> by parameter {
 
-    private val typeName: String? = if (parameter.regex != null) "REGEX" else parameter.typeName
+    private val hasValue: Boolean = type != Boolean::class
 
     constructor(
         type: KClass<T>,
@@ -69,12 +69,12 @@ data class Option<T : Any>(
     override fun summary(): String =
         format(
             aliases()
-                .map { if (parameter.hasValue) "$it $typeName" else it }
+                .map { if (hasValue) "$it ${parameter.typeName}" else it }
                 .first()
         )
 
     override fun definition(): String =
-        aliases().joinToString(", ").let { if (parameter.hasValue) "$it $typeName" else it }
+        aliases().joinToString(", ").let { if (hasValue) "$it ${parameter.typeName}" else it }
 
     private fun aliases() = listOfNotNull(
         shortName?.let { "-$it" },

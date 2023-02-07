@@ -18,11 +18,12 @@ data class Parameter<T : Any>(
 
     override val value: T? = values.firstOrNull()
 
-    val typeName: String? = type.simpleName?.camelToWords()?.wordsToSnake()?.uppercase()
-    val hasValue: Boolean = type != Boolean::class
+    val typeName: String? =
+        if (regex != null) "REGEX"
+        else type.simpleName?.camelToWords()?.wordsToSnake()?.uppercase()
 
     companion object {
-        val parameterRegex = "[a-z0-9\\-]{2,}".toRegex()
+        val nameRegex = "[a-z0-9\\-]{2,}".toRegex()
     }
 
     constructor(
@@ -39,8 +40,8 @@ data class Parameter<T : Any>(
             val types = parsedClasses.map(KClass<*>::simpleName)
             "Type ${type.simpleName} not in allowed types: $types"
         }
-        require(name?.matches(parameterRegex) ?: true) {
-            "Name must comply with ${parameterRegex.pattern} regex: $name"
+        require(name?.matches(nameRegex) ?: true) {
+            "Name must comply with ${nameRegex.pattern} regex: $name"
         }
         require(regex == null || type == String::class) {
             "Regex can only be used for 'string' parameters: ${type.simpleName}"
@@ -50,7 +51,9 @@ data class Parameter<T : Any>(
 
         if (regex != null)
             values.forEach {
-                require(regex.matches(it as String)) { "Value should match the '${regex.pattern}' regex: $it" }
+                require(regex.matches(it as String)) {
+                    "Value should match the '${regex.pattern}' regex: $it"
+                }
             }
 
         if (!multiple)
