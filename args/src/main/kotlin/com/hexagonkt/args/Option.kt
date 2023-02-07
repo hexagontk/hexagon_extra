@@ -74,7 +74,7 @@ data class Option<T : Any>(
         )
 
     override fun definition(): String =
-        aliases().joinToString(", ") { if (parameter.hasValue) "$it $typeName" else it }
+        aliases().joinToString(", ").let { if (parameter.hasValue) "$it $typeName" else it }
 
     private fun aliases() = listOfNotNull(
         shortName?.let { "-$it" },

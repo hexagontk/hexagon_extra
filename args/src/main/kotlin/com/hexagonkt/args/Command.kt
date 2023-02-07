@@ -4,8 +4,6 @@ import com.hexagonkt.core.requireNotBlank
 
 /**
  * A program can have multiple commands with their own set of options and positional parameters.
- *
- * @property name All nested "subcommands" separated by spaces or colons. I.e.: "config get"
  */
 data class Command(
     val name: String,
@@ -43,7 +41,9 @@ data class Command(
 
         if (parametersMap.isNotEmpty()) {
             val parameters = parametersMap.values.reversed().drop(1)
-            require(parameters.all { !it.multiple }) { "Only the last positional parameter can be multiple" }
+            require(parameters.all { !it.multiple }) {
+                "Only the last positional parameter can be multiple"
+            }
         }
     }
 
@@ -57,5 +57,11 @@ data class Command(
         nestedSubcommands().associateBy { it.name }
 
     fun summary(): String =
-        ""
+        listOfNotNull(
+            name,
+            title?.let { "- $it" },
+        ).joinToString(" ")
+
+    fun definition(): String = ""
+    fun detail(): String = ""
 }

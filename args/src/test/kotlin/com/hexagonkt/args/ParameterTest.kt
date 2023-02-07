@@ -39,8 +39,10 @@ internal class ParameterTest {
         assertFailsWith<IllegalArgumentException> { Parameter(Int::class, regex = Regex(".*")) }
             .message.let { assert(it?.contains("Regex can only be used for 'string'") ?: false) }
 
-        assertFailsWith<IllegalArgumentException> { Parameter(String::class, regex = Regex("A"), values = listOf("a")) }
-            .message.let { assert(it?.contains("Value should match the 'A' regex: a") ?: false) }
+        assertFailsWith<IllegalArgumentException> {
+            Parameter(String::class, regex = Regex("A"), values = listOf("a"))
+        }
+        .message.let { assert(it?.contains("Value should match the 'A' regex: a") ?: false) }
 
         assertFailsWith<IllegalArgumentException> { Parameter(Int::class, description = " ") }
     }
@@ -63,10 +65,14 @@ internal class ParameterTest {
             .assert("<sort>...", "<sort>", "The field used to sort items. $re...")
         str.copy(optional = false, multiple = true)
             .assert("<sort>...", "<sort>", "The field used to sort items. $re...")
-        str.copy(multiple = true, values = listOf("NAME", "SIZE"))
-            .assert("[<sort>]...", "<sort>", "The field used to sort items. [$re]... Default: [NAME, SIZE]")
         str.copy(values = listOf("NAME"))
             .assert("[<sort>]", "<sort>", "The field used to sort items. [$re] Default: NAME")
+        str.copy(multiple = true, values = listOf("NAME", "SIZE"))
+            .assert(
+                "[<sort>]...",
+                "<sort>",
+                "The field used to sort items. [$re]... Default: [NAME, SIZE]"
+            )
     }
 
     @Test fun `Parameters are described correctly`() {
@@ -88,9 +94,17 @@ internal class ParameterTest {
         file.copy(optional = false, multiple = true)
             .assert("<file>...", "<file>", "The file whose checksum to calculate. FILE...")
         file.copy(multiple = true, values = files)
-            .assert("[<file>]...", "<file>", "The file whose checksum to calculate. [FILE]... Default: $files")
+            .assert(
+                "[<file>]...",
+                "<file>",
+                "The file whose checksum to calculate. [FILE]... Default: $files"
+            )
         file.copy(values = files.dropLast(1))
-            .assert("[<file>]", "<file>", "The file whose checksum to calculate. [FILE] Default: ${files.first()}")
+            .assert(
+                "[<file>]",
+                "<file>",
+                "The file whose checksum to calculate. [FILE] Default: ${files.first()}"
+            )
     }
 
     @Test fun `Summary is formatted correctly for all types`() {

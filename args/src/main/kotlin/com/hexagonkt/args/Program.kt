@@ -8,8 +8,6 @@ data class Program(
     val version: String? = null,
     val command: Command,
 ) {
-//    val subcommandsMap: Map<String, Command> = subcommands.associateBy { it.name }
-
     constructor(
         name: String,
         version: String? = null,
@@ -37,12 +35,15 @@ data class Program(
             else null
         }
 
-    fun headline(): String =
+    fun summary(): String =
         listOfNotNull(
             command.name,
             command.title?.let { "- $it" },
             version?.let { "(version $version)" }
         ).joinToString(" ")
+
+    fun usage(): String =
+        "Usage: ${command.name}"
 
     fun parse(args: Array<String>): Command {
         // Convert to canonical form "-abc param --long value p1 p2" to "-a -b -c=param --long=value p1 p2"
