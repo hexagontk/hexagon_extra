@@ -13,12 +13,17 @@ class ParameterFormatter : ComponentFormatter<Parameter<*>> {
         "<${component.name}>"
 
     override fun detail(component: Parameter<*>): String =
-        listOfNotNull(
-            component.description?.let { if (it.endsWith('.')) it else "$it." },
-            (component.regex?.pattern ?: component.typeName())?.let { component.format(it) },
-            component.values.ifEmpty { null }?.map(Any::toString)?.let { "Default: " + if (component.multiple) component.values else component.value },
-        )
-            .joinToString(" ")
+        component.let { c ->
+            listOfNotNull(
+                c.description?.let { if (it.endsWith('.')) it else "$it." },
+                (c.regex?.pattern ?: c.typeName())?.let { c.format(it) },
+                c.values
+                    .ifEmpty { null }
+                    ?.map(Any::toString)
+                    ?.let { "Default: " + if (c.multiple) c.values else c.value },
+            )
+        }
+        .joinToString(" ")
 
     private fun Parameter<*>.format(text: String): String =
         when {

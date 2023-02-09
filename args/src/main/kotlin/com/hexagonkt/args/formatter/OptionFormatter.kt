@@ -19,18 +19,22 @@ class OptionFormatter : ComponentFormatter<Option<*>> {
         }
 
     override fun detail(component: Option<*>): String =
-        listOfNotNull(
-            component.description?.let { if (it.endsWith('.')) it else "$it." },
-            (component.regex?.pattern ?: component.typeName())?.let { component.format(it) },
-            component.values.ifEmpty { null }?.map(Any::toString)
-                ?.let { "Default: " + if (component.multiple) component.values else component.value },
-        )
+        component.let { c ->
+            listOfNotNull(
+                c.description?.let { if (it.endsWith('.')) it else "$it." },
+                (c.regex?.pattern ?: c.typeName())?.let { c.format(it) },
+                c.values
+                    .ifEmpty { null }
+                    ?.map(Any::toString)
+                    ?.let { "Default: " + if (c.multiple) c.values else c.value },
+            )
+        }
         .joinToString(" ")
 
-    private fun <T : Any> Option<T>.hasValue(): Boolean =
+    private fun Option<*>.hasValue(): Boolean =
         type != Boolean::class
 
-    private fun <T : Any> Option<T>.aliases() =
+    private fun Option<*>.aliases() =
         names.map { if (it.length == 1) "-$it" else "--$it" }
 
     private fun Option<*>.format(text: String): String =
