@@ -1,14 +1,12 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.core.camelToWords
 import com.hexagonkt.core.parsedClasses
 import com.hexagonkt.core.requireNotBlank
-import com.hexagonkt.core.wordsToSnake
 import kotlin.reflect.KClass
 
 data class Parameter<T : Any>(
     override val type: KClass<T>,
-    override val name: String? = null,
+    val name: String,
     override val description: String? = null,
     override val regex: Regex? = null,
     override val optional: Boolean = true,
@@ -16,11 +14,9 @@ data class Parameter<T : Any>(
     override val values: List<T> = emptyList(),
 ) : Property<T> {
 
-    override val value: T? = values.firstOrNull()
+    override val names: LinkedHashSet<String> = linkedSetOf(name)
 
-    val typeName: String? =
-        if (regex != null) "REGEX"
-        else type.simpleName?.camelToWords()?.wordsToSnake()?.uppercase()
+    val value: T? = values.firstOrNull()
 
     companion object {
         val nameRegex = "[a-z0-9\\-]{2,}".toRegex()
@@ -28,7 +24,7 @@ data class Parameter<T : Any>(
 
     constructor(
         type: KClass<T>,
-        name: String? = null,
+        name: String,
         description: String? = null,
         regex: Regex? = null,
         optional: Boolean = true,
@@ -40,8 +36,9 @@ data class Parameter<T : Any>(
             val types = parsedClasses.map(KClass<*>::simpleName)
             "Type ${type.simpleName} not in allowed types: $types"
         }
-        require(name?.matches(nameRegex) ?: true) {
-            "Name must comply with ${nameRegex.pattern} regex: $name"
+        require(names.isNotEmpty()) { "" }
+        require(names.all { it.matches(nameRegex) }) {
+            "Names must comply with ${nameRegex.pattern} regex: $names"
         }
         require(regex == null || type == String::class) {
             "Regex can only be used for 'string' parameters: ${type.simpleName}"
@@ -59,18 +56,4 @@ data class Parameter<T : Any>(
         if (!multiple)
             require(values.size <= 1) { "Single parameter can only have one value: $values" }
     }
-
-    override fun summary(): String =
-        format(definition())
-
-    override fun definition(): String =
-        "<$name>"
-
-    override fun detail(): String =
-        listOfNotNull(
-            description?.let { if (it.endsWith('.')) it else "$it." },
-            (regex?.pattern ?: typeName)?.let(::format),
-            values.ifEmpty { null }?.map(Any::toString)?.let { "Default: " + if (multiple) values else value },
-        )
-        .joinToString(" ")
 }

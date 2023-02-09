@@ -14,11 +14,6 @@ internal class CommandTest {
         assertFailsWith<IllegalArgumentException> { Command("cmd", title = " ") }
         assertFailsWith<IllegalArgumentException> { Command("cmd", description = " ") }
 
-        assertFailsWith<IllegalStateException> {
-            Command("cmd", properties = linkedSetOf(Parameter(Int::class)))
-        }
-        .let { assertEquals("Command parameter must have a name", it.message) }
-
         assertFailsWith<IllegalArgumentException> {
             Command(
                 name = "cmd",

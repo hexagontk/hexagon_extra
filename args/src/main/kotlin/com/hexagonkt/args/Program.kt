@@ -1,5 +1,6 @@
 package com.hexagonkt.args
 
+import com.hexagonkt.args.formatter.DefaultFormatter
 import com.hexagonkt.core.out
 import com.hexagonkt.core.requireNotBlank
 import java.io.BufferedReader
@@ -7,6 +8,7 @@ import java.io.BufferedReader
 data class Program(
     val version: String? = null,
     val command: Command,
+    val formatter: Formatter = DefaultFormatter(),
 ) {
     constructor(
         name: String,
@@ -34,16 +36,6 @@ data class Program(
             if (it.ready().out()) it.readText()
             else null
         }
-
-    fun summary(): String =
-        listOfNotNull(
-            command.name,
-            command.title?.let { "- $it" },
-            version?.let { "(version $version)" }
-        ).joinToString(" ")
-
-    fun usage(): String =
-        "Usage: ${command.name}"
 
     fun parse(args: Array<String>): Command {
         // Convert to canonical form "-abc param --long value p1 p2" to "-a -b -c=param --long=value p1 p2"

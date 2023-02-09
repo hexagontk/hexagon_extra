@@ -15,11 +15,7 @@ data class Command(
     val propertiesMap: Map<String, Property<*>> by lazy {
         properties
             .flatMap { p ->
-                when (p) {
-                    is Parameter -> listOf(p.name ?: error("Command parameter must have a name"))
-                    is Option -> p.keys()
-                }
-                .map { it to p }
+                p.names.map { it to p }
             }
             .toMap()
     }
@@ -55,13 +51,4 @@ data class Command(
 
     fun subcommandsMap(): Map<String, Command> =
         nestedSubcommands().associateBy { it.name }
-
-    fun summary(): String =
-        listOfNotNull(
-            name,
-            title?.let { "- $it" },
-        ).joinToString(" ")
-
-    fun definition(): String = ""
-    fun detail(): String = ""
 }

@@ -23,7 +23,7 @@ object OptionParser {
 
             if (isLong) {
                 val split = optionWithoutPrefixedDashes.split("=")
-                val option = options.find { split.first() == it.name }
+                val option = options.find { split.first() in it.names }
                     ?: error("InvalidOptionException")
 
                 result[option] = when {
@@ -33,7 +33,7 @@ object OptionParser {
                 }
             } else {
                 optionWithoutPrefixedDashes.forEach { shortName ->
-                    val option = options.find { it.shortName == shortName }
+                    val option = options.find { shortName.toString() in it.names }
                         ?: error("InvalidOptionSyntaxException")
                     result[option] = true
                 }
