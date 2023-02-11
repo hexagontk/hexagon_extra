@@ -12,13 +12,21 @@ data class Command(
     val properties: LinkedHashSet<Property<*>> = linkedSetOf(),
     val subcommands: LinkedHashSet<Command> = LinkedHashSet(),
 ) {
-    val propertiesMap: Map<String, Property<*>> by lazy {
+    val options: LinkedHashSet<Option<*>> =
+        LinkedHashSet(properties.filterIsInstance<Option<*>>())
+
+    val parameters: LinkedHashSet<Parameter<*>> =
+        LinkedHashSet(properties.filterIsInstance<Parameter<*>>())
+
+    val propertiesMap: Map<String, Property<*>> =
         properties
             .flatMap { p ->
                 p.names.map { it to p }
             }
             .toMap()
-    }
+
+    val defaultsMap: Map<String, Property<*>> =
+        propertiesMap.filterValues { it.values.isNotEmpty() }
 
     val optionsMap: Map<String, Option<*>> =
         propertiesMap

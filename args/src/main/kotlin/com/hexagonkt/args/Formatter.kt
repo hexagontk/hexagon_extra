@@ -1,9 +1,7 @@
 package com.hexagonkt.args
 
-interface Formatter {
-
-    fun overview(program: Program): String
-    fun version(program: Program): String
-    fun help(program: Program): String
-    fun help(command: Command): String
+interface Formatter<T> {
+    fun summary(component: T): String
+    fun definition(component: T): String
+    fun detail(component: T): String
 }

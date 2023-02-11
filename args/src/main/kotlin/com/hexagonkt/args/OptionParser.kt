@@ -14,12 +14,12 @@ object OptionParser {
         val result = mutableMapOf<Option<*>, Any>()
 
         for (arg in args) {
-            if (!isOption(arg)) continue
+            if (!arg.startsWith("-")) continue
 
             if (!PARAMETER_REGEX.matches(arg)) error("InvalidOptionSyntaxException")
 
             val isLong = arg.startsWith("--")
-            val optionWithoutPrefixedDashes = removePrefixedDashes(arg)
+            val optionWithoutPrefixedDashes = arg.dropWhile { it == '-' }
 
             if (isLong) {
                 val split = optionWithoutPrefixedDashes.split("=")
@@ -38,18 +38,6 @@ object OptionParser {
                     result[option] = true
                 }
             }
-        }
-
-        return result
-    }
-
-    private fun isOption(arg: String) =
-        arg.startsWith("-") || arg.startsWith("--")
-
-    private fun removePrefixedDashes(arg: String): String {
-        var result = arg
-        while (result.startsWith("-")) {
-            result = result.substring(1)
         }
 
         return result

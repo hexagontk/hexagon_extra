@@ -1,6 +1,6 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.args.formatter.DefaultFormatter
+import com.hexagonkt.args.formatter.ProgramFormatter
 import com.hexagonkt.core.out
 import com.hexagonkt.core.requireNotBlank
 import java.io.BufferedReader
@@ -8,8 +8,11 @@ import java.io.BufferedReader
 data class Program(
     val version: String? = null,
     val command: Command,
-    val formatter: Formatter = DefaultFormatter(),
+    val formatter: Formatter<Program> = ProgramFormatter(),
 ) {
+//    private val allOptions: Map<String, Option<*>> =
+//        command.nestedSubcommands().map { it.optionsMap }.reduce { a, b -> a + b }
+
     constructor(
         name: String,
         version: String? = null,
@@ -38,17 +41,31 @@ data class Program(
         }
 
     fun parse(args: Array<String>): Command {
-        // Convert to canonical form "-abc param --long value p1 p2" to "-a -b -c=param --long=value p1 p2"
-        // Split properties from commands / parameters
-        // Get command (first parameters)
-        // Group properties
-        TODO()
-    }
+        val arguments = args.toList()
 
-    private fun canonical(args: Array<String>): List<String> =
-        emptyList()
+        // Find command
+        val line = arguments.joinToString(" ")
+        val subcommandsMap = command.subcommandsMap()
+        val commandKey = subcommandsMap.keys.find { line.contains(it) } ?: ""
+        val programCommand = subcommandsMap[commandKey] ?: command
 
-    private fun commands(): Map<String, Command> {
-        TODO()
+        // Remove command from args
+        val properties = commandKey.split(" ").fold(arguments) { a, b -> a - b }
+        val propertiesIterator = properties.iterator()
+
+        // Process properties
+        for (arg in propertiesIterator) {
+            //
+            when {
+                arg.startsWith("--") -> {
+
+                }
+                arg.startsWith("-") -> {
+
+                }
+            }
+        }
+
+        return programCommand
     }
 }

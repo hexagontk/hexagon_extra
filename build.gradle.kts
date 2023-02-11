@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.Detekt
+
 /*
  * Main build script, responsible for:
  *
@@ -57,5 +59,14 @@ task("release") {
         val release = version.toString()
         project.exec { commandLine = listOf("git", "tag", "-m", "Release $release", release) }
         project.exec { commandLine = listOf("git", "push", "--tags") }
+    }
+}
+
+subprojects {
+    val gradleScripts = properties["gradleScripts"]
+    apply(from = "$gradleScripts/detekt.gradle")
+
+    tasks.named<Detekt>("detekt") {
+        source = project.fileTree("src/main/kotlin")
     }
 }

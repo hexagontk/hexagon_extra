@@ -1,24 +1,27 @@
 package com.hexagonkt.args.formatter
 
+import com.hexagonkt.args.Command
+import com.hexagonkt.args.Formatter
 import com.hexagonkt.args.Program
 
-class ProgramFormatter : ComponentFormatter<Program> {
+data class ProgramFormatter(
+    val commandFormatter: Formatter<Command> = CommandFormatter(),
+) : Formatter<Program> {
 
-    override fun summary(component: Program): String =
-        listOfNotNull(
+    override fun summary(component: Program): String {
+        val title = listOfNotNull(
             component.command.name,
             component.command.title?.let { "- $it" },
             component.version?.let { "(version ${component.version})" }
-        ).joinToString(" ")
+        )
+        .joinToString(" ")
 
-    override fun definition(component: Program): String {
-        TODO("Not yet implemented")
+        return "$title\n\n${component.command.description}"
     }
 
-    override fun detail(component: Program): String {
-        TODO("Not yet implemented")
-    }
+    override fun definition(component: Program): String =
+        commandFormatter.definition(component.command)
 
-    fun Program.usage(): String =
-        "Usage: ${command.name}"
+    override fun detail(component: Program): String =
+        commandFormatter.detail(component.command)
 }
