@@ -71,7 +71,7 @@ internal class CommandTest {
             )
         )
 
-        val subcommandsNames = a.subcommandsMap().keys
+        val subcommandsNames = a.subcommandsMap.keys
 
         assertEquals(
             linkedSetOf(
@@ -86,5 +86,22 @@ internal class CommandTest {
         )
 
         subcommandsNames.sortedByDescending { it.count { c -> c == ' ' } }.out()
+    }
+
+    @Test fun `Find command works in a tree of commands`() {
+        val aaa = Command("aaa")
+        val aab = Command("aab")
+        val aa = Command("aa", subcommands = linkedSetOf(aaa, aab))
+        val aba = Command("aba")
+        val abb = Command("abb")
+        val ab = Command("ab", subcommands = linkedSetOf(aba, abb))
+        val a = Command("a", subcommands = linkedSetOf(aa, ab))
+
+        assertEquals(aa, a.findCommand(arrayOf("aa")))
+        assertEquals(ab, a.findCommand(arrayOf("ab")))
+        assertEquals(aaa.copy(name = "aa ${aaa.name}"), a.findCommand(arrayOf("aa", "aaa")))
+        assertEquals(aba.copy(name = "ab ${aba.name}"), a.findCommand(arrayOf("ab", "aba")))
+        assertEquals(aab.copy(name = "aa ${aab.name}"), a.findCommand(arrayOf("aa", "aab")))
+        assertEquals(abb.copy(name = "ab ${abb.name}"), a.findCommand(arrayOf("ab", "abb")))
     }
 }

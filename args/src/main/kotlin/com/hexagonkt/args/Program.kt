@@ -10,9 +10,6 @@ data class Program(
     val command: Command,
     val formatter: Formatter<Program> = ProgramFormatter(),
 ) {
-//    private val allOptions: Map<String, Option<*>> =
-//        command.nestedSubcommands().map { it.optionsMap }.reduce { a, b -> a + b }
-
     constructor(
         name: String,
         version: String? = null,
@@ -41,31 +38,11 @@ data class Program(
         }
 
     fun parse(args: Array<String>): Command {
-        val arguments = args.toList()
+        val programCommand = command.findCommand(args)
+        val subcommands = programCommand.name.split(" ")
+        val properties = subcommands.fold(args.toList()) { a, b -> a - b }
 
-        // Find command
-        val line = arguments.joinToString(" ")
-        val subcommandsMap = command.subcommandsMap()
-        val commandKey = subcommandsMap.keys.find { line.contains(it) } ?: ""
-        val programCommand = subcommandsMap[commandKey] ?: command
-
-        // Remove command from args
-        val properties = commandKey.split(" ").fold(arguments) { a, b -> a - b }
-        val propertiesIterator = properties.iterator()
-
-        // Process properties
-        for (arg in propertiesIterator) {
-            //
-            when {
-                arg.startsWith("--") -> {
-
-                }
-                arg.startsWith("-") -> {
-
-                }
-            }
-        }
-
-        return programCommand
+        // TODO Handle exceptions and --help, --version
+        return programCommand.parse(properties)
     }
 }

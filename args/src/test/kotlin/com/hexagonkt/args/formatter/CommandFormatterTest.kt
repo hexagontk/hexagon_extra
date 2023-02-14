@@ -28,14 +28,14 @@ internal class CommandFormatterTest {
         assertEquals("cmd - CMD Title\n\nDescription of the cmd command", formatter.summary(cmd))
         assertEquals("cmd [-n STRING] [<value>]", formatter.definition(cmd))
         val detail = """
-            Commands:
+            COMMANDS:
               edit
               config
 
-            Parameters:
+            PARAMETERS:
               <value>   [STRING]
 
-            Options:
+            OPTIONS:
               -n, --name STRING   [STRING]
         """.trimIndent().trim()
         assertEquals(detail, formatter.detail(cmd))
