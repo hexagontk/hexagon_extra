@@ -1,8 +1,8 @@
 package com.hexagonkt.args
 
 import com.hexagonkt.args.formatter.ProgramFormatter
-import com.hexagonkt.core.out
-import com.hexagonkt.core.requireNotBlank
+import com.hexagonkt.helpers.out
+import com.hexagonkt.helpers.requireNotBlank
 import java.io.BufferedReader
 
 data class Program(

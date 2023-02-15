@@ -1,6 +1,6 @@
 package com.hexagonkt.dokka.json
 
-import com.hexagonkt.core.out
+import com.hexagonkt.helpers.out
 import com.hexagonkt.core.requireKeys
 import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.jackson.json.Json

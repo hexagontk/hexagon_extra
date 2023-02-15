@@ -1,8 +1,8 @@
 package com.hexagonkt.args.formatter
 
 import com.hexagonkt.args.*
-import com.hexagonkt.core.camelToWords
-import com.hexagonkt.core.wordsToSnake
+import com.hexagonkt.helpers.camelToWords
+import com.hexagonkt.helpers.wordsToSnake
 
 data class PropertyFormatter(
     val namesSeparator: String = ", ",

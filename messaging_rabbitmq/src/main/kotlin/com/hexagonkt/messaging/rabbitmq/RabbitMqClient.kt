@@ -4,6 +4,7 @@ import com.hexagonkt.core.logging.Logger
 import com.codahale.metrics.MetricRegistry
 import com.hexagonkt.http.parseQueryString
 import com.hexagonkt.core.*
+import com.hexagonkt.helpers.*
 import com.hexagonkt.http.model.QueryParameters
 import com.rabbitmq.client.*
 import com.rabbitmq.client.AMQP.BasicProperties

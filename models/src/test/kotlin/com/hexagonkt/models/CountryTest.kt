@@ -1,6 +1,6 @@
 package com.hexagonkt.models
 
-import com.hexagonkt.core.parseLocale
+import com.hexagonkt.helpers.parseLocale
 import kotlin.test.Test
 import kotlin.IllegalArgumentException
 import kotlin.test.assertEquals

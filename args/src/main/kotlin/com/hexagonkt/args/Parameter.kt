@@ -1,7 +1,7 @@
 package com.hexagonkt.args
 
 import com.hexagonkt.core.parsedClasses
-import com.hexagonkt.core.requireNotBlank
+import com.hexagonkt.helpers.requireNotBlank
 import kotlin.reflect.KClass
 
 data class Parameter<T : Any>(

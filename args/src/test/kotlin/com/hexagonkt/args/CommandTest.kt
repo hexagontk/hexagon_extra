@@ -1,6 +1,6 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.core.out
+import com.hexagonkt.helpers.out
 import java.io.File
 import java.lang.IllegalArgumentException
 import kotlin.test.Test

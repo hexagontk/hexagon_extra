@@ -1,6 +1,6 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.core.requireNotBlank
+import com.hexagonkt.helpers.requireNotBlank
 
 /**
  * A program can have multiple commands with their own set of options and positional parameters.
@@ -63,20 +63,20 @@ data class Command(
             .find { line.contains(it.key) }
             ?.let { (k, v) -> v.copy(name = k) }
             ?: this
-//        return subcommandsMap.entries.find { line.contains(it.key) }?.toPair() ?: ("" to this)
     }
 
     fun parse(args: List<String>): Command {
         val propertiesIterator = args.iterator()
 
-        for (arg in propertiesIterator) {
+        propertiesIterator.forEach {
             when {
-                arg.startsWith("--") -> {
-
+                it.startsWith("--") -> {
+                    propertiesIterator.next()
+//                    processProperty()
                 }
-                arg.startsWith("-") -> {
 
-                }
+                it.startsWith("-") -> println(it)
+
                 else -> {}
             }
         }
