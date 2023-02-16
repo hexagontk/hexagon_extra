@@ -2,10 +2,10 @@ package com.hexagonkt.http.test.openapi
 
 import com.hexagonkt.core.fail
 import com.hexagonkt.core.require
-import com.hexagonkt.http.model.ClientErrorStatus.BAD_REQUEST
-import com.hexagonkt.http.model.ClientErrorStatus.UNAUTHORIZED
+import com.hexagonkt.http.model.BAD_REQUEST_400
 import com.hexagonkt.http.model.HttpMethod
 import com.hexagonkt.http.model.HttpMethod.*
+import com.hexagonkt.http.model.UNAUTHORIZED_401
 import com.hexagonkt.http.server.handlers.HttpCallback
 import com.hexagonkt.http.server.handlers.HttpHandler
 import com.hexagonkt.http.server.handlers.HttpServerContext
@@ -94,7 +94,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         return if (!operation.security.any { securityRequirement ->
             verifySecurityRequirement(securityRequirement, call)
         }) {
-            call.send(status = UNAUTHORIZED, body = getResponseContentForStatus(operation, 401))
+            call.send(status = UNAUTHORIZED_401, body = getResponseContentForStatus(operation, 401))
         }
         else null
     }
@@ -151,7 +151,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 "path" -> {
                     if (!verifyPathParam(parameter, call)) {
                         call.send(
-                            status = BAD_REQUEST,
+                            status = BAD_REQUEST_400,
                             body = getResponseContentForStatus(
                                 operation,
                                 status = 400,
@@ -163,7 +163,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 "query" -> {
                     if (!verifyQueryParam(parameter, call)) {
                         call.send(
-                            status = BAD_REQUEST,
+                            status = BAD_REQUEST_400,
                             body = getResponseContentForStatus(
                                 operation,
                                 status = 400,
@@ -175,7 +175,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 "header" -> {
                     if (!verifyHeaderParam(parameter, call)) {
                         call.send(
-                            status = BAD_REQUEST,
+                            status = BAD_REQUEST_400,
                             body = getResponseContentForStatus(
                                 operation,
                                 status = 400,
@@ -187,7 +187,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 "cookie" -> {
                     if (!verifyCookieParam(parameter, call)) {
                         call.send(
-                            status = BAD_REQUEST,
+                            status = BAD_REQUEST_400,
                             body = getResponseContentForStatus(
                                 operation,
                                 status = 400,
@@ -244,7 +244,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         operation.requestBody?.let { requestBody ->
             if (requestBody.required && call.request.bodyString().isBlank()) {
                 call.send(
-                    status = BAD_REQUEST,
+                    status = BAD_REQUEST_400,
                     body = getResponseContentForStatus(operation, 400)
                 )
             }

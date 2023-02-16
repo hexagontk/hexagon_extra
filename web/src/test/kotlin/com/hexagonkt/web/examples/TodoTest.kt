@@ -7,17 +7,13 @@ import com.hexagonkt.core.requireKeys
 import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.core.logging.LoggingLevel.DEBUG
 import com.hexagonkt.core.logging.LoggingManager
+import com.hexagonkt.core.media.APPLICATION_JSON
 import com.hexagonkt.logging.jul.JulLoggingAdapter
-import com.hexagonkt.core.media.ApplicationMedia.JSON
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.HttpClientSettings
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
 import com.hexagonkt.http.client.model.HttpClientResponse
-import com.hexagonkt.http.model.ClientErrorStatus.NOT_FOUND
-import com.hexagonkt.http.model.ContentType
-import com.hexagonkt.http.model.HttpStatus
-import com.hexagonkt.http.model.SuccessStatus.CREATED
-import com.hexagonkt.http.model.SuccessStatus.OK
+import com.hexagonkt.http.model.*
 import com.hexagonkt.http.server.HttpServer
 import com.hexagonkt.http.server.HttpServerPort
 import com.hexagonkt.http.server.HttpServerSettings
@@ -72,7 +68,7 @@ abstract class TodoTest(adapter: HttpServerPort) {
                 post {
                     val task = request.bodyString().parse(Json).convert<Task>()
                     tasks += task.number to task
-                    send(CREATED, task.number.toString())
+                    send(CREATED_201, task.number.toString())
                 }
 
                 put {
@@ -96,7 +92,7 @@ abstract class TodoTest(adapter: HttpServerPort) {
                             ok("Task with id '$taskId' updated")
                         }
                         else {
-                            send(NOT_FOUND, "Task not found")
+                            send(NOT_FOUND_404, "Task not found")
                         }
                     }
 
@@ -106,10 +102,10 @@ abstract class TodoTest(adapter: HttpServerPort) {
                         if (task != null)
                             ok(
                                 body = task.convert(Map::class).serialize(Json),
-                                contentType = ContentType(JSON)
+                                contentType = ContentType(APPLICATION_JSON)
                             )
                         else
-                            send(NOT_FOUND, "Task: $taskId not found")
+                            send(NOT_FOUND_404, "Task: $taskId not found")
                     }
 
                     delete {
@@ -119,13 +115,13 @@ abstract class TodoTest(adapter: HttpServerPort) {
                         if (task != null)
                             ok("Task with id '$taskId' deleted")
                         else
-                            send(NOT_FOUND, "Task not found")
+                            send(NOT_FOUND_404, "Task not found")
                     }
                 }
 
                 get {
                     val body = tasks.values.map { it.convert(Map::class) }.serialize(Json)
-                    ok(body, contentType = ContentType(JSON))
+                    ok(body, contentType = ContentType(APPLICATION_JSON))
                 }
             }
         }
@@ -137,7 +133,7 @@ abstract class TodoTest(adapter: HttpServerPort) {
             JettyClientAdapter(),
             HttpClientSettings(
                 baseUrl = URL("http://localhost:${server.runtimePort}"),
-                contentType = ContentType(JSON)
+                contentType = ContentType(APPLICATION_JSON)
             )
         )
     }
@@ -173,12 +169,12 @@ abstract class TodoTest(adapter: HttpServerPort) {
         val body = Task(101, "Tidy Things", "Tidy everything").serialize(Json)
         val result = client.post("/tasks", body)
         assert(Integer.valueOf(result.bodyString()) == 101)
-        assert(CREATED == result.status)
+        assert(CREATED_201 == result.status)
     }
 
     @Test fun `List tasks`() {
         val body = Task(101, "Tidy Things", "Tidy everything").serialize(Json)
-        assertResponseContains(client.post("/tasks", body), CREATED)
+        assertResponseContains(client.post("/tasks", body), CREATED_201)
         val result = client.get("/tasks")
         assertResponseContains(result, "1", "101")
     }
@@ -204,7 +200,7 @@ abstract class TodoTest(adapter: HttpServerPort) {
 
     @Test fun `Task not found`() {
         val result = client.get("/tasks/9999")
-        assertResponseContains(result, NOT_FOUND, "not found")
+        assertResponseContains(result, NOT_FOUND_404, "not found")
     }
 
     private fun assertResponseContains(
@@ -217,6 +213,6 @@ abstract class TodoTest(adapter: HttpServerPort) {
     }
 
     private fun assertResponseContains(response: HttpClientResponse?, vararg content: String) {
-        assertResponseContains(response, OK, *content)
+        assertResponseContains(response, OK_200, *content)
     }
 }

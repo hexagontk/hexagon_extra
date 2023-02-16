@@ -1,6 +1,6 @@
 package com.hexagonkt.http.test
 
-import com.hexagonkt.http.model.ClientErrorStatus.NOT_FOUND
+import com.hexagonkt.http.model.NOT_FOUND_404
 import com.hexagonkt.http.server.HttpServer
 import com.hexagonkt.http.server.HttpServerPort
 import com.hexagonkt.http.server.handlers.HttpServerContext
@@ -17,7 +17,7 @@ data class MockServer(
 
     val server: HttpServer by lazy {
         HttpServer(adapter) {
-            after(pattern = "*", status = NOT_FOUND) {
+            after(pattern = "*", status = NOT_FOUND_404) {
                 HttpServerContext(
                     context = context.with(
                         event = context.event.copy(

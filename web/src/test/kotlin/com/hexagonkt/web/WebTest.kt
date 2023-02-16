@@ -2,7 +2,7 @@ package com.hexagonkt.web
 
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
-import com.hexagonkt.http.model.SuccessStatus.OK
+import com.hexagonkt.http.model.OK_200
 import com.hexagonkt.http.server.HttpServer
 import com.hexagonkt.http.server.HttpServerSettings
 import com.hexagonkt.http.server.handlers.PathHandler
@@ -67,12 +67,12 @@ internal class WebTest {
 
     @Test fun template() {
         val response = client.get("/template")
-        assertEquals(OK, response.status)
+        assertEquals(OK_200, response.status)
         assertContains(response.bodyString(), "<p>path : /template</p>")
     }
 
     @Test fun templateAdapter() {
         val response = client.get("/template/adapter")
-        assertEquals(OK, response.status)
+        assertEquals(OK_200, response.status)
     }
 }

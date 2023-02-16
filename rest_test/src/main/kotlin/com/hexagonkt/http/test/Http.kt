@@ -1,6 +1,6 @@
 package com.hexagonkt.http.test
 
-import com.hexagonkt.core.media.ApplicationMedia.JSON
+import com.hexagonkt.core.media.APPLICATION_JSON
 import com.hexagonkt.http.SslSettings
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.HttpClientPort
@@ -14,7 +14,7 @@ import java.net.URL
 data class Http(
     val url: String,
     val adapter: HttpClientPort,
-    val contentType: ContentType? = ContentType(JSON),
+    val contentType: ContentType? = ContentType(APPLICATION_JSON),
     val headers: Map<String, *> = emptyMap<String, Any>(),
     val sslSettings: SslSettings? = SslSettings(),
     val block: (Http.() -> Unit)? = null,
