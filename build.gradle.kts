@@ -21,6 +21,8 @@ plugins {
 
 ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagonkt/hexagon/$version/gradle")
 
+defaultTasks("build")
+
 repositories {
     mavenCentral()
 }
