@@ -31,4 +31,4 @@ jobs:
         run: |
           export REMOTE="https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
           git remote set-url origin "$REMOTE"
-          ./gradlew --info --no-daemon -x test release
+          ./gradlew --info --no-daemon release
