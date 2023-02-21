@@ -28,6 +28,11 @@ data class Command(
             }
             .toMap()
 
+    val flagsMap: Map<String, Flag> =
+        propertiesMap
+            .filterValues { it is Flag }
+            .mapValues { it.value as Flag }
+
     val optionsMap: Map<String, Option<*>> =
         propertiesMap
             .filterValues { it is Option<*> }
@@ -67,21 +72,60 @@ data class Command(
 
     fun parse(args: List<String>): Command {
         val propertiesIterator = args.iterator()
+        var parsedProperties = emptyList<Property<*>>()
+        var parsedParameters = parameters
 
         propertiesIterator.forEach {
-            when {
-                it.startsWith("--") -> {
-                    propertiesIterator.next()
-//                    processProperty()
-                }
-
-                it.startsWith("-") -> println(it)
-
-                else -> {}
+            parsedProperties += when {
+                it.startsWith("--") -> parseOption(it.removePrefix("--"), propertiesIterator)
+                it.startsWith('-') -> parseShortOptions(it.removePrefix("-"), propertiesIterator)
+                else -> parseArgument(it, parsedParameters)
             }
         }
 
-        return this
+        return copy(properties = LinkedHashSet(parsedProperties))
+    }
+
+    private fun parseArgument(it: String, p: LinkedHashSet<Parameter<*>>): Collection<Property<*>> {
+        return listOf(Parameter(String::class, "a", value = it))
+    }
+
+    private fun parseShortOptions(it: String, propertiesIterator: Iterator<String>): Collection<Property<*>> {
+        val p =
+            if (it.contains('=')) it.split('=', limit = 2).let { (f, s) -> f to s }
+            else it to null
+
+        return p.first.map {
+            when (val o = propertiesMap[it.toString()] ?: error("")) {
+                is Option<*> -> {
+                    val param = p.second ?: propertiesIterator.next()
+                    if (param.startsWith('-'))
+                        error("")
+                    o.addValue(param)
+                }
+                is Flag -> o.addValue("true")
+                else -> error("")
+            }
+        }
+    }
+
+    private fun parseOption(it: String, propertiesIterator: Iterator<String>): Collection<Property<*>> {
+        val p =
+            if (it.contains('=')) it.split('=', limit = 2).let { (f, s) -> f to s }
+            else it to null
+
+        val o1 = when (val o = propertiesMap[p.first] ?: error("")) {
+            is Option<*> -> {
+                val param = p.second ?: propertiesIterator.next()
+                if (param.startsWith('-'))
+                    error("")
+                o.addValue(param)
+            }
+            is Flag -> o.addValue("true")
+            else -> error("")
+        }
+
+        return listOf(o1)
     }
 
     private fun nestedSubcommands(): LinkedHashSet<Command> =

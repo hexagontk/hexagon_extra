@@ -1,7 +1,6 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.core.parsedClasses
-import com.hexagonkt.helpers.requireNotBlank
+import com.hexagonkt.core.parseOrNull
 import kotlin.reflect.KClass
 
 data class Parameter<T : Any>(
@@ -19,7 +18,7 @@ data class Parameter<T : Any>(
     val value: T? = values.firstOrNull()
 
     companion object {
-        val nameRegex = "[a-z0-9\\-]{2,}".toRegex()
+        val parameterRegex = "[a-z0-9\\-]{2,}".toRegex()
     }
 
     constructor(
@@ -32,28 +31,12 @@ data class Parameter<T : Any>(
     ) : this(type, name, description, regex, optional, false, listOf(value))
 
     init {
-        require(type in parsedClasses) {
-            val types = parsedClasses.map(KClass<*>::simpleName)
-            "Type ${type.simpleName} not in allowed types: $types"
-        }
-        require(names.isNotEmpty()) { "" }
-        require(names.all { it.matches(nameRegex) }) {
-            "Names must comply with ${nameRegex.pattern} regex: $names"
-        }
-        require(regex == null || type == String::class) {
-            "Regex can only be used for 'string' parameters: ${type.simpleName}"
-        }
-
-        requireNotBlank(Parameter<*>::description)
-
-        if (regex != null)
-            values.forEach {
-                require(regex.matches(it as String)) {
-                    "Value should match the '${regex.pattern}' regex: $it"
-                }
-            }
-
-        if (!multiple)
-            require(values.size <= 1) { "Single parameter can only have one value: $values" }
+        check("Parameter", parameterRegex)
     }
+
+    override fun addValue(value: String): Parameter<T> =
+        try { value.parseOrNull(type) }
+        catch (e: Exception) { null }
+        ?.let { copy(values = values + it) }
+        ?: error("Parameter '$name' of type '${typeText()}' can not hold the '$value' value")
 }

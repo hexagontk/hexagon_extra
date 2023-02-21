@@ -24,8 +24,9 @@ data class Flag(
     ) : this(LinkedHashSet(listOfNotNull(shortName?.toString(), name)), description, multiple)
 
     init {
-        require(names.all { it.matches(optionRegex) }) {
-            "Names must comply with ${optionRegex.pattern} regex: $names"
-        }
+        check("Flag", optionRegex)
     }
+
+    override fun addValue(value: String): Flag =
+        copy(values = values + true)
 }

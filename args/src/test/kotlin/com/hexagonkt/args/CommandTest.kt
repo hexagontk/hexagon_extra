@@ -104,4 +104,16 @@ internal class CommandTest {
         assertEquals(aab.copy(name = "aa ${aab.name}"), a.findCommand(arrayOf("aa", "aab")))
         assertEquals(abb.copy(name = "ab ${abb.name}"), a.findCommand(arrayOf("ab", "abb")))
     }
+
+    @Test fun `Commands can parse their own options`() {
+        val cmd = Command(
+            name = "cmd",
+            properties = linkedSetOf(
+                Flag('1', "first"),
+            )
+        )
+
+        assertEquals(listOf(true), cmd.parse(listOf("--first")).flags.first().values)
+        assertEquals(listOf(true), cmd.parse(listOf("-1")).flags.first().values)
+    }
 }

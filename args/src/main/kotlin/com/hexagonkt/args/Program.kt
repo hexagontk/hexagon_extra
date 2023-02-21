@@ -4,6 +4,7 @@ import com.hexagonkt.args.formatter.ProgramFormatter
 import com.hexagonkt.helpers.out
 import com.hexagonkt.helpers.requireNotBlank
 import java.io.BufferedReader
+import kotlin.system.exitProcess
 
 data class Program(
     val version: String? = null,
@@ -42,7 +43,32 @@ data class Program(
         val subcommands = programCommand.name.split(" ")
         val properties = subcommands.fold(args.toList()) { a, b -> a - b }
 
-        // TODO Handle exceptions and --help, --version
-        return programCommand.parse(properties)
+        return try {
+            val parsedCommand = programCommand.parse(properties)
+
+            if (parsedCommand.flags.contains(VERSION))
+                showVersion()
+
+            if (parsedCommand.flags.contains(HELP))
+                showHelp()
+
+            parsedCommand
+        }
+        catch (e: Exception) {
+            showErrors(e)
+        }
+    }
+
+    private fun showVersion() {
+        exitProcess(0)
+    }
+
+    private fun showHelp() {
+        exitProcess(0)
+    }
+
+    private fun showErrors(e: Exception): Nothing {
+        // TODO Handle exceptions
+        exitProcess(400)
     }
 }

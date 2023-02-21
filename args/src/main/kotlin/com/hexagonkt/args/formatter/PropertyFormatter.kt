@@ -1,8 +1,7 @@
 package com.hexagonkt.args.formatter
 
 import com.hexagonkt.args.*
-import com.hexagonkt.helpers.camelToWords
-import com.hexagonkt.helpers.wordsToSnake
+import com.hexagonkt.helpers.camelToSnake
 
 data class PropertyFormatter(
     val namesSeparator: String = ", ",
@@ -62,5 +61,5 @@ data class PropertyFormatter(
 
     private fun Property<*>.typeName(): String? =
         if (regex != null) if (expandRegex) "{${regex?.pattern}}" else "REGEX"
-        else type.simpleName?.camelToWords()?.wordsToSnake()?.uppercase()
+        else type.simpleName?.camelToSnake()?.uppercase()
 }

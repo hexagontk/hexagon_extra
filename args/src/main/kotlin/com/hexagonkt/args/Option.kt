@@ -1,5 +1,6 @@
 package com.hexagonkt.args
 
+import com.hexagonkt.core.parseOrNull
 import kotlin.reflect.KClass
 
 data class Option<T : Any>(
@@ -49,8 +50,12 @@ data class Option<T : Any>(
     ) : this(type, shortName, name, description, regex, optional, multiple, listOf(value))
 
     init {
-        require(names.all { it.matches(optionRegex) }) {
-            "Names must comply with ${optionRegex.pattern} regex: $names"
-        }
+        check("Option", optionRegex)
     }
+
+    override fun addValue(value: String): Option<T> =
+        try { value.parseOrNull(type) }
+        catch (e: Exception) { null }
+        ?.let { copy(values = values + it) }
+        ?: error("Option '${names.first()}' of type '${typeText()}' can not hold the '$value' value")
 }
