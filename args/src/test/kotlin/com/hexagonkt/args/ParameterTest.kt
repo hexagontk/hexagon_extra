@@ -33,7 +33,11 @@ internal class ParameterTest {
     }
 
     @Test fun `Parameters can add values`() {
-        assertEquals(File("/foo/bar"), Parameter(File::class, "one").addValue("/foo/bar").value)
+        assertEquals(
+            File("/foo/bar"),
+            Parameter(File::class, "one").addValue("/foo/bar").values.first()
+        )
+
         assertEquals(
             listOf(1, 2),
             Parameter(Int::class, "int", multiple = true).addValue("1").addValue("2").values
@@ -46,12 +50,12 @@ internal class ParameterTest {
 
         val message1 = "Parameter 'two' of type 'URL' can not hold '0'"
         assertFailsWithMessage<IllegalStateException>(message1) {
-            Parameter(URL::class, "two").addValue("0").value
+            Parameter(URL::class, "two").addValue("0").values.first()
         }
 
         val message2 = "Parameter 'two' of type 'Int' can not hold '/foo/bar'"
         assertFailsWithMessage<IllegalStateException>(message2) {
-            Parameter(Int::class, "two").addValue("/foo/bar").value
+            Parameter(Int::class, "two").addValue("/foo/bar").values.first()
         }
     }
 }

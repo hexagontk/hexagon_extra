@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 
 sealed interface Property<T : Any> {
     val type: KClass<T>
-    val names: LinkedHashSet<String>
+    val names: Set<String>
     val description: String?
     val regex: Regex?
     val optional: Boolean

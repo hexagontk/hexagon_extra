@@ -9,17 +9,17 @@ data class Command(
     val name: String,
     val title: String? = null,
     val description: String? = null,
-    val properties: LinkedHashSet<Property<*>> = linkedSetOf(),
-    val subcommands: LinkedHashSet<Command> = LinkedHashSet(),
+    val properties: Set<Property<*>> = emptySet(),
+    val subcommands: Set<Command> = emptySet(),
 ) {
-    val flags: LinkedHashSet<Flag> =
-        LinkedHashSet(properties.filterIsInstance<Flag>())
+    val flags: Set<Flag> =
+        properties.filterIsInstance<Flag>().toSet()
 
-    val options: LinkedHashSet<Option<*>> =
-        LinkedHashSet(properties.filterIsInstance<Option<*>>())
+    val options: Set<Option<*>> =
+        properties.filterIsInstance<Option<*>>().toSet()
 
-    val parameters: LinkedHashSet<Parameter<*>> =
-        LinkedHashSet(properties.filterIsInstance<Parameter<*>>())
+    val parameters: Set<Parameter<*>> =
+        properties.filterIsInstance<Parameter<*>>().toSet()
 
     val propertiesMap: Map<String, Property<*>> =
         properties
@@ -90,7 +90,7 @@ data class Command(
             }
         }
 
-        return copy(properties = LinkedHashSet(parsedProperties))
+        return copy(properties = parsedProperties.toSet())
     }
 
     private fun parseArgument(it: String, parameterIndex: Int): Property<*> {
@@ -134,9 +134,9 @@ data class Command(
         return property.addValue(value)
     }
 
-    private fun nestedSubcommands(): LinkedHashSet<Command> =
+    private fun nestedSubcommands(): Set<Command> =
         subcommands
             .map { it.copy(name = name + " " + it.name) }
             .let { c -> c + c.flatMap { it.nestedSubcommands() } }
-            .let(::LinkedHashSet)
+            .toSet()
 }

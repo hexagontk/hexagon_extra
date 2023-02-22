@@ -13,9 +13,7 @@ data class Parameter<T : Any>(
     override val values: List<T> = emptyList(),
 ) : Property<T> {
 
-    override val names: LinkedHashSet<String> = linkedSetOf(name)
-
-    val value: T? = values.firstOrNull()
+    override val names: Set<String> = setOf(name)
 
     companion object {
         val parameterRegex = "[a-z0-9\\-]{2,}".toRegex()

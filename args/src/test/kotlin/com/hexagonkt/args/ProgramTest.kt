@@ -1,25 +1,12 @@
 package com.hexagonkt.args
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class ProgramTest {
 
     @Test fun `Program is created properly`() {
-        val args = arrayOf("-a", "--b" , "-c")
-        val iterator = args.iterator()
-
-        iterator.forEach {
-            when {
-                it.startsWith("--") -> iterator.next()
-                it.startsWith("-") -> println(it)
-            }
-        }
-
-//        for (arg in iterator) {
-//            when {
-//                arg.startsWith("--") -> iterator.next()
-//                arg.startsWith("-") -> println(arg)
-//            }
-//        }
+        assertEquals(listOf(0, 1, 4, 2, 3), listOf(0, 1, 0, 4, 0, 2, 1, 3, 4).toSet().toList())
+        assertEquals(listOf(5, 4, 1, 99, 0), setOf(5, 4, 1, 99, 0).toList())
     }
 }

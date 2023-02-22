@@ -17,11 +17,11 @@ internal class ProgramFormatterTest {
             "v1.0.0",
             "CMD Title",
             "Description of the cmd command",
-            linkedSetOf(
+            setOf(
                 Option(String::class, 'n', "name"),
                 Parameter(String::class, "value"),
             ),
-            linkedSetOf(
+            setOf(
                 Command("edit", "Edit config"),
                 Command("config", "Display config"),
             )

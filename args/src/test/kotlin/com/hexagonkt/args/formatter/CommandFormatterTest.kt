@@ -15,11 +15,11 @@ internal class CommandFormatterTest {
             "cmd",
             "CMD Title",
             "Description of the cmd command",
-            linkedSetOf(
+            setOf(
                 Option(String::class, 'n', "name"),
                 Parameter(String::class, "value"),
             ),
-            linkedSetOf(
+            setOf(
                 Command("edit"),
                 Command("config"),
             ),

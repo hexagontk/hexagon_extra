@@ -16,7 +16,7 @@ data class Program(
         version: String? = null,
         title: String? = null,
         description: String? = null,
-        properties: LinkedHashSet<Property<*>> = linkedSetOf(),
+        properties: Set<Property<*>> = emptySet(),
     ) : this(version, Command(name, title, description, properties))
 
     constructor(
@@ -24,8 +24,8 @@ data class Program(
         version: String? = null,
         title: String? = null,
         description: String? = null,
-        properties: LinkedHashSet<Property<*>> = linkedSetOf(),
-        commands: LinkedHashSet<Command>,
+        properties: Set<Property<*>> = emptySet(),
+        commands: Set<Command>,
     ) : this(version, Command(name, title, description, properties, commands))
 
     init {

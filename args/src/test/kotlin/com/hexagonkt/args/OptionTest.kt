@@ -46,7 +46,11 @@ internal class OptionTest {
     }
 
     @Test fun `Options can add values`() {
-        assertEquals(File("/foo/bar"), Option(File::class, 'o', "one").addValue("/foo/bar").value)
+        assertEquals(
+            File("/foo/bar"),
+            Option(File::class, 'o', "one").addValue("/foo/bar").values.first()
+        )
+
         assertEquals(
             listOf(1, 2),
             Option(Int::class, 'i', "int", multiple = true).addValue("1").addValue("2").values
@@ -59,12 +63,12 @@ internal class OptionTest {
 
         val message1 = "Option 't' of type 'URL' can not hold '0'"
         assertFailsWithMessage<IllegalStateException>(message1) {
-            Option(URL::class, 't', "two").addValue("0").value
+            Option(URL::class, 't', "two").addValue("0").values.first()
         }
 
         val message2 = "Option 't' of type 'Int' can not hold '/foo/bar'"
         assertFailsWithMessage<IllegalStateException>(message2) {
-            Option(Int::class, 't', "two").addValue("/foo/bar").value
+            Option(Int::class, 't', "two").addValue("/foo/bar").values.first()
         }
     }
 }

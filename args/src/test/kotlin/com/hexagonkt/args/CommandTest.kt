@@ -17,7 +17,7 @@ internal class CommandTest {
         assertFailsWith<IllegalArgumentException> {
             Command(
                 name = "cmd",
-                properties = linkedSetOf(
+                properties = setOf(
                     Parameter(String::class, "first", multiple = true),
                     Parameter(Int::class, "second")
                 )
@@ -28,21 +28,21 @@ internal class CommandTest {
 
     @Test fun `Command creates a map of options`() {
         val option = Option(File::class, 's', "assets")
-        val serve = Command("serve", properties = linkedSetOf(option))
+        val serve = Command("serve", properties = setOf(option))
 
         assertEquals(mapOf("s" to option, "assets" to option), serve.propertiesMap)
         assertEquals(mapOf("s" to option, "assets" to option), serve.optionsMap)
         assertEquals(emptyMap(), serve.parametersMap)
 
         val last = Parameter(String::class, "last", multiple = true)
-        val cmd = Command("cmd", properties = linkedSetOf(last))
+        val cmd = Command("cmd", properties = setOf(last))
 
         assertEquals(mapOf("last" to last), cmd.propertiesMap)
         assertEquals(emptyMap(), cmd.optionsMap)
         assertEquals(mapOf("last" to last), cmd.parametersMap)
 
         val first = Parameter(String::class, "first")
-        val scr = Command("scr", properties = linkedSetOf(first, last))
+        val scr = Command("scr", properties = setOf(first, last))
 
         assertEquals(mapOf("first" to first, "last" to last), scr.propertiesMap)
         assertEquals(emptyMap(), scr.optionsMap)
@@ -53,7 +53,7 @@ internal class CommandTest {
         val option = Option(File::class, 's', "assets")
         val last = Parameter(String::class, "last", multiple = true)
         val first = Parameter(String::class, "first")
-        val serve = Command("serve", properties = linkedSetOf(option, first, last))
+        val serve = Command("serve", properties = setOf(option, first, last))
 
         val options = mapOf("s" to option, "assets" to option)
         val parameters = mapOf("first" to first, "last" to last)
@@ -65,16 +65,16 @@ internal class CommandTest {
 
     @Test fun `Tree of commands is flattened properly`() {
         val a = Command("a",
-            subcommands = linkedSetOf(
-                Command("aa", subcommands = linkedSetOf(Command("aaa"), Command("aab"))),
-                Command("ab", subcommands = linkedSetOf(Command("aba"), Command("abb"))),
+            subcommands = setOf(
+                Command("aa", subcommands = setOf(Command("aaa"), Command("aab"))),
+                Command("ab", subcommands = setOf(Command("aba"), Command("abb"))),
             )
         )
 
         val subcommandsNames = a.subcommandsMap.keys
 
         assertEquals(
-            linkedSetOf(
+            setOf(
                 "a aa",
                 "a aa aaa",
                 "a aa aab",
@@ -91,11 +91,11 @@ internal class CommandTest {
     @Test fun `Find command works in a tree of commands`() {
         val aaa = Command("aaa")
         val aab = Command("aab")
-        val aa = Command("aa", subcommands = linkedSetOf(aaa, aab))
+        val aa = Command("aa", subcommands = setOf(aaa, aab))
         val aba = Command("aba")
         val abb = Command("abb")
-        val ab = Command("ab", subcommands = linkedSetOf(aba, abb))
-        val a = Command("a", subcommands = linkedSetOf(aa, ab))
+        val ab = Command("ab", subcommands = setOf(aba, abb))
+        val a = Command("a", subcommands = setOf(aa, ab))
 
         assertEquals(aa, a.findCommand(arrayOf("aa")))
         assertEquals(ab, a.findCommand(arrayOf("ab")))
@@ -109,7 +109,7 @@ internal class CommandTest {
     @Test fun `Commands can parse their own options`() {
         val cmd = Command(
             name = "cmd",
-            properties = linkedSetOf(
+            properties = setOf(
                 Flag('1', "first"),
                 Option(String::class, '2', "second"),
                 Parameter(Int::class, "number"),

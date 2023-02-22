@@ -5,15 +5,13 @@ import kotlin.reflect.KClass
 
 data class Option<T : Any>(
     override val type: KClass<T>,
-    override val names: LinkedHashSet<String>,
+    override val names: Set<String>,
     override val description: String? = null,
     override val regex: Regex? = null,
     override val optional: Boolean = true,
     override val multiple: Boolean = false,
     override val values: List<T> = emptyList(),
 ) : Property<T> {
-
-    val value: T? = values.firstOrNull()
 
     companion object {
         val optionRegex = "([A-Za-z0-9]|[a-z0-9\\-]{2,})".toRegex()
@@ -30,7 +28,7 @@ data class Option<T : Any>(
         values: List<T> = emptyList(),
     ) : this(
         type,
-        LinkedHashSet(listOfNotNull(shortName?.toString(), name)),
+        listOfNotNull(shortName?.toString(), name).toSet(),
         description,
         regex,
         optional,
