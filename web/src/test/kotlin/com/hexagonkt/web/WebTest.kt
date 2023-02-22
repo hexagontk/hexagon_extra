@@ -43,11 +43,7 @@ internal class WebTest {
     }
 
     private val server: HttpServer by lazy {
-        HttpServer(
-            JettyServletAdapter(),
-            listOf(router),
-            HttpServerSettings(bindPort = 0)
-        )
+        HttpServer(JettyServletAdapter(), router, HttpServerSettings(bindPort = 0))
     }
 
     private val client by lazy {

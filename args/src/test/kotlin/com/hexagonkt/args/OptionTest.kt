@@ -57,12 +57,12 @@ internal class OptionTest {
             Option(Int::class, 'i', "int").addValue("1").addValue("2").values
         }
 
-        val message1 = "Option 't' of type 'URL' can not hold the '0' value"
+        val message1 = "Option 't' of type 'URL' can not hold '0'"
         assertFailsWithMessage<IllegalStateException>(message1) {
             Option(URL::class, 't', "two").addValue("0").value
         }
 
-        val message2 = "Option 't' of type 'Int' can not hold the '/foo/bar' value"
+        val message2 = "Option 't' of type 'Int' can not hold '/foo/bar'"
         assertFailsWithMessage<IllegalStateException>(message2) {
             Option(Int::class, 't', "two").addValue("/foo/bar").value
         }

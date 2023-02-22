@@ -40,6 +40,8 @@ sealed interface Property<T : Any> {
             }
 
         if (!multiple)
-            require(values.size <= 1) { "$component '${names.first()}' can only have one value: $values" }
+            require(values.size <= 1) {
+                "$component '${names.first()}' can only have one value: $values"
+            }
     }
 }

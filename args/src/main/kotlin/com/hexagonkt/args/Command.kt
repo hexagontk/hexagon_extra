@@ -28,11 +28,6 @@ data class Command(
             }
             .toMap()
 
-    val flagsMap: Map<String, Flag> =
-        propertiesMap
-            .filterValues { it is Flag }
-            .mapValues { it.value as Flag }
-
     val optionsMap: Map<String, Option<*>> =
         propertiesMap
             .filterValues { it is Option<*> }
@@ -45,6 +40,10 @@ data class Command(
 
     val subcommandsMap: Map<String, Command> =
         nestedSubcommands().associateBy { it.name }
+
+    private val parametersList: List<Parameter<*>> by lazy {
+        parameters.toList()
+    }
 
     init {
         requireNotBlank(Command::name)
@@ -71,61 +70,68 @@ data class Command(
     }
 
     fun parse(args: List<String>): Command {
-        val propertiesIterator = args.iterator()
+        val argsIterator = args.iterator()
         var parsedProperties = emptyList<Property<*>>()
-        var parsedParameters = parameters
+        var parsedParameter = 0
 
-        propertiesIterator.forEach {
-            parsedProperties += when {
-                it.startsWith("--") -> parseOption(it.removePrefix("--"), propertiesIterator)
-                it.startsWith('-') -> parseShortOptions(it.removePrefix("-"), propertiesIterator)
-                else -> parseArgument(it, parsedParameters)
+        argsIterator.forEach {
+            parsedProperties = when {
+                it.startsWith("--") ->
+                    parsedProperties + parseOption(it.removePrefix("--"), argsIterator)
+
+                it.startsWith('-') ->
+                    parsedProperties + parseOptions(it.removePrefix("-"), argsIterator)
+
+                else -> {
+                    val argument = parseArgument(it, parsedParameter)
+                    parsedParameter += 1
+                    parsedProperties + argument
+                }
             }
         }
 
         return copy(properties = LinkedHashSet(parsedProperties))
     }
 
-    private fun parseArgument(it: String, p: LinkedHashSet<Parameter<*>>): Collection<Property<*>> {
-        return listOf(Parameter(String::class, "a", value = it))
+    private fun parseArgument(it: String, parameterIndex: Int): Property<*> {
+        val p = parametersList.getOrNull(parameterIndex) ?: parametersList.lastOrNull()
+        return p?.addValue(it) ?: error("No parameter at position $parameterIndex")
     }
 
-    private fun parseShortOptions(it: String, propertiesIterator: Iterator<String>): Collection<Property<*>> {
-        val p =
-            if (it.contains('=')) it.split('=', limit = 2).let { (f, s) -> f to s }
-            else it to null
+    private fun parseOptions(
+        names: String, argsIterator: Iterator<String>
+    ): Collection<Property<*>> {
+        val namesIterator = names.iterator()
+        var result = emptyList<Property<*>>()
 
-        return p.first.map {
-            when (val o = propertiesMap[it.toString()] ?: error("")) {
-                is Option<*> -> {
-                    val param = p.second ?: propertiesIterator.next()
-                    if (param.startsWith('-'))
-                        error("")
-                    o.addValue(param)
-                }
-                is Flag -> o.addValue("true")
-                else -> error("")
+        namesIterator.forEach {
+            val name = it.toString()
+            val isOption = optionsMap.contains(name)
+            val option = if (isOption && namesIterator.hasNext()) {
+                val firstValueChar = namesIterator.next()
+                val valueStart = if (firstValueChar != '=') "=$firstValueChar" else firstValueChar
+                val buffer = StringBuffer(name + valueStart)
+
+                namesIterator.forEachRemaining(buffer::append)
+                buffer.toString()
             }
+            else name
+
+            result = result + parseOption(option, argsIterator)
         }
+
+        return result
     }
 
-    private fun parseOption(it: String, propertiesIterator: Iterator<String>): Collection<Property<*>> {
-        val p =
-            if (it.contains('=')) it.split('=', limit = 2).let { (f, s) -> f to s }
-            else it to null
+    private fun parseOption(option: String, propertiesIterator: Iterator<String>): Property<*> {
+        val nameValue = option.split('=', limit = 2)
+        val name = nameValue.first()
+        val property = propertiesMap[name] ?: error("Option '$name' not found")
+        val value =
+            if (property is Option<*>) nameValue.getOrNull(1) ?: propertiesIterator.next()
+            else "true"
 
-        val o1 = when (val o = propertiesMap[p.first] ?: error("")) {
-            is Option<*> -> {
-                val param = p.second ?: propertiesIterator.next()
-                if (param.startsWith('-'))
-                    error("")
-                o.addValue(param)
-            }
-            is Flag -> o.addValue("true")
-            else -> error("")
-        }
-
-        return listOf(o1)
+        return property.addValue(value)
     }
 
     private fun nestedSubcommands(): LinkedHashSet<Command> =

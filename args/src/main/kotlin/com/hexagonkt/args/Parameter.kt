@@ -35,8 +35,7 @@ data class Parameter<T : Any>(
     }
 
     override fun addValue(value: String): Parameter<T> =
-        try { value.parseOrNull(type) }
-        catch (e: Exception) { null }
-        ?.let { copy(values = values + it) }
-        ?: error("Parameter '$name' of type '${typeText()}' can not hold the '$value' value")
+        value.parseOrNull(type)
+            ?.let { copy(values = values + it) }
+            ?: error("Parameter '$name' of type '${typeText()}' can not hold '$value'")
 }

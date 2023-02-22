@@ -44,12 +44,12 @@ internal class ParameterTest {
             Parameter(Int::class, "int").addValue("1").addValue("2").values
         }
 
-        val message1 = "Parameter 'two' of type 'URL' can not hold the '0' value"
+        val message1 = "Parameter 'two' of type 'URL' can not hold '0'"
         assertFailsWithMessage<IllegalStateException>(message1) {
             Parameter(URL::class, "two").addValue("0").value
         }
 
-        val message2 = "Parameter 'two' of type 'Int' can not hold the '/foo/bar' value"
+        val message2 = "Parameter 'two' of type 'Int' can not hold '/foo/bar'"
         assertFailsWithMessage<IllegalStateException>(message2) {
             Parameter(Int::class, "two").addValue("/foo/bar").value
         }

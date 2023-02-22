@@ -54,8 +54,7 @@ data class Option<T : Any>(
     }
 
     override fun addValue(value: String): Option<T> =
-        try { value.parseOrNull(type) }
-        catch (e: Exception) { null }
-        ?.let { copy(values = values + it) }
-        ?: error("Option '${names.first()}' of type '${typeText()}' can not hold the '$value' value")
+        value.parseOrNull(type)
+            ?.let { copy(values = values + it) }
+            ?: error("Option '${names.first()}' of type '${typeText()}' can not hold '$value'")
 }

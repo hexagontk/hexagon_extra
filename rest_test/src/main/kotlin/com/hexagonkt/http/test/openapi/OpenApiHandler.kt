@@ -6,10 +6,7 @@ import com.hexagonkt.http.model.BAD_REQUEST_400
 import com.hexagonkt.http.model.HttpMethod
 import com.hexagonkt.http.model.HttpMethod.*
 import com.hexagonkt.http.model.UNAUTHORIZED_401
-import com.hexagonkt.http.server.handlers.HttpCallback
-import com.hexagonkt.http.server.handlers.HttpHandler
-import com.hexagonkt.http.server.handlers.HttpServerContext
-import com.hexagonkt.http.server.handlers.OnHandler
+import com.hexagonkt.http.server.handlers.*
 
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -30,20 +27,23 @@ internal class OpenApiHandler(pathToSpec: String) {
     private val openAPISpec: OpenAPI = openAPIParser.read(pathToSpec)
         ?: error("OpenAPI Spec could not be read. Please check the file's path and its format")
 
-    fun createServer(): List<HttpHandler> =
-        openAPISpec.paths.map { (path: String, pathItem: PathItem) ->
-            when {
-                pathItem.get != null -> createHandler(GET, path, pathItem.get)
-                pathItem.head != null -> createHandler(HEAD, path, pathItem.head)
-                pathItem.post != null -> createHandler(POST, path, pathItem.post)
-                pathItem.put != null -> createHandler(PUT, path, pathItem.put)
-                pathItem.delete != null -> createHandler(DELETE, path, pathItem.delete)
-                pathItem.trace != null -> createHandler(TRACE, path, pathItem.trace)
-                pathItem.options != null -> createHandler(OPTIONS, path, pathItem.options)
-                pathItem.patch != null -> createHandler(PATCH, path, pathItem.patch)
-                else -> error("Unsupported method")
+    fun createServer(): HttpHandler =
+        PathHandler(
+            "",
+            openAPISpec.paths.map { (path: String, pathItem: PathItem) ->
+                when {
+                    pathItem.get != null -> createHandler(GET, path, pathItem.get)
+                    pathItem.head != null -> createHandler(HEAD, path, pathItem.head)
+                    pathItem.post != null -> createHandler(POST, path, pathItem.post)
+                    pathItem.put != null -> createHandler(PUT, path, pathItem.put)
+                    pathItem.delete != null -> createHandler(DELETE, path, pathItem.delete)
+                    pathItem.trace != null -> createHandler(TRACE, path, pathItem.trace)
+                    pathItem.options != null -> createHandler(OPTIONS, path, pathItem.options)
+                    pathItem.patch != null -> createHandler(PATCH, path, pathItem.patch)
+                    else -> error("Unsupported method")
+                }
             }
-        }
+        )
 
     private fun createHandler(method: HttpMethod, path: String, operation: Operation): HttpHandler =
         OnHandler(method, path, handleRequest(operation))

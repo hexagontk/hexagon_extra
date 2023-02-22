@@ -52,6 +52,7 @@ data class Program(
             if (parsedCommand.flags.contains(HELP))
                 showHelp()
 
+            // TODO Check mandatory fields
             parsedCommand
         }
         catch (e: Exception) {

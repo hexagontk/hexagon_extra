@@ -103,6 +103,7 @@ internal class CommandTest {
         assertEquals(aba.copy(name = "ab ${aba.name}"), a.findCommand(arrayOf("ab", "aba")))
         assertEquals(aab.copy(name = "aa ${aab.name}"), a.findCommand(arrayOf("aa", "aab")))
         assertEquals(abb.copy(name = "ab ${abb.name}"), a.findCommand(arrayOf("ab", "abb")))
+        assertEquals(a, a.findCommand(arrayOf("ax")))
     }
 
     @Test fun `Commands can parse their own options`() {
@@ -110,10 +111,18 @@ internal class CommandTest {
             name = "cmd",
             properties = linkedSetOf(
                 Flag('1', "first"),
+                Option(String::class, '2', "second"),
+                Parameter(Int::class, "number"),
             )
         )
 
         assertEquals(listOf(true), cmd.parse(listOf("--first")).flags.first().values)
         assertEquals(listOf(true), cmd.parse(listOf("-1")).flags.first().values)
+        assertEquals(listOf("val"), cmd.parse(listOf("-2val")).options.first().values)
+        assertEquals(listOf("val"), cmd.parse(listOf("-2=val")).options.first().values)
+        assertEquals(listOf("val"), cmd.parse(listOf("-12=val")).options.first().values)
+        assertEquals(listOf("val"), cmd.parse(listOf("--second=val")).options.first().values)
+        assertEquals(listOf("val"), cmd.parse(listOf("--second", "val")).options.first().values)
+        assertEquals(listOf(42), cmd.parse(listOf("42")).parameters.first().values)
     }
 }
