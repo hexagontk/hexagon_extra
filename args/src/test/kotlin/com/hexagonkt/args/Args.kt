@@ -10,3 +10,11 @@ inline fun <reified T : Throwable> assertFailsWithMessage(message: String, block
 
     assertEquals(message, e.message)
 }
+
+fun assertIllegalArgument(message: String, block: () -> Unit) {
+    assertFailsWithMessage<IllegalArgumentException>(message, block)
+}
+
+fun assertIllegalState(message: String, block: () -> Unit) {
+    assertFailsWithMessage<IllegalStateException>(message, block)
+}

@@ -10,8 +10,18 @@ import kotlin.test.assertFailsWith
 internal class OptionTest {
 
     @Test fun `Options with null optional values are correct`() {
-        assertEquals(Option(Boolean::class, 'b'), Option(Boolean::class, 'b', name = null))
-        assertEquals(Option(Boolean::class, 'b'), Option(Boolean::class, 'b', description = null))
+        assertEquals(
+            Option(Boolean::class, 'b', value = true),
+            Option(Boolean::class, 'b', name = null, value = true)
+        )
+        assertEquals(
+            Option(Boolean::class, 'b', value = true),
+            Option(Boolean::class, 'b', description = null, value = true)
+        )
+        assertEquals(
+            Option(Boolean::class, name = "name", value = true),
+            Option(Boolean::class, null, "name", value = true)
+        )
     }
 
     @Test fun `Invalid options raise errors`() {
@@ -33,9 +43,7 @@ internal class OptionTest {
         }
 
         val message = "Option regex can only be used for 'string' type: Int"
-        assertFailsWithMessage<IllegalArgumentException>(message) {
-            Option(Int::class, 'n', "name", regex = Regex(".*"))
-        }
+        assertIllegalArgument(message) { Option(Int::class, 'n', "name", regex = Regex(".*")) }
 
         val e = assertFailsWith<IllegalArgumentException> {
             Option(String::class, name = "name", regex = Regex("A"), values = listOf("a"))
@@ -56,18 +64,15 @@ internal class OptionTest {
             Option(Int::class, 'i', "int", multiple = true).addValue("1").addValue("2").values
         )
 
-        val message = "Option 'i' can only have one value: [1, 2]"
-        assertFailsWithMessage<IllegalArgumentException>(message) {
+        assertIllegalArgument("Option 'i' can only have one value: [1, 2]") {
             Option(Int::class, 'i', "int").addValue("1").addValue("2").values
         }
 
-        val message1 = "Option 't' of type 'URL' can not hold '0'"
-        assertFailsWithMessage<IllegalStateException>(message1) {
+        assertIllegalState("Option 't' of type 'URL' can not hold '0'") {
             Option(URL::class, 't', "two").addValue("0").values.first()
         }
 
-        val message2 = "Option 't' of type 'Int' can not hold '/foo/bar'"
-        assertFailsWithMessage<IllegalStateException>(message2) {
+        assertIllegalState("Option 't' of type 'Int' can not hold '/foo/bar'") {
             Option(Int::class, 't', "two").addValue("/foo/bar").values.first()
         }
     }

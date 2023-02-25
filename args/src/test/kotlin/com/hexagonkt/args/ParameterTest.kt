@@ -2,13 +2,23 @@ package com.hexagonkt.args
 
 import java.io.File
 import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 import java.net.URL
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 internal class ParameterTest {
+
+    @Test fun `Parameters with null optional fields are correct`() {
+        assertEquals(
+            Parameter(String::class, "str", value = "val"),
+            Parameter(String::class, "str", regex = null, value = "val")
+        )
+        assertEquals(
+            Parameter(Boolean::class, "bool", value = true),
+            Parameter(Boolean::class, "bool", description = null, value = true)
+        )
+    }
 
     @Test fun `Invalid parameters fail with exceptions`() {
         assertFailsWith<IllegalArgumentException> { Parameter(Regex::class, "name") }
@@ -19,8 +29,7 @@ internal class ParameterTest {
                 .message.let { assert(it?.contains("Names must comply with") ?: false) }
         }
 
-        val message = "Parameter regex can only be used for 'string' type: Int"
-        assertFailsWithMessage<IllegalArgumentException>(message) {
+        assertIllegalArgument("Parameter regex can only be used for 'string' type: Int") {
             Parameter(Int::class, "name", regex = Regex(".*"))
         }
 
@@ -43,18 +52,15 @@ internal class ParameterTest {
             Parameter(Int::class, "int", multiple = true).addValue("1").addValue("2").values
         )
 
-        val message = "Parameter 'int' can only have one value: [1, 2]"
-        assertFailsWithMessage<IllegalArgumentException>(message) {
+        assertIllegalArgument("Parameter 'int' can only have one value: [1, 2]") {
             Parameter(Int::class, "int").addValue("1").addValue("2").values
         }
 
-        val message1 = "Parameter 'two' of type 'URL' can not hold '0'"
-        assertFailsWithMessage<IllegalStateException>(message1) {
+        assertIllegalState("Parameter 'two' of type 'URL' can not hold '0'") {
             Parameter(URL::class, "two").addValue("0").values.first()
         }
 
-        val message2 = "Parameter 'two' of type 'Int' can not hold '/foo/bar'"
-        assertFailsWithMessage<IllegalStateException>(message2) {
+        assertIllegalState("Parameter 'two' of type 'Int' can not hold '/foo/bar'") {
             Parameter(Int::class, "two").addValue("/foo/bar").values.first()
         }
     }

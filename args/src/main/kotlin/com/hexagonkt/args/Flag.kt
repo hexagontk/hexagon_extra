@@ -7,6 +7,7 @@ data class Flag(
     override val names: Set<String>,
     override val description: String? = null,
     override val multiple: Boolean = false,
+    override val tag: String? = null,
     override val values: List<Boolean> = emptyList(),
 ) : Property<Boolean> {
 

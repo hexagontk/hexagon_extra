@@ -10,6 +10,7 @@ data class Option<T : Any>(
     override val regex: Regex? = null,
     override val optional: Boolean = true,
     override val multiple: Boolean = false,
+    override val tag: String? = null,
     override val values: List<T> = emptyList(),
 ) : Property<T> {
 
@@ -25,6 +26,7 @@ data class Option<T : Any>(
         regex: Regex? = null,
         optional: Boolean = true,
         multiple: Boolean = false,
+        tag: String? = null,
         values: List<T> = emptyList(),
     ) : this(
         type,
@@ -33,6 +35,7 @@ data class Option<T : Any>(
         regex,
         optional,
         multiple,
+        tag,
         values
     )
 
@@ -44,8 +47,9 @@ data class Option<T : Any>(
         regex: Regex? = null,
         optional: Boolean = true,
         multiple: Boolean = false,
+        tag: String? = null,
         value: T,
-    ) : this(type, shortName, name, description, regex, optional, multiple, listOf(value))
+    ) : this(type, shortName, name, description, regex, optional, multiple, tag, listOf(value))
 
     init {
         check("Option", optionRegex)

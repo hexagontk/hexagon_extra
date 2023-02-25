@@ -14,7 +14,7 @@ internal class CommandTest {
         assertFailsWith<IllegalArgumentException> { Command("cmd", title = " ") }
         assertFailsWith<IllegalArgumentException> { Command("cmd", description = " ") }
 
-        assertFailsWith<IllegalArgumentException> {
+        assertIllegalArgument("Only the last positional parameter can be multiple") {
             Command(
                 name = "cmd",
                 properties = setOf(
@@ -23,7 +23,6 @@ internal class CommandTest {
                 )
             )
         }
-        .let { assertEquals("Only the last positional parameter can be multiple", it.message) }
     }
 
     @Test fun `Command creates a map of options`() {
@@ -124,5 +123,37 @@ internal class CommandTest {
         assertEquals(listOf("val"), cmd.parse(listOf("--second=val")).options.first().values)
         assertEquals(listOf("val"), cmd.parse(listOf("--second", "val")).options.first().values)
         assertEquals(listOf(42), cmd.parse(listOf("42")).parameters.first().values)
+    }
+
+    @Test fun `Commands throw errors with invalid arguments`() {
+        val cmd = Command(
+            name = "cmd",
+            properties = setOf(
+                Flag('1', "first"),
+                Option(String::class, '2', "second"),
+                Parameter(Int::class, "number"),
+            )
+        )
+
+        cmd.assertIllegalState("Option 'none' not found", "--none")
+        cmd.assertIllegalState("Option 'Z' not found", "-Z")
+
+//        cmd.assertIllegalState("Option 'Z' not found", "41 42")
+    }
+
+    private fun Command.assertIllegalArgument(message: String, args: List<String>) {
+        assertFailsWithMessage<IllegalArgumentException>(message) { parse(args) }
+    }
+
+    private fun Command.assertIllegalState(message: String, args: List<String>) {
+        assertFailsWithMessage<IllegalStateException>(message) { parse(args) }
+    }
+
+    private fun Command.assertIllegalArgument(message: String, args: String) {
+        assertIllegalArgument(message, args.split(' ').filter(String::isNotBlank))
+    }
+
+    private fun Command.assertIllegalState(message: String, args: String) {
+        assertIllegalState(message, args.split(' ').filter(String::isNotBlank))
     }
 }

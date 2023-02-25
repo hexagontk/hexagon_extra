@@ -10,13 +10,14 @@ data class Parameter<T : Any>(
     override val regex: Regex? = null,
     override val optional: Boolean = true,
     override val multiple: Boolean = false,
+    override val tag: String? = null,
     override val values: List<T> = emptyList(),
 ) : Property<T> {
 
     override val names: Set<String> = setOf(name)
 
     companion object {
-        val parameterRegex = "[a-z0-9\\-]{2,}".toRegex()
+        private val parameterRegex = "[a-z0-9\\-]{2,}".toRegex()
     }
 
     constructor(
@@ -25,8 +26,9 @@ data class Parameter<T : Any>(
         description: String? = null,
         regex: Regex? = null,
         optional: Boolean = true,
+        tag: String? = null,
         value: T,
-    ) : this(type, name, description, regex, optional, false, listOf(value))
+    ) : this(type, name, description, regex, optional, false, tag, listOf(value))
 
     init {
         check("Parameter", parameterRegex)

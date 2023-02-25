@@ -3,6 +3,13 @@ package com.hexagonkt.args
 import com.hexagonkt.core.parsedClasses
 import kotlin.reflect.KClass
 
+/**
+ * TODO
+ *
+ * Properties passed by the command line.
+ *
+ * @param T
+ */
 sealed interface Property<T : Any> {
     val type: KClass<T>
     val names: Set<String>
@@ -10,6 +17,11 @@ sealed interface Property<T : Any> {
     val regex: Regex?
     val optional: Boolean
     val multiple: Boolean
+    /**
+     * TODO To group properties (for listing or alternatives). I.e.:
+     *  '|alternate|' for grouping options that are exclusive or 'Common Options' to group in help
+     */
+    val tag: String?
     val values: List<T>
 
     fun addValue(value: String): Property<T>

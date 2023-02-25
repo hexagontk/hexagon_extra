@@ -7,16 +7,17 @@ import kotlin.test.assertFailsWith
 
 internal class FlagTest {
 
-    @Test fun `Options with null optional values are correct`() {
-        assertEquals(Option(Boolean::class, 'b'), Option(Boolean::class, 'b', name = null))
-        assertEquals(Option(Boolean::class, 'b'), Option(Boolean::class, 'b', description = null))
+    @Test fun `Flags with null optional values are correct`() {
+        assertEquals(1, Flag(name = "long").names.size)
+        assertEquals(Flag('b'), Flag('b', name = null))
+        assertEquals(Flag('b'), Flag('b', description = null))
     }
 
-    @Test fun `Invalid options raise errors`() {
+    @Test fun `Invalid flags raise errors`() {
         listOf('#', ' ').forEach {
             assertEquals(
                 "Names must comply with ${Option.optionRegex} regex: [$it]",
-                assertFailsWith<IllegalArgumentException> { Option(String::class, it) }.message
+                assertFailsWith<IllegalArgumentException> { Flag(it) }.message
             )
         }
     }
