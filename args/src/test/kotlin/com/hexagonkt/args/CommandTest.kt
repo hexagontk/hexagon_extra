@@ -138,7 +138,7 @@ internal class CommandTest {
         cmd.assertIllegalState("Option 'none' not found", "--none")
         cmd.assertIllegalState("Option 'Z' not found", "-Z")
 
-//        cmd.assertIllegalState("Option 'Z' not found", "41 42")
+        cmd.assertIllegalState("Unknown argument at position 2: 42", "41 42")
     }
 
     private fun Command.assertIllegalArgument(message: String, args: List<String>) {

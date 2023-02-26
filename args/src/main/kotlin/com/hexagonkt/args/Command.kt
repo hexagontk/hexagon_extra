@@ -72,30 +72,39 @@ data class Command(
     fun parse(args: List<String>): Command {
         val argsIterator = args.iterator()
         var parsedProperties = emptyList<Property<*>>()
-        var parsedParameter = 0
+        var parsedParameters = emptyList<Property<*>>()
 
-        argsIterator.forEach {
+        argsIterator.forEach { value ->
             parsedProperties = when {
-                it.startsWith("--") ->
-                    parsedProperties + parseOption(it.removePrefix("--"), argsIterator)
+                value.startsWith("--") ->
+                    parsedProperties + parseOption(value.removePrefix("--"), argsIterator)
 
-                it.startsWith('-') ->
-                    parsedProperties + parseOptions(it.removePrefix("-"), argsIterator)
+                value.startsWith('-') ->
+                    parsedProperties + parseOptions(value.removePrefix("-"), argsIterator)
 
                 else -> {
-                    val argument = parseArgument(it, parsedParameter)
-                    parsedParameter += 1
-                    parsedProperties + argument
+                    val index = parsedParameters.size
+                    val argument = parametersList.getOrNull(index)
+                    val addValue = if (argument == null) {
+                        parsedParameters.lastOrNull()
+                            ?.let {
+                                if (it.multiple)
+                                    it.addValue(value)
+                                else
+                                    error("Unknown argument at position ${index + 1}: $value")
+                            }
+                            ?:error("No parameters")
+                    }
+                    else {
+                        argument.addValue(value)
+                    }
+                    parsedParameters = parsedParameters + addValue
+                    parsedProperties + addValue
                 }
             }
         }
 
         return copy(properties = parsedProperties.toSet())
-    }
-
-    private fun parseArgument(it: String, parameterIndex: Int): Property<*> {
-        val p = parametersList.getOrNull(parameterIndex) ?: parametersList.lastOrNull()
-        return p?.addValue(it) ?: error("No parameter at position $parameterIndex")
     }
 
     private fun parseOptions(
