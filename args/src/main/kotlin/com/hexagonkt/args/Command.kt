@@ -83,28 +83,26 @@ data class Command(
                     parsedProperties + parseOptions(value.removePrefix("-"), argsIterator)
 
                 else -> {
-                    val index = parsedParameters.size
-                    val argument = parametersList.getOrNull(index)
-                    val addValue = if (argument == null) {
-                        parsedParameters.lastOrNull()
-                            ?.let {
-                                if (it.multiple)
-                                    it.addValue(value)
-                                else
-                                    error("Unknown argument at position ${index + 1}: $value")
-                            }
-                            ?:error("No parameters")
-                    }
-                    else {
-                        argument.addValue(value)
-                    }
-                    parsedParameters = parsedParameters + addValue
-                    parsedProperties + addValue
+                    val newParameter = parseParameter(value, parsedParameters)
+                    parsedParameters = parsedParameters + newParameter
+                    parsedProperties + newParameter
                 }
             }
         }
 
         return copy(properties = parsedProperties.toSet())
+    }
+
+    private fun parseParameter(value: String, parsedParameters: List<Property<*>>): Property<*> {
+        val index = parsedParameters.size
+        return parametersList.getOrNull(index)
+            ?.addValue(value)
+            ?: parsedParameters.lastOrNull()
+                ?.let {
+                    if (it.multiple) it.addValue(value)
+                    else error("Unknown argument at position ${index + 1}: $value")
+                }
+            ?: error("No parameters")
     }
 
     private fun parseOptions(
