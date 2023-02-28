@@ -2,14 +2,11 @@ package com.hexagonkt.http.test.openapi
 
 import com.hexagonkt.core.fail
 import com.hexagonkt.core.require
-import com.hexagonkt.http.model.ClientErrorStatus.BAD_REQUEST
-import com.hexagonkt.http.model.ClientErrorStatus.UNAUTHORIZED
+import com.hexagonkt.http.model.BAD_REQUEST_400
 import com.hexagonkt.http.model.HttpMethod
 import com.hexagonkt.http.model.HttpMethod.*
-import com.hexagonkt.http.server.handlers.HttpCallback
-import com.hexagonkt.http.server.handlers.HttpHandler
-import com.hexagonkt.http.server.handlers.HttpServerContext
-import com.hexagonkt.http.server.handlers.OnHandler
+import com.hexagonkt.http.model.UNAUTHORIZED_401
+import com.hexagonkt.http.server.handlers.*
 
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -30,20 +27,23 @@ internal class OpenApiHandler(pathToSpec: String) {
     private val openAPISpec: OpenAPI = openAPIParser.read(pathToSpec)
         ?: error("OpenAPI Spec could not be read. Please check the file's path and its format")
 
-    fun createServer(): List<HttpHandler> =
-        openAPISpec.paths.map { (path: String, pathItem: PathItem) ->
-            when {
-                pathItem.get != null -> createHandler(GET, path, pathItem.get)
-                pathItem.head != null -> createHandler(HEAD, path, pathItem.head)
-                pathItem.post != null -> createHandler(POST, path, pathItem.post)
-                pathItem.put != null -> createHandler(PUT, path, pathItem.put)
-                pathItem.delete != null -> createHandler(DELETE, path, pathItem.delete)
-                pathItem.trace != null -> createHandler(TRACE, path, pathItem.trace)
-                pathItem.options != null -> createHandler(OPTIONS, path, pathItem.options)
-                pathItem.patch != null -> createHandler(PATCH, path, pathItem.patch)
-                else -> error("Unsupported method")
+    fun createServer(): HttpHandler =
+        PathHandler(
+            "",
+            openAPISpec.paths.map { (path: String, pathItem: PathItem) ->
+                when {
+                    pathItem.get != null -> createHandler(GET, path, pathItem.get)
+                    pathItem.head != null -> createHandler(HEAD, path, pathItem.head)
+                    pathItem.post != null -> createHandler(POST, path, pathItem.post)
+                    pathItem.put != null -> createHandler(PUT, path, pathItem.put)
+                    pathItem.delete != null -> createHandler(DELETE, path, pathItem.delete)
+                    pathItem.trace != null -> createHandler(TRACE, path, pathItem.trace)
+                    pathItem.options != null -> createHandler(OPTIONS, path, pathItem.options)
+                    pathItem.patch != null -> createHandler(PATCH, path, pathItem.patch)
+                    else -> error("Unsupported method")
+                }
             }
-        }
+        )
 
     private fun createHandler(method: HttpMethod, path: String, operation: Operation): HttpHandler =
         OnHandler(method, path, handleRequest(operation))
@@ -94,7 +94,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         return if (!operation.security.any { securityRequirement ->
             verifySecurityRequirement(securityRequirement, call)
         }) {
-            call.send(status = UNAUTHORIZED, body = getResponseContentForStatus(operation, 401))
+            call.send(status = UNAUTHORIZED_401, body = getResponseContentForStatus(operation, 401))
         }
         else null
     }
@@ -151,7 +151,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 "path" -> {
                     if (!verifyPathParam(parameter, call)) {
                         call.send(
-                            status = BAD_REQUEST,
+                            status = BAD_REQUEST_400,
                             body = getResponseContentForStatus(
                                 operation,
                                 status = 400,
@@ -163,7 +163,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 "query" -> {
                     if (!verifyQueryParam(parameter, call)) {
                         call.send(
-                            status = BAD_REQUEST,
+                            status = BAD_REQUEST_400,
                             body = getResponseContentForStatus(
                                 operation,
                                 status = 400,
@@ -175,7 +175,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 "header" -> {
                     if (!verifyHeaderParam(parameter, call)) {
                         call.send(
-                            status = BAD_REQUEST,
+                            status = BAD_REQUEST_400,
                             body = getResponseContentForStatus(
                                 operation,
                                 status = 400,
@@ -187,7 +187,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 "cookie" -> {
                     if (!verifyCookieParam(parameter, call)) {
                         call.send(
-                            status = BAD_REQUEST,
+                            status = BAD_REQUEST_400,
                             body = getResponseContentForStatus(
                                 operation,
                                 status = 400,
@@ -244,7 +244,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         operation.requestBody?.let { requestBody ->
             if (requestBody.required && call.request.bodyString().isBlank()) {
                 call.send(
-                    status = BAD_REQUEST,
+                    status = BAD_REQUEST_400,
                     body = getResponseContentForStatus(operation, 400)
                 )
             }

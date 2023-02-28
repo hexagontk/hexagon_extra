@@ -1,15 +1,15 @@
 package com.hexagonkt.http.test
 
-import com.hexagonkt.core.media.TextMedia.PLAIN
+import com.hexagonkt.core.media.TEXT_PLAIN
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
 import com.hexagonkt.http.client.model.HttpClientResponse
 import com.hexagonkt.http.model.ContentType
-import com.hexagonkt.http.model.SuccessStatus.OK
+import com.hexagonkt.http.model.OK_200
 import com.hexagonkt.http.server.handlers.path
 import com.hexagonkt.http.server.jetty.JettyServletAdapter
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import kotlin.test.assertEquals
@@ -32,13 +32,13 @@ class MockServerTest {
             get("/hello/{name}") {
                 val name = pathParameters["name"]
 
-                ok("Hello, $name!", contentType = ContentType(PLAIN))
+                ok("Hello, $name!", contentType = ContentType(TEXT_PLAIN))
             }
         }
 
         Http("http://localhost:${mockServer.server.runtimePort}", JettyClientAdapter()) {
             get("/hello/mike")
-            assertEquals(OK, response.status)
+            assertEquals(OK_200, response.status)
         }
     }
 
@@ -51,7 +51,7 @@ class MockServerTest {
 
         Http("http://localhost:${mockServer.server.runtimePort}", JettyClientAdapter()) {
             get("/foo")
-            assertEquals(OK, response.status)
+            assertEquals(OK_200, response.status)
             assertEquals("dynamic", response.body)
             mockServer.path = path {
                 get("/foo") {
@@ -59,8 +59,8 @@ class MockServerTest {
                 }
             }
             get("/foo")
-            assertEquals(OK, response.status)
-            assertEquals(OK, response.status)
+            assertEquals(OK_200, response.status)
+            assertEquals(OK_200, response.status)
             assertEquals("changed", response.body)
             assertEquals("changed", response.body)
         }
@@ -69,7 +69,7 @@ class MockServerTest {
     @Test fun `Check all HTTP methods`() {
         mockServer.path = path {
             on("*") {
-                ok("$method $path ${request.headers}", contentType = ContentType(PLAIN))
+                ok("$method $path ${request.headers}", contentType = ContentType(TEXT_PLAIN))
             }
         }
 
@@ -105,7 +105,7 @@ class MockServerTest {
 
         val bodyString = bodyString()
 
-        assertEquals(OK, status)
+        assertEquals(OK_200, status)
         assertTrue(bodyString.startsWith(expectedBody))
 
         for (entry in checkedHeaders.entries) {

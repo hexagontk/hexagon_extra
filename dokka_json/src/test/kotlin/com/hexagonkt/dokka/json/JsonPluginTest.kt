@@ -1,13 +1,13 @@
 package com.hexagonkt.dokka.json
 
-import com.hexagonkt.core.println
+import com.hexagonkt.helpers.out
 import com.hexagonkt.core.requireKeys
 import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parseMap
 import com.hexagonkt.serialization.serialize
 import org.jetbrains.dokka.base.testApi.testRunner.BaseAbstractTest
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS.LINUX
 import java.io.File
@@ -73,7 +73,7 @@ class JsonPluginTest : BaseAbstractTest() {
 
         SerializationManager.defaultFormat = Json
         val json = File("build/dokka").resolve("module_mod.json").parseMap()
-        json.serialize(Json).println("JSON>\n")
+        json.serialize(Json).out("JSON>\n")
         assertEquals("mod", json.requireKeys("name"))
     }
 }

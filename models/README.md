@@ -11,14 +11,14 @@ Classes that model common data objects (shared across multiple domains). I.e.: A
         mavenCentral()
     }
 
-    implementation("com.hexagonkt:models:$hexagonVersion")
+    implementation("com.hexagonkt.extra:models:$hexagonVersion")
     ```
 
 === "pom.xml"
 
     ```xml
     <dependency>
-      <groupId>com.hexagonkt</groupId>
+      <groupId>com.hexagonkt.extra</groupId>
       <artifactId>models</artifactId>
       <version>$hexagonVersion</version>
     </dependency>

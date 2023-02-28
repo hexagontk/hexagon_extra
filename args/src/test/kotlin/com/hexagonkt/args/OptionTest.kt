@@ -1,43 +1,79 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.args.Option.Companion.allowedTargetTypes
-import org.junit.jupiter.api.Test
-import java.lang.IllegalArgumentException
+import java.io.File
+import java.net.URL
+import kotlin.test.Test
+import kotlin.IllegalArgumentException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 internal class OptionTest {
 
     @Test fun `Options with null optional values are correct`() {
-        assertEquals(Option(Boolean::class, 'b'), Option(Boolean::class, 'b', longName = null))
-        assertEquals(Option(Boolean::class, 'b'), Option(Boolean::class, 'b', description = null))
+        assertEquals(
+            Option(Boolean::class, 'b', value = true),
+            Option(Boolean::class, 'b', name = null, value = true)
+        )
+        assertEquals(
+            Option(Boolean::class, 'b', value = true),
+            Option(Boolean::class, 'b', description = null, value = true)
+        )
+        assertEquals(
+            Option(Boolean::class, name = "name", value = true),
+            Option(Boolean::class, null, "name", value = true)
+        )
     }
 
     @Test fun `Invalid options raise errors`() {
         listOf('#', ' ').forEach {
             assertEquals(
-                "Short name must be a letter or a digit: $it",
+                "Names must comply with ${Option.optionRegex} regex: [$it]",
                 assertFailsWith<IllegalArgumentException> { Option(String::class, it) }.message
             )
         }
 
-        assertEquals(
-            "Type ${Regex::class} not in allowed types: $allowedTargetTypes",
-            assertFailsWith<IllegalArgumentException> { Option(Regex::class, 'a') }.message
-        )
+        assertFailsWith<java.lang.IllegalArgumentException> { Option(Regex::class, 'n', "name") }
+            .message.let { assert(it?.contains("not in allowed types") ?: false) }
 
-        listOf("", " ", " b ", "b").forEach {
-            val e = assertFailsWith<IllegalArgumentException> { Option(String::class, 'a', it) }
-            val message = e.message ?: ""
-            assertEquals("Long name must be at least two characters: $it", message)
+        setOf("", " ", "Ab", "ab_c").forEach { n ->
+            assertFailsWith<IllegalArgumentException> { Option(String::class, 'o', n) }
+                .message.let {
+                    assert(it?.contains("Names must comply with") ?: false)
+                }
         }
 
-        listOf("", " ", "  ").forEach {
-            val e = assertFailsWith<IllegalArgumentException> {
-                Option(String::class, 'a', description = it)
-            }
-            val message = e.message ?: ""
-            assertEquals("Description cannot be blank", message)
+        val message = "Option regex can only be used for 'string' type: Int"
+        assertIllegalArgument(message) { Option(Int::class, 'n', "name", regex = Regex(".*")) }
+
+        val e = assertFailsWith<IllegalArgumentException> {
+            Option(String::class, name = "name", regex = Regex("A"), values = listOf("a"))
+        }
+        assert(e.message?.contains("Value should match the 'A' regex: a") ?: false)
+
+        assertFailsWith<IllegalArgumentException> { Option(Int::class, 'n', "name", " ") }
+    }
+
+    @Test fun `Options can add values`() {
+        assertEquals(
+            File("/foo/bar"),
+            Option(File::class, 'o', "one").addValue("/foo/bar").values.first()
+        )
+
+        assertEquals(
+            listOf(1, 2),
+            Option(Int::class, 'i', "int", multiple = true).addValue("1").addValue("2").values
+        )
+
+        assertIllegalArgument("Option 'i' can only have one value: [1, 2]") {
+            Option(Int::class, 'i', "int").addValue("1").addValue("2").values
+        }
+
+        assertIllegalState("Option 't' of type 'URL' can not hold '0'") {
+            Option(URL::class, 't', "two").addValue("0").values.first()
+        }
+
+        assertIllegalState("Option 't' of type 'Int' can not hold '/foo/bar'") {
+            Option(Int::class, 't', "two").addValue("/foo/bar").values.first()
         }
     }
 }

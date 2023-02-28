@@ -9,7 +9,7 @@ import com.hexagonkt.store.Store
 import com.hexagonkt.store.mongodb.Department.DESIGN
 import com.hexagonkt.store.mongodb.Department.DEVELOPMENT
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import java.net.URL

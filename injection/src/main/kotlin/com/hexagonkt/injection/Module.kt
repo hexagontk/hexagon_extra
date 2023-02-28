@@ -1,9 +1,7 @@
 package com.hexagonkt.injection
 
-import com.hexagonkt.core.eol
 import com.hexagonkt.injection.Provider.Generator
 import com.hexagonkt.injection.Provider.Instance
-import com.hexagonkt.core.logging.Logger
 import kotlin.reflect.KClass
 
 /**
@@ -11,7 +9,6 @@ import kotlin.reflect.KClass
  */
 class Module {
 
-    internal val logger: Logger by lazy { Logger(this::class) }
     internal var bindings: Map<Target<out Any>, Provider<Any>> = emptyMap()
 
     fun clear() {
@@ -34,7 +31,6 @@ class Module {
         }
 
         bindings = bindings + (target to provider)
-        logger.info { "$binding bound to function" }
     }
 
     inline fun <reified T : Any> bind(instance: T) {
@@ -89,7 +85,7 @@ class Module {
         bindings
             .map { it.key }
             .map { it.type.java.name to if (it.tag is Unit) "" else " (${it.tag})"}
-            .joinToString(eol, "Bound classes with parameters:\n") {
+            .joinToString("\n", "Bound classes with parameters:\n") {
                 "\t * ${it.first}${it.second}"
             }
 }

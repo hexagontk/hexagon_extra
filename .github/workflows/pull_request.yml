@@ -7,45 +7,15 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
-    steps:
-
-      # SET UP
-      - name: Check Out
-        uses: actions/checkout@v3
-      - name: Install Java
-        uses: graalvm/setup-graalvm@v1
-        with:
-          version: latest
-          java-version: 17
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          components: native-image,llvm
-          cache: gradle
-
-      # PROCESS
-      - name: Build Project
-        run: ./gradlew build
-      - name: Log Build (ON FAILURE)
-        if: failure()
-        run: ./gradlew --info --stacktrace build
+    permissions: read-all
+    uses: hexagonkt/.github/.github/workflows/gradle.yml@master
+    with:
+      check_directory: args/build
 
   test_publishing:
     name: Test Publishing
-    runs-on: ubuntu-latest
-    steps:
-
-      # SET UP
-      - name: Check Out
-        uses: actions/checkout@v3
-      - name: Install Java
-        uses: graalvm/setup-graalvm@v1
-        with:
-          version: latest
-          java-version: 17
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          components: native-image,llvm
-          cache: gradle
-
-      # PROCESS
-      - name: Test Publishing
-        run: ./gradlew --no-daemon publishToMavenLocal
+    permissions: read-all
+    uses: hexagonkt/.github/.github/workflows/gradle.yml@master
+    with:
+      check_directory: args/build
+      tasks: publishToMavenLocal

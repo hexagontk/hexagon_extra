@@ -4,7 +4,7 @@ import java.lang.System.currentTimeMillis
 import java.lang.Thread.currentThread
 import java.time.LocalDateTime
 
-import com.hexagonkt.core.toNumber
+import com.hexagonkt.helpers.toNumber
 import com.hexagonkt.core.Jvm
 
 open class Message (

@@ -11,7 +11,7 @@
  */
 
 plugins {
-    kotlin("jvm") version("1.8.0") apply(false)
+    kotlin("jvm") version("1.8.10") apply(false)
 
     id("idea")
     id("eclipse")
@@ -19,21 +19,12 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version("1.22.0") apply(false)
 }
 
+ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagonkt/hexagon/$version/gradle")
+
+defaultTasks("build")
+
 repositories {
     mavenCentral()
-}
-
-tasks.register<Delete>("clean") {
-    group = "build"
-    description = "Delete root project's generated artifacts, logs and error dumps."
-
-    delete("build", "log", "out", ".vertx", "file-uploads", "config")
-    delete(
-        fileTree(rootDir) { include("**/*.log") },
-        fileTree(rootDir) { include("**/*.hprof") },
-        fileTree(rootDir) { include("**/.attach_pid*") },
-        fileTree(rootDir) { include("**/hs_err_pid*") }
-    )
 }
 
 task("setUp") {
@@ -66,6 +57,9 @@ task("release") {
 
     doLast {
         val release = version.toString()
+        val actor = System.getenv("GITHUB_ACTOR")
+
+        project.exec { commandLine = listOf("git", "config", "--global", "user.name", actor) }
         project.exec { commandLine = listOf("git", "tag", "-m", "Release $release", release) }
         project.exec { commandLine = listOf("git", "push", "--tags") }
     }

@@ -14,14 +14,14 @@ Hexagon's event bus implementation based in RabbitMQ.
         mavenCentral()
     }
 
-    implementation("com.hexagonkt:messaging_rabbitmq:$hexagonVersion")
+    implementation("com.hexagonkt.extra:messaging_rabbitmq:$hexagonVersion")
     ```
 
 === "pom.xml"
 
     ```xml
     <dependency>
-      <groupId>com.hexagonkt</groupId>
+      <groupId>com.hexagonkt.extra</groupId>
       <artifactId>messaging_rabbitmq</artifactId>
       <version>$hexagonVersion</version>
     </dependency>

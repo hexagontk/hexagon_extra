@@ -1,6 +1,6 @@
 package com.hexagonkt.scheduler
 
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import java.lang.Thread.sleep
 
 internal class CronSchedulerSamplesTest {

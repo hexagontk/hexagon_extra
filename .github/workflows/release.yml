@@ -6,49 +6,22 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-
-      # SET UP
-      - name: Check Out
-        uses: actions/checkout@v3
-      - name: Install Java
-        uses: graalvm/setup-graalvm@v1
-        with:
-          version: latest
-          java-version: 17
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          components: native-image,llvm
-          cache: gradle
-
-      # PROCESS
-      - name: Build Project
-        run: ./gradlew build
-      - name: Log Build (ON FAILURE)
-        if: failure()
-        run: ./gradlew --info --stacktrace build
-
   publish:
     name: Publish
     runs-on: ubuntu-latest
-    needs: [ build ]
     steps:
-
-      # SET UP
       - name: Check Out
         uses: actions/checkout@v3
-      - name: Install Java
-        uses: graalvm/setup-graalvm@v1
         with:
-          version: latest
-          java-version: 17
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          components: native-image,llvm
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set Up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: temurin
           cache: gradle
 
-      # PROCESS
       - name: Publish Packages
         env:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
@@ -58,6 +31,4 @@ jobs:
         run: |
           export REMOTE="https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
           git remote set-url origin "$REMOTE"
-          git config --global user.email "juanjoaguililla@gmail.com"
-          git config --global user.name "jaguililla"
-          ./gradlew --info --no-daemon -x test release
+          ./gradlew --info --no-daemon release

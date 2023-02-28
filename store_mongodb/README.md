@@ -14,14 +14,14 @@ Hexagon's storage utilities for data classes.
         mavenCentral()
     }
 
-    implementation("com.hexagonkt:store_mongodb:$hexagonVersion")
+    implementation("com.hexagonkt.extra:store_mongodb:$hexagonVersion")
     ```
 
 === "pom.xml"
 
     ```xml
     <dependency>
-      <groupId>com.hexagonkt</groupId>
+      <groupId>com.hexagonkt.extra</groupId>
       <artifactId>store_mongodb</artifactId>
       <version>$hexagonVersion</version>
     </dependency>

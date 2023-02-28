@@ -9,13 +9,14 @@ val gradleScripts = properties["gradleScripts"]
 apply(from = "$gradleScripts/kotlin.gradle")
 apply(from = "$gradleScripts/publish.gradle")
 apply(from = "$gradleScripts/dokka.gradle")
+apply(from = "$gradleScripts/detekt.gradle")
 
 description = "Commonly used data models (like addresses)."
 
 dependencies {
     val javamailVersion = properties["javamailVersion"]
 
-    "api"("com.hexagonkt:core:$version")
+    "api"("com.hexagonkt:helpers:$version")
     "api"("com.sun.mail:javax.mail:$javamailVersion")
 }
 

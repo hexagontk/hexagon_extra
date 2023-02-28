@@ -2,7 +2,7 @@ package com.hexagonkt.web
 
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
-import com.hexagonkt.http.model.SuccessStatus.OK
+import com.hexagonkt.http.model.OK_200
 import com.hexagonkt.http.server.HttpServer
 import com.hexagonkt.http.server.HttpServerSettings
 import com.hexagonkt.http.server.handlers.PathHandler
@@ -12,7 +12,7 @@ import com.hexagonkt.templates.TemplateManager
 import com.hexagonkt.templates.pebble.PebbleAdapter
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import java.net.URL
@@ -43,11 +43,7 @@ internal class WebTest {
     }
 
     private val server: HttpServer by lazy {
-        HttpServer(
-            JettyServletAdapter(),
-            listOf(router),
-            HttpServerSettings(bindPort = 0)
-        )
+        HttpServer(JettyServletAdapter(), router, HttpServerSettings(bindPort = 0))
     }
 
     private val client by lazy {
@@ -67,12 +63,12 @@ internal class WebTest {
 
     @Test fun template() {
         val response = client.get("/template")
-        assertEquals(OK, response.status)
+        assertEquals(OK_200, response.status)
         assertContains(response.bodyString(), "<p>path : /template</p>")
     }
 
     @Test fun templateAdapter() {
         val response = client.get("/template/adapter")
-        assertEquals(OK, response.status)
+        assertEquals(OK_200, response.status)
     }
 }
