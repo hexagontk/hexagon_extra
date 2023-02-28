@@ -34,6 +34,10 @@ data class Parameter<T : Any>(
         check("Parameter", parameterRegex)
     }
 
+    @Suppress("UNCHECKED_CAST") // Types checked at runtime
+    override fun addValues(value: Property<*>): Property<T> =
+        copy(values = values + value.values as List<T>)
+
     override fun addValue(value: String): Parameter<T> =
         value.parseOrNull(type)
             ?.let { copy(values = values + it) }

@@ -26,6 +26,10 @@ data class Flag(
         check("Flag", optionRegex)
     }
 
+    @Suppress("UNCHECKED_CAST") // Types checked at runtime
+    override fun addValues(value: Property<*>): Property<Boolean> =
+        copy(values = values + value.values as List<Boolean>)
+
     override fun addValue(value: String): Flag =
         copy(values = values + true)
 }

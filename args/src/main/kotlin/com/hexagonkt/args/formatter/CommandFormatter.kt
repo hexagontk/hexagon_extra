@@ -33,16 +33,16 @@ data class CommandFormatter(
     }
 
     override fun detail(component: Command): String {
-        val commands = component.subcommands.dl("COMMANDS", "\n") { it.name to (it.title ?: "") }
-        val parameters = component.parameters.dl("PARAMETERS", " ")
-        val options = component.options.dl("OPTIONS", " ")
-        val flags = component.flags.dl("FLAGS", " ")
+        val commands = component.subcommands.dl("COMMANDS") { it.name to (it.title ?: "") }
+        val parameters = component.parameters.dl("PARAMETERS")
+        val options = component.options.dl("OPTIONS")
+        val flags = component.flags.dl("FLAGS")
 
-        return "$commands\n\n$parameters\n\n$options\n\n$flags".trim()
+        return "$commands$parameters$options$flags".trim()
     }
 
     private fun <T : Any> Collection<T>.dl(
-        title: String, separator: String, block: (T) -> Pair<String, String>
+        title: String, block: (T) -> Pair<String, String>
     ) : String =
         if (isEmpty())
             ""
@@ -52,8 +52,8 @@ data class CommandFormatter(
                     val m = p.maxOf { it.first.length }
                     p.map { (k, v) -> k.padEnd(m + 3, ' ') + v }
                 }
-                .joinToString(separator, "$title:\n") { it.trim().prependIndent(indent) }
+                .joinToString("\n", "$title:\n", "\n\n") { it.trim().prependIndent(indent) }
 
-    private fun Collection<Property<*>>.dl(title: String, separator: String) : String =
-        dl(title, separator) { propertyFormatter.definition(it) to propertyFormatter.detail(it) }
+    private fun Collection<Property<*>>.dl(title: String) : String =
+        dl(title) { propertyFormatter.definition(it) to propertyFormatter.detail(it) }
 }

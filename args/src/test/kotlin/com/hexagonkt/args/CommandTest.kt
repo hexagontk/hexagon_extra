@@ -1,18 +1,15 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.helpers.out
 import java.io.File
-import java.lang.IllegalArgumentException
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 internal class CommandTest {
 
     @Test fun `Invalid command definitions throw errors`() {
-        assertFailsWith<IllegalArgumentException> { Command(" ") }
-        assertFailsWith<IllegalArgumentException> { Command("cmd", title = " ") }
-        assertFailsWith<IllegalArgumentException> { Command("cmd", description = " ") }
+        assertIllegalArgument { Command(" ") }
+        assertIllegalArgument { Command("cmd", title = " ") }
+        assertIllegalArgument { Command("cmd", description = " ") }
 
         assertIllegalArgument("Only the last positional parameter can be multiple") {
             Command(
@@ -84,7 +81,7 @@ internal class CommandTest {
             subcommandsNames
         )
 
-        subcommandsNames.sortedByDescending { it.count { c -> c == ' ' } }.out()
+        subcommandsNames.sortedByDescending { it.count { c -> c == ' ' } }
     }
 
     @Test fun `Find command works in a tree of commands`() {
@@ -114,121 +111,20 @@ internal class CommandTest {
                 Parameter(Int::class, "number"),
             )
         )
-            .apply {
-                assertValues(listOf(true), "-1")
-                assertValues(listOf(true), "--first")
-                assertValues(listOf("val"), "-2val")
-                assertValues(listOf("val"), "-2 val")
-                assertValues(listOf("val"), "-2=val")
-                assertValues(listOf("val"), "--second val")
-                assertValues(listOf("val"), "--second=val")
-                assertValues(listOf(42), "42")
+        .apply { checkCases() }
 
-                assertValues(listOf(true, "val"), "-12val")
-                assertValues(listOf(true, "val"), "-12 val")
-                assertValues(listOf(true, "val"), "-12=val")
-                assertValues(listOf(true, "val"), "-1 -2val")
-                assertValues(listOf(true, "val"), "-1 -2 val")
-                assertValues(listOf(true, "val"), "-1 -2=val")
-                assertValues(listOf(true, "val"), "-1 --second val")
-                assertValues(listOf(true, "val"), "-1 --second=val")
-                assertValues(listOf(true, "val"), "--first -2 val")
-                assertValues(listOf(true, "val"), "--first -2=val")
-                assertValues(listOf(true, "val"), "--first --second val")
-                assertValues(listOf(true, "val"), "--first --second=val")
-                assertValues(listOf("val", true), "-2val -1")
-                assertValues(listOf("val", true), "-2 val -1")
-                assertValues(listOf("val", true), "-2=val -1")
-                assertValues(listOf("val", true), "--second val -1")
-                assertValues(listOf("val", true), "--second=val -1")
-                assertValues(listOf("val", true), "-2 val --first")
-                assertValues(listOf("val", true), "-2=val --first")
-                assertValues(listOf("val", true), "--second val --first")
-                assertValues(listOf("val", true), "--second=val --first")
-
-                assertValues(listOf(true, 42), "-1 42")
-                assertValues(listOf(true, 42), "--first 42")
-                assertValues(listOf(42, true), "42 -1")
-                assertValues(listOf(42, true), "42 --first")
-
-                assertValues(listOf("val", 42), "-2val 42")
-                assertValues(listOf("val", 42), "-2 val 42")
-                assertValues(listOf("val", 42), "-2=val 42")
-                assertValues(listOf("val", 42), "--second val 42")
-                assertValues(listOf("val", 42), "--second=val 42")
-
-                assertValues(listOf(true, "val", 42), "-12val 42")
-                assertValues(listOf(true, "val", 42), "-12 val 42")
-                assertValues(listOf(true, "val", 42), "-12=val 42")
-                assertValues(listOf(true, "val", 42), "-1 -2val 42")
-                assertValues(listOf(true, "val", 42), "-1 -2 val 42")
-                assertValues(listOf(true, "val", 42), "-1 -2=val 42")
-                assertValues(listOf(true, "val", 42), "-1 --second val 42")
-                assertValues(listOf(true, "val", 42), "-1 --second=val 42")
-                assertValues(listOf(true, "val", 42), "--first -2 val 42")
-                assertValues(listOf(true, "val", 42), "--first -2=val 42")
-                assertValues(listOf(true, "val", 42), "--first --second val 42")
-                assertValues(listOf(true, "val", 42), "--first --second=val 42")
-                assertValues(listOf("val", true, 42), "-2val -1 42")
-                assertValues(listOf("val", true, 42), "-2 val -1 42")
-                assertValues(listOf("val", true, 42), "-2=val -1 42")
-                assertValues(listOf("val", true, 42), "--second val -1 42")
-                assertValues(listOf("val", true, 42), "--second=val -1 42")
-                assertValues(listOf("val", true, 42), "-2 val --first 42")
-                assertValues(listOf("val", true, 42), "-2=val --first 42")
-                assertValues(listOf("val", true, 42), "--second val --first 42")
-                assertValues(listOf("val", true, 42), "--second=val --first 42")
-
-                assertValues(listOf(true, 42, "val"), "-1 42 -2val")
-                assertValues(listOf(true, 42, "val"), "-1 42 -2 val")
-                assertValues(listOf(true, 42, "val"), "-1 42 -2=val")
-                assertValues(listOf(true, 42, "val"), "-1 42 --second val")
-                assertValues(listOf(true, 42, "val"), "-1 42 --second=val")
-                assertValues(listOf(true, 42, "val"), "--first 42 -2 val")
-                assertValues(listOf(true, 42, "val"), "--first 42 -2=val")
-                assertValues(listOf(true, 42, "val"), "--first 42 --second val")
-                assertValues(listOf(true, 42, "val"), "--first 42 --second=val")
-                assertValues(listOf("val", 42, true), "-2val 42 -1")
-                assertValues(listOf("val", 42, true), "-2 val 42 -1")
-                assertValues(listOf("val", 42, true), "-2=val 42 -1")
-                assertValues(listOf("val", 42, true), "--second val 42 -1")
-                assertValues(listOf("val", 42, true), "--second=val 42 -1")
-                assertValues(listOf("val", 42, true), "-2 val 42 --first")
-                assertValues(listOf("val", 42, true), "-2=val 42 --first")
-                assertValues(listOf("val", 42, true), "--second val 42 --first")
-                assertValues(listOf("val", 42, true), "--second=val 42 --first")
-
-                assertValues(listOf(42, true, "val"), "42 -1 -2val")
-                assertValues(listOf(42, true, "val"), "42 -1 -2 val")
-                assertValues(listOf(42, true, "val"), "42 -1 -2=val")
-                assertValues(listOf(42, true, "val"), "42 -1 --second val")
-                assertValues(listOf(42, true, "val"), "42 -1 --second=val")
-                assertValues(listOf(42, true, "val"), "42 --first -2 val")
-                assertValues(listOf(42, true, "val"), "42 --first -2=val")
-                assertValues(listOf(42, true, "val"), "42 --first --second val")
-                assertValues(listOf(42, true, "val"), "42 --first --second=val")
-                assertValues(listOf(42, "val", true), "42 -2val -1")
-                assertValues(listOf(42, "val", true), "42 -2 val -1")
-                assertValues(listOf(42, "val", true), "42 -2=val -1")
-                assertValues(listOf(42, "val", true), "42 --second val -1")
-                assertValues(listOf(42, "val", true), "42 --second=val -1")
-                assertValues(listOf(42, "val", true), "42 -2 val --first")
-                assertValues(listOf(42, "val", true), "42 -2=val --first")
-                assertValues(listOf(42, "val", true), "42 --second val --first")
-                assertValues(listOf(42, "val", true), "42 --second=val --first")
-            }
-    }
-
-    @Test fun `Commands can parse multiple values properties`() {
         Command(
             name = "cmd",
             properties = setOf(
                 Flag('1', "first"),
                 Option(String::class, '2', "second"),
-                Parameter(Int::class, "number"),
             )
         )
         .apply {
+            assertIllegalState("Option 'z' not found", "-z")
+
+            assertValues(emptyList<Any>(), "")
+
             assertValues(listOf(true), "-1")
             assertValues(listOf(true), "--first")
             assertValues(listOf("val"), "-2val")
@@ -236,101 +132,192 @@ internal class CommandTest {
             assertValues(listOf("val"), "-2=val")
             assertValues(listOf("val"), "--second val")
             assertValues(listOf("val"), "--second=val")
-            assertValues(listOf(42), "42")
-
-            assertValues(listOf(true, "val"), "-12val")
-            assertValues(listOf(true, "val"), "-12 val")
-            assertValues(listOf(true, "val"), "-12=val")
-            assertValues(listOf(true, "val"), "-1 -2val")
-            assertValues(listOf(true, "val"), "-1 -2 val")
-            assertValues(listOf(true, "val"), "-1 -2=val")
-            assertValues(listOf(true, "val"), "-1 --second val")
-            assertValues(listOf(true, "val"), "-1 --second=val")
-            assertValues(listOf(true, "val"), "--first -2 val")
-            assertValues(listOf(true, "val"), "--first -2=val")
-            assertValues(listOf(true, "val"), "--first --second val")
-            assertValues(listOf(true, "val"), "--first --second=val")
-            assertValues(listOf("val", true), "-2val -1")
-            assertValues(listOf("val", true), "-2 val -1")
-            assertValues(listOf("val", true), "-2=val -1")
-            assertValues(listOf("val", true), "--second val -1")
-            assertValues(listOf("val", true), "--second=val -1")
-            assertValues(listOf("val", true), "-2 val --first")
-            assertValues(listOf("val", true), "-2=val --first")
-            assertValues(listOf("val", true), "--second val --first")
-            assertValues(listOf("val", true), "--second=val --first")
-
-            assertValues(listOf(true, 42), "-1 42")
-            assertValues(listOf(true, 42), "--first 42")
-            assertValues(listOf(42, true), "42 -1")
-            assertValues(listOf(42, true), "42 --first")
-
-            assertValues(listOf("val", 42), "-2val 42")
-            assertValues(listOf("val", 42), "-2 val 42")
-            assertValues(listOf("val", 42), "-2=val 42")
-            assertValues(listOf("val", 42), "--second val 42")
-            assertValues(listOf("val", 42), "--second=val 42")
-
-            assertValues(listOf(true, "val", 42), "-12val 42")
-            assertValues(listOf(true, "val", 42), "-12 val 42")
-            assertValues(listOf(true, "val", 42), "-12=val 42")
-            assertValues(listOf(true, "val", 42), "-1 -2val 42")
-            assertValues(listOf(true, "val", 42), "-1 -2 val 42")
-            assertValues(listOf(true, "val", 42), "-1 -2=val 42")
-            assertValues(listOf(true, "val", 42), "-1 --second val 42")
-            assertValues(listOf(true, "val", 42), "-1 --second=val 42")
-            assertValues(listOf(true, "val", 42), "--first -2 val 42")
-            assertValues(listOf(true, "val", 42), "--first -2=val 42")
-            assertValues(listOf(true, "val", 42), "--first --second val 42")
-            assertValues(listOf(true, "val", 42), "--first --second=val 42")
-            assertValues(listOf("val", true, 42), "-2val -1 42")
-            assertValues(listOf("val", true, 42), "-2 val -1 42")
-            assertValues(listOf("val", true, 42), "-2=val -1 42")
-            assertValues(listOf("val", true, 42), "--second val -1 42")
-            assertValues(listOf("val", true, 42), "--second=val -1 42")
-            assertValues(listOf("val", true, 42), "-2 val --first 42")
-            assertValues(listOf("val", true, 42), "-2=val --first 42")
-            assertValues(listOf("val", true, 42), "--second val --first 42")
-            assertValues(listOf("val", true, 42), "--second=val --first 42")
-
-            assertValues(listOf(true, 42, "val"), "-1 42 -2val")
-            assertValues(listOf(true, 42, "val"), "-1 42 -2 val")
-            assertValues(listOf(true, 42, "val"), "-1 42 -2=val")
-            assertValues(listOf(true, 42, "val"), "-1 42 --second val")
-            assertValues(listOf(true, 42, "val"), "-1 42 --second=val")
-            assertValues(listOf(true, 42, "val"), "--first 42 -2 val")
-            assertValues(listOf(true, 42, "val"), "--first 42 -2=val")
-            assertValues(listOf(true, 42, "val"), "--first 42 --second val")
-            assertValues(listOf(true, 42, "val"), "--first 42 --second=val")
-            assertValues(listOf("val", 42, true), "-2val 42 -1")
-            assertValues(listOf("val", 42, true), "-2 val 42 -1")
-            assertValues(listOf("val", 42, true), "-2=val 42 -1")
-            assertValues(listOf("val", 42, true), "--second val 42 -1")
-            assertValues(listOf("val", 42, true), "--second=val 42 -1")
-            assertValues(listOf("val", 42, true), "-2 val 42 --first")
-            assertValues(listOf("val", 42, true), "-2=val 42 --first")
-            assertValues(listOf("val", 42, true), "--second val 42 --first")
-            assertValues(listOf("val", 42, true), "--second=val 42 --first")
-
-            assertValues(listOf(42, true, "val"), "42 -1 -2val")
-            assertValues(listOf(42, true, "val"), "42 -1 -2 val")
-            assertValues(listOf(42, true, "val"), "42 -1 -2=val")
-            assertValues(listOf(42, true, "val"), "42 -1 --second val")
-            assertValues(listOf(42, true, "val"), "42 -1 --second=val")
-            assertValues(listOf(42, true, "val"), "42 --first -2 val")
-            assertValues(listOf(42, true, "val"), "42 --first -2=val")
-            assertValues(listOf(42, true, "val"), "42 --first --second val")
-            assertValues(listOf(42, true, "val"), "42 --first --second=val")
-            assertValues(listOf(42, "val", true), "42 -2val -1")
-            assertValues(listOf(42, "val", true), "42 -2 val -1")
-            assertValues(listOf(42, "val", true), "42 -2=val -1")
-            assertValues(listOf(42, "val", true), "42 --second val -1")
-            assertValues(listOf(42, "val", true), "42 --second=val -1")
-            assertValues(listOf(42, "val", true), "42 -2 val --first")
-            assertValues(listOf(42, "val", true), "42 -2=val --first")
-            assertValues(listOf(42, "val", true), "42 --second val --first")
-            assertValues(listOf(42, "val", true), "42 --second=val --first")
+            assertIllegalState("No parameters", "42")
         }
+    }
+
+    @Test fun `Commands can parse multiple values properties`() {
+        Command(
+            name = "cmd",
+            properties = setOf(
+                Flag('1', "first", multiple = true),
+                Option(String::class, '2', "second", multiple = true),
+                Parameter(Int::class, "number", multiple = true),
+            )
+        )
+        .apply {
+            checkCases()
+
+            assertValues(listOf(42, 43, 44), "42 43 44")
+            assertValues(listOf(true, true), "-11")
+            assertValues(listOf(true, true), "--first --first")
+            assertValues(
+                listOf("val", "more", "most", "val", "val"),
+                "-2val -2 more -2=most --second val --second=val"
+            )
+
+            assertValues(listOf(true, true, "val", "val"), "-12val -12val")
+            assertValues(listOf(true, true, "val", "val"), "-12 val -12 val")
+            assertValues(listOf(true, true, "val", "val"), "-12=val -12=val")
+            assertValues(listOf(true, true, "val", "val"), "-1 -2val -1 -2val")
+            assertValues(listOf(true, true, "val", "val"), "-1 -2 val -1 -2 val")
+            assertValues(listOf(true, true, "val", "val"), "-1 -2=val -1 -2=val")
+            assertValues(listOf(true, true, "val", "val"), "-1 --second val -1 --second val")
+            assertValues(listOf(true, true, "val", "val"), "-1 --second=val -1 --second=val")
+            assertValues(listOf(true, true, "val", "val"), "--first -2 val --first -2 val")
+            assertValues(listOf(true, true, "val", "val"), "--first -2=val --first -2=val")
+            assertValues(
+                listOf(true, true, "val", "val"),
+                "--first --second=val --first --second=val"
+            )
+            assertValues(
+                listOf(true, true, "val", "val"),
+                "--first --second val --first --second val"
+            )
+
+            assertValues(listOf("val", "val", true, true), "-2val -1 -2val -1")
+            assertValues(listOf("val", "val", true, true), "-2 val -1 -2 val -1")
+            assertValues(listOf("val", "val", true, true), "-2=val -1 -2=val -1")
+            assertValues(listOf("val", "val", true, true), "--second val -1 --second val -1")
+            assertValues(listOf("val", "val", true, true), "--second=val -1 --second=val -1")
+            assertValues(listOf("val", "val", true, true), "-2 val --first -2 val --first")
+            assertValues(listOf("val", "val", true, true), "-2=val --first -2=val --first")
+            assertValues(
+                listOf("val", "val", true, true),
+                "--second val --first --second val --first"
+            )
+            assertValues(
+                listOf("val", "val", true, true),
+                "--second=val --first --second=val --first"
+            )
+
+            assertValues(listOf(true, true, 42, 43), "-1 42 -1 43")
+            assertValues(listOf(true, true, 42, 43), "--first 42 --first 43")
+            assertValues(listOf(42, 43, true, true), "42 -1 43 -1")
+            assertValues(listOf(42, 43, true, true), "42 --first 43 --first")
+        }
+    }
+
+    @Test fun `Commands can parse mandatory properties`() {
+        Command(
+            name = "cmd",
+            properties = setOf(
+                Option(String::class, '2', "second", optional = false),
+                Parameter(Int::class, "number", optional = false),
+            )
+        )
+        .apply {
+            assertIllegalState("Missing properties: '2'", "42")
+            assertIllegalState("Missing properties: 'number'", "-2val")
+        }
+    }
+
+    private fun Command.checkCases() {
+        assertIllegalState("Option 'z' not found", "-z")
+
+        assertValues(emptyList<Any>(), "")
+
+        assertValues(listOf(true), "-1")
+        assertValues(listOf(true), "--first")
+        assertValues(listOf("val"), "-2val")
+        assertValues(listOf("val"), "-2 val")
+        assertValues(listOf("val"), "-2=val")
+        assertValues(listOf("val"), "--second val")
+        assertValues(listOf("val"), "--second=val")
+        assertValues(listOf(42), "42")
+
+        assertValues(listOf(true, "val"), "-12val")
+        assertValues(listOf(true, "val"), "-12 val")
+        assertValues(listOf(true, "val"), "-12=val")
+        assertValues(listOf(true, "val"), "-1 -2val")
+        assertValues(listOf(true, "val"), "-1 -2 val")
+        assertValues(listOf(true, "val"), "-1 -2=val")
+        assertValues(listOf(true, "val"), "-1 --second val")
+        assertValues(listOf(true, "val"), "-1 --second=val")
+        assertValues(listOf(true, "val"), "--first -2 val")
+        assertValues(listOf(true, "val"), "--first -2=val")
+        assertValues(listOf(true, "val"), "--first --second val")
+        assertValues(listOf(true, "val"), "--first --second=val")
+        assertValues(listOf("val", true), "-2val -1")
+        assertValues(listOf("val", true), "-2 val -1")
+        assertValues(listOf("val", true), "-2=val -1")
+        assertValues(listOf("val", true), "--second val -1")
+        assertValues(listOf("val", true), "--second=val -1")
+        assertValues(listOf("val", true), "-2 val --first")
+        assertValues(listOf("val", true), "-2=val --first")
+        assertValues(listOf("val", true), "--second val --first")
+        assertValues(listOf("val", true), "--second=val --first")
+
+        assertValues(listOf(true, 42), "-1 42")
+        assertValues(listOf(true, 42), "--first 42")
+        assertValues(listOf(42, true), "42 -1")
+        assertValues(listOf(42, true), "42 --first")
+
+        assertValues(listOf("val", 42), "-2val 42")
+        assertValues(listOf("val", 42), "-2 val 42")
+        assertValues(listOf("val", 42), "-2=val 42")
+        assertValues(listOf("val", 42), "--second val 42")
+        assertValues(listOf("val", 42), "--second=val 42")
+
+        assertValues(listOf(true, "val", 42), "-12val 42")
+        assertValues(listOf(true, "val", 42), "-12 val 42")
+        assertValues(listOf(true, "val", 42), "-12=val 42")
+        assertValues(listOf(true, "val", 42), "-1 -2val 42")
+        assertValues(listOf(true, "val", 42), "-1 -2 val 42")
+        assertValues(listOf(true, "val", 42), "-1 -2=val 42")
+        assertValues(listOf(true, "val", 42), "-1 --second val 42")
+        assertValues(listOf(true, "val", 42), "-1 --second=val 42")
+        assertValues(listOf(true, "val", 42), "--first -2 val 42")
+        assertValues(listOf(true, "val", 42), "--first -2=val 42")
+        assertValues(listOf(true, "val", 42), "--first --second val 42")
+        assertValues(listOf(true, "val", 42), "--first --second=val 42")
+        assertValues(listOf("val", true, 42), "-2val -1 42")
+        assertValues(listOf("val", true, 42), "-2 val -1 42")
+        assertValues(listOf("val", true, 42), "-2=val -1 42")
+        assertValues(listOf("val", true, 42), "--second val -1 42")
+        assertValues(listOf("val", true, 42), "--second=val -1 42")
+        assertValues(listOf("val", true, 42), "-2 val --first 42")
+        assertValues(listOf("val", true, 42), "-2=val --first 42")
+        assertValues(listOf("val", true, 42), "--second val --first 42")
+        assertValues(listOf("val", true, 42), "--second=val --first 42")
+
+        assertValues(listOf(true, 42, "val"), "-1 42 -2val")
+        assertValues(listOf(true, 42, "val"), "-1 42 -2 val")
+        assertValues(listOf(true, 42, "val"), "-1 42 -2=val")
+        assertValues(listOf(true, 42, "val"), "-1 42 --second val")
+        assertValues(listOf(true, 42, "val"), "-1 42 --second=val")
+        assertValues(listOf(true, 42, "val"), "--first 42 -2 val")
+        assertValues(listOf(true, 42, "val"), "--first 42 -2=val")
+        assertValues(listOf(true, 42, "val"), "--first 42 --second val")
+        assertValues(listOf(true, 42, "val"), "--first 42 --second=val")
+        assertValues(listOf("val", 42, true), "-2val 42 -1")
+        assertValues(listOf("val", 42, true), "-2 val 42 -1")
+        assertValues(listOf("val", 42, true), "-2=val 42 -1")
+        assertValues(listOf("val", 42, true), "--second val 42 -1")
+        assertValues(listOf("val", 42, true), "--second=val 42 -1")
+        assertValues(listOf("val", 42, true), "-2 val 42 --first")
+        assertValues(listOf("val", 42, true), "-2=val 42 --first")
+        assertValues(listOf("val", 42, true), "--second val 42 --first")
+        assertValues(listOf("val", 42, true), "--second=val 42 --first")
+
+        assertValues(listOf(42, true, "val"), "42 -1 -2val")
+        assertValues(listOf(42, true, "val"), "42 -1 -2 val")
+        assertValues(listOf(42, true, "val"), "42 -1 -2=val")
+        assertValues(listOf(42, true, "val"), "42 -1 --second val")
+        assertValues(listOf(42, true, "val"), "42 -1 --second=val")
+        assertValues(listOf(42, true, "val"), "42 --first -2 val")
+        assertValues(listOf(42, true, "val"), "42 --first -2=val")
+        assertValues(listOf(42, true, "val"), "42 --first --second val")
+        assertValues(listOf(42, true, "val"), "42 --first --second=val")
+        assertValues(listOf(42, "val", true), "42 -2val -1")
+        assertValues(listOf(42, "val", true), "42 -2 val -1")
+        assertValues(listOf(42, "val", true), "42 -2=val -1")
+        assertValues(listOf(42, "val", true), "42 --second val -1")
+        assertValues(listOf(42, "val", true), "42 --second=val -1")
+        assertValues(listOf(42, "val", true), "42 -2 val --first")
+        assertValues(listOf(42, "val", true), "42 -2=val --first")
+        assertValues(listOf(42, "val", true), "42 --second val --first")
+        assertValues(listOf(42, "val", true), "42 --second=val --first")
     }
 
     @Test fun `Commands throw errors with invalid arguments`() {
@@ -370,16 +357,8 @@ internal class CommandTest {
         assertEquals(values, parse(args).properties.flatMap { it.values })
     }
 
-    private fun Command.assertIllegalArgument(message: String, args: List<String>) {
-        assertFailsWithMessage<IllegalArgumentException>(message) { parse(args) }
-    }
-
     private fun Command.assertIllegalState(message: String, args: List<String>) {
         assertFailsWithMessage<IllegalStateException>(message) { parse(args) }
-    }
-
-    private fun Command.assertIllegalArgument(message: String, args: String) {
-        assertIllegalArgument(message, args.split(' ').filter(String::isNotBlank))
     }
 
     private fun Command.assertIllegalState(message: String, args: String) {

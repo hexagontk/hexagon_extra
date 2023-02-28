@@ -72,7 +72,7 @@ data class Command(
     fun parse(args: List<String>): Command {
         val argsIterator = args.iterator()
         var parsedProperties = emptyList<Property<*>>()
-        var parsedParameters = emptyList<Property<*>>()
+        var parsedParameter = 0
 
         argsIterator.forEach { value ->
             parsedProperties = when {
@@ -82,28 +82,39 @@ data class Command(
                 value.startsWith('-') ->
                     parsedProperties + parseOptions(value.removePrefix("-"), argsIterator)
 
-                else -> {
-                    val newParameter = parseParameter(value, parsedParameters)
-                    parsedParameters = parsedParameters + newParameter
-                    parsedProperties + newParameter
-                }
+                else ->
+                    parsedProperties + parseParameter(value, ++parsedParameter)
             }
         }
 
-        return copy(properties = parsedProperties.toSet())
+        val groupedProperties = parsedProperties.groupValues()
+        checkMandatoryProperties(groupedProperties)
+        return copy(properties = groupedProperties.toSet())
     }
 
-    private fun parseParameter(value: String, parsedParameters: List<Property<*>>): Property<*> {
-        val index = parsedParameters.size
-        return parametersList.getOrNull(index)
-            ?.addValue(value)
-            ?: parsedParameters.lastOrNull()
-                ?.let {
-                    if (it.multiple) it.addValue(value)
-                    else error("Unknown argument at position ${index + 1}: $value")
-                }
-            ?: error("No parameters")
+    private fun checkMandatoryProperties(parsedProperties: List<Property<*>>) {
+        val mandatoryProperties = properties.filterNot { it.optional }
+        val names = parsedProperties.flatMap { it.names }
+        val missingProperties = mandatoryProperties.filterNot { it.names.any { n -> n in names } }
+        check(missingProperties.isEmpty()) {
+            val missingNames = missingProperties.joinToString(", ") { "'${it.names.first()}'" }
+            "Missing properties: $missingNames"
+        }
     }
+
+    private fun List<Property<*>>.groupValues(): List<Property<*>> =
+        groupBy { it.names }
+            .map { (_, v) ->
+                v.reduceIndexed { i, a, b ->
+                    if (a.multiple) a.addValues(b)
+                    else error("Unknown argument at position ${i + 1}: ${b.values.first()}")
+                }
+            }
+
+    private fun parseParameter(value: String, parsedParameter: Int): Property<*> =
+        (parametersList.getOrNull(parsedParameter) ?: parametersList.lastOrNull())
+            ?.addValue(value)
+            ?: error("No parameters")
 
     private fun parseOptions(
         names: String, argsIterator: Iterator<String>

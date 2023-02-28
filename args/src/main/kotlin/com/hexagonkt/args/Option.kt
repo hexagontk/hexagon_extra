@@ -55,6 +55,10 @@ data class Option<T : Any>(
         check("Option", optionRegex)
     }
 
+    @Suppress("UNCHECKED_CAST") // Types checked at runtime
+    override fun addValues(value: Property<*>): Property<T> =
+        copy(values = values + value.values as List<T>)
+
     override fun addValue(value: String): Option<T> =
         value.parseOrNull(type)
             ?.let { copy(values = values + it) }

@@ -1,9 +1,6 @@
 package com.hexagonkt.args.formatter
 
-import com.hexagonkt.args.Command
-import com.hexagonkt.args.Option
-import com.hexagonkt.args.Parameter
-import com.hexagonkt.args.Program
+import com.hexagonkt.args.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -11,7 +8,26 @@ internal class ProgramFormatterTest {
 
     private val formatter = ProgramFormatter()
 
-    @Test fun `Command summary is created properly`() {
+    @Test fun `Program summary is created properly`() {
+        assertEquals(
+            "cmd - CMD Title (version v1.0)\n\nDescription of the cmd command",
+            formatter.summary(Program("cmd", "v1.0", "CMD Title", "Description of the cmd command"))
+        )
+        assertEquals(
+            "cmd - CMD Title (version v1.0)",
+            formatter.summary(Program("cmd", "v1.0", "CMD Title"))
+        )
+        assertEquals(
+            "cmd (version v1.0)",
+            formatter.summary(Program("cmd", "v1.0"))
+        )
+        assertEquals(
+            "cmd",
+            formatter.summary(Program("cmd"))
+        )
+    }
+
+    @Test fun `Program formatter fails on definition and detail`() {
         val prg = Program(
             "cmd",
             "v1.0.0",
@@ -27,19 +43,7 @@ internal class ProgramFormatterTest {
             )
         )
 
-        assertEquals("cmd - CMD Title (version v1.0.0)\n\nDescription of the cmd command", formatter.summary(prg))
-        assertEquals("cmd [-n STRING] [<value>]", formatter.definition(prg))
-        val detail = """
-            COMMANDS:
-              edit     Edit config
-              config   Display config
-
-            PARAMETERS:
-              <value>   [STRING]
-
-            OPTIONS:
-              -n, --name STRING   [STRING]
-        """.trimIndent().trim()
-        assertEquals(detail, formatter.detail(prg))
+        assertIllegalState("Unsupported operation") { formatter.definition(prg) }
+        assertIllegalState("Unsupported operation") { formatter.detail(prg) }
     }
 }

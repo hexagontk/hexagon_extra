@@ -24,7 +24,8 @@ data class PropertyFormatter(
         component.let { c ->
             listOfNotNull(
                 c.description?.let { if (it.endsWith('.')) it else "$it." },
-                (c.regex?.pattern ?: c.typeName())?.let { c.format(it) },
+                if (component is Flag) null
+                else (c.regex?.pattern ?: c.typeName())?.let { c.format(it) },
                 c.values
                     .ifEmpty { null }
                     ?.map(Any::toString)

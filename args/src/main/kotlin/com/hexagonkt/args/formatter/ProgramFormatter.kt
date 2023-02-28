@@ -1,27 +1,29 @@
 package com.hexagonkt.args.formatter
 
-import com.hexagonkt.args.Command
 import com.hexagonkt.args.Formatter
 import com.hexagonkt.args.Program
 
 data class ProgramFormatter(
-    val commandFormatter: Formatter<Command> = CommandFormatter(),
+    val titleSeparator: String = "-",
+    val versionPrefix: String = "(version ",
+    val versionSuffix: String = ")"
 ) : Formatter<Program> {
 
     override fun summary(component: Program): String {
         val title = listOfNotNull(
             component.command.name,
-            component.command.title?.let { "- $it" },
-            component.version?.let { "(version ${component.version})" }
+            component.command.title?.let { "$titleSeparator $it" },
+            component.version?.let { "$versionPrefix${component.version}$versionSuffix" }
         )
         .joinToString(" ")
 
-        return "$title\n\n${component.command.description}"
+        return if (component.command.description == null) title
+        else "$title\n\n${component.command.description}"
     }
 
     override fun definition(component: Program): String =
-        commandFormatter.definition(component.command)
+        error("Unsupported operation")
 
     override fun detail(component: Program): String =
-        commandFormatter.detail(component.command)
+        error("Unsupported operation")
 }

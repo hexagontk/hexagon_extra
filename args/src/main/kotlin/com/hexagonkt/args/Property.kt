@@ -24,6 +24,8 @@ sealed interface Property<T : Any> {
     val tag: String?
     val values: List<T>
 
+    fun addValues(value: Property<*>): Property<T>
+
     fun addValue(value: String): Property<T>
 
     fun typeText(): String =
@@ -55,5 +57,10 @@ sealed interface Property<T : Any> {
             require(values.size <= 1) {
                 "$component '${names.first()}' can only have one value: $values"
             }
+    }
+
+    companion object {
+        val VERSION: Flag = Flag('v', "version", "Show the program's version along its description")
+        val HELP: Flag = Flag('h', "help", "Display detailed information on running this program")
     }
 }
