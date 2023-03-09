@@ -1,13 +1,14 @@
 package com.hexagonkt.application.test
 
-import com.hexagonkt.args.Program
 import com.hexagonkt.terminal.AnsiCursor
 import com.hexagonkt.terminal.AnsiScreen
 
-fun main(vararg args: String) {
-    val p = Program("test")
-    println(">>> (${args.size})\n${args.toList()}")
-    println(">>>\n${p.input()}")
+fun main() {
+    print(AnsiScreen.privateMode())
+    print(AnsiCursor.HIDE)
+    print("abc")
+    print(AnsiScreen.clear())
+    Thread.sleep(20_000)
 }
 
 private fun terminal() {

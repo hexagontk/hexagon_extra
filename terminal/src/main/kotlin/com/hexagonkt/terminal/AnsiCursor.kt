@@ -1,5 +1,7 @@
 package com.hexagonkt.terminal
 
+import com.hexagonkt.core.Ansi.CSI
+
 /**
  * Constants for console cursor handling with [ANSI](https://en.wikipedia.org/wiki/ANSI_escape_code)
  * codes.
@@ -8,24 +10,24 @@ package com.hexagonkt.terminal
  */
 object AnsiCursor {
     /** Move cursor to origin. */
-    const val HOME: String = "${Ansi.CSI}H"
+    const val HOME: String = "${CSI}H"
     const val SAVE: String = "\u001B${'7'}"
     const val RESTORE: String = "\u001B${'8'}"
-    const val SHOW: String = "${Ansi.CSI}?25h"
-    const val HIDE: String = "${Ansi.CSI}?25l"
+    const val SHOW: String = "$CSI?25h"
+    const val HIDE: String = "$CSI?25l"
 
     fun position(r: Int = 1, c: Int = 1): String =
-        "${Ansi.CSI}${r};${c}H"
+        "$CSI${r};${c}H"
 
     fun up(d: Int = 1): String =
-        "${Ansi.CSI}${d}A"
+        "$CSI${d}A"
 
     fun down(d: Int = 1): String =
-        "${Ansi.CSI}${d}B"
+        "$CSI${d}B"
 
     fun forward(d: Int = 1): String =
-        "${Ansi.CSI}${d}C"
+        "$CSI${d}C"
 
     fun backward(d: Int = 1): String =
-        "${Ansi.CSI}${d}D"
+        "$CSI${d}D"
 }

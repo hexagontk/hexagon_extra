@@ -14,4 +14,5 @@ description = "Hexagon core utilities. Includes serialization and logging helper
 
 dependencies {
     "api"("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    "api"("com.hexagonkt:core:$version")
 }

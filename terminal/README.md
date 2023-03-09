@@ -2,6 +2,10 @@
 # Module terminal
 TODO.
 
+# NOTES
+* https://github.com/alacritty/alacritty/blob/master/docs/ansicode.txt
+* https://github.com/alacritty/alacritty/blob/master/docs/escape_support.md
+
 ## Install the Dependency
 
 === "build.gradle"
