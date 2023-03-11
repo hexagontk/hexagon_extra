@@ -6,6 +6,7 @@ import com.hexagonkt.store.Store
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
+import org.junit.jupiter.api.condition.DisabledOnOs
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import java.net.URL
@@ -16,6 +17,7 @@ import kotlin.test.assertTrue
 
 @TestInstance(PER_CLASS)
 @EnabledOnOs(OS.LINUX)
+@DisabledOnOs(OS.MAC, OS.WINDOWS)
 abstract class StoreTest<T : Any, K : Any> {
 
     private val store: Store<T, K> by lazy {
