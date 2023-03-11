@@ -18,13 +18,7 @@ data class MockServer(
     val server: HttpServer by lazy {
         HttpServer(adapter) {
             after(pattern = "*", status = NOT_FOUND_404) {
-                HttpServerContext(
-                    context = context.with(
-                        event = context.event.copy(
-                            response = this@MockServer.path.process(request)
-                        )
-                    )
-                )
+                HttpServerContext(response = this@MockServer.path.process(request).response)
             }
         }
     }

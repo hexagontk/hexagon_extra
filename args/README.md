@@ -22,6 +22,8 @@ TODO Handle standard options like --help, help command -q --quiet, -v verbose, e
 
 TODO Control rendering with flags on `ArgsManager`
 
+TODO Check documentation rendering of `http` (httpie) and `sdk` (sdkman)
+
 ## Install the Dependency
 
 === "build.gradle"

@@ -59,9 +59,8 @@ abstract class TodoTest(adapter: HttpServerPort) {
             }
 
             after(pattern = "/*", exception = Exception::class) {
-                val e = context.exception
-                log.error(e) { "Internal error" }
-                internalServerError(e?.message ?: "Internal error")
+                log.error(exception) { "Internal error" }
+                internalServerError(exception?.message ?: "Internal error")
             }
 
             path("/tasks") {
