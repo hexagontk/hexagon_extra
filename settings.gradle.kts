@@ -5,6 +5,7 @@ include(
     // Utility modules
     "args",
     "converters",
+    "helpers",
     "scheduler",
     "web",
     "models",

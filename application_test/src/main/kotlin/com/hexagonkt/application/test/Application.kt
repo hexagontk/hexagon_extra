@@ -4,11 +4,21 @@ import com.hexagonkt.terminal.AnsiCursor
 import com.hexagonkt.terminal.AnsiScreen
 
 fun main() {
+    val s = ProcessBuilder().command("/bin/sh", "-c", "stty raw </dev/tty").start().waitFor()
+    assert(s == 0)
     print(AnsiScreen.privateMode())
+    val r = System.`in`
     print(AnsiCursor.HIDE)
-    print("abc")
+    while (true) {
+        val c = r.read()
+        if (c == 'q'.code)
+            break
+        else
+            println(c)
+    }
     print(AnsiScreen.clear())
-    Thread.sleep(20_000)
+    val s1 = ProcessBuilder().command("/bin/sh", "-c", "stty cooked </dev/tty").start().waitFor()
+    assert(s1 == 0)
 }
 
 private fun terminal() {
