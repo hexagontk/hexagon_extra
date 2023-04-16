@@ -1,10 +1,10 @@
 package com.hexagonkt.store.hashmap
 
 import com.hexagonkt.converters.ConvertersManager
-import com.hexagonkt.core.invoke
+import com.hexagonkt.core.getPath
 import com.hexagonkt.core.fail
 import com.hexagonkt.core.fieldsMapOf
-import com.hexagonkt.core.requireKeys
+import com.hexagonkt.core.requirePath
 import com.hexagonkt.store.Company
 import com.hexagonkt.store.Person
 import com.hexagonkt.store.Store
@@ -26,17 +26,17 @@ internal class HashMapStoreTest {
         store.drop()
         ConvertersManager.register(Map::class to Company::class) { m ->
             Company(
-                id = m.requireKeys(Company::id.name),
-                foundation = m.requireKeys(Company::foundation.name),
-                closeTime = m.requireKeys(Company::closeTime.name),
-                openTime = m.requireKeys(Company::openTime.name),
-                web = m.requireKeys(Company::web.name),
-                clients = m(Company::clients) ?: emptyList(),
-                logo = m(Company::logo),
-                notes = m(Company::notes),
-                people = m(Company::people) ?: emptySet(),
-                departments = m(Company::departments) ?: emptySet(),
-                creationDate = m.requireKeys(Company::creationDate),
+                id = m.requirePath(Company::id.name),
+                foundation = m.requirePath(Company::foundation.name),
+                closeTime = m.requirePath(Company::closeTime.name),
+                openTime = m.requirePath(Company::openTime.name),
+                web = m.requirePath(Company::web.name),
+                clients = m.getPath(Company::clients) ?: emptyList(),
+                logo = m.getPath(Company::logo),
+                notes = m.getPath(Company::notes),
+                people = m.getPath(Company::people) ?: emptySet(),
+                departments = m.getPath(Company::departments) ?: emptySet(),
+                creationDate = m.requirePath(Company::creationDate),
             )
         }
 

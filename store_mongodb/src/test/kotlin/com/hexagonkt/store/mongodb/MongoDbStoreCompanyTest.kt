@@ -4,8 +4,8 @@ import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.converters.convertObjects
 import com.hexagonkt.core.fail
 import com.hexagonkt.core.fieldsMapOf
-import com.hexagonkt.core.invoke
-import com.hexagonkt.core.requireKeys
+import com.hexagonkt.core.getPath
+import com.hexagonkt.core.requirePath
 import com.hexagonkt.store.Store
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.BeforeAll
@@ -53,7 +53,7 @@ internal class MongoDbStoreCompanyTest {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
 
         ConvertersManager.register(Map::class to Person::class) {
-            Person(name = it.requireKeys(Person::name))
+            Person(name = it.requirePath(Person::name))
         }
         ConvertersManager.register(Person::class to Map::class) {
             fieldsMapOf(Person::name to it.name)
@@ -63,27 +63,27 @@ internal class MongoDbStoreCompanyTest {
 
         ConvertersManager.register(Map::class to Company::class) { m ->
             Company(
-                id = m.requireKeys(Company::id),
-                foundation = m.requireKeys<LocalDateTime>(Company::foundation).toLocalDate(),
-                closeTime = m.requireKeys<LocalDateTime>(Company::closeTime).toLocalTime(),
-                openTime = m.requireKeys<Map<*,*>>(Company::openTime).let { t ->
-                    val s = t.requireKeys<LocalDateTime>(ClosedRange<*>::start).toLocalTime()
-                    val e = t.requireKeys<LocalDateTime>(ClosedRange<*>::endInclusive).toLocalTime()
+                id = m.requirePath(Company::id),
+                foundation = m.requirePath<LocalDateTime>(Company::foundation).toLocalDate(),
+                closeTime = m.requirePath<LocalDateTime>(Company::closeTime).toLocalTime(),
+                openTime = m.requirePath<Map<*,*>>(Company::openTime).let { t ->
+                    val s = t.requirePath<LocalDateTime>(ClosedRange<*>::start).toLocalTime()
+                    val e = t.requirePath<LocalDateTime>(ClosedRange<*>::endInclusive).toLocalTime()
                     s..e
                 },
-                web = URL(m.requireKeys(Company::web)),
-                clients = m<List<String>>(Company::clients)?.map { URL(it) } ?: emptyList(),
-                logo = m(Company::logo),
-                notes = m(Company::notes),
-                people = m<List<Map<*, *>>>(Company::people)
+                web = URL(m.requirePath(Company::web)),
+                clients = m.getPath<List<String>>(Company::clients)?.map { URL(it) } ?: emptyList(),
+                logo = m.getPath(Company::logo),
+                notes = m.getPath(Company::notes),
+                people = m.getPath<List<Map<*, *>>>(Company::people)
                     ?.convertObjects(Person::class)
                     ?.toSet()
                     ?: emptySet(),
-                departments = m<List<String>>(Company::departments)
+                departments = m.getPath<List<String>>(Company::departments)
                     ?.convertObjects(Department::class)
                     ?.toSet()
                     ?: emptySet(),
-                creationDate = m.requireKeys(Company::creationDate),
+                creationDate = m.requirePath(Company::creationDate),
             )
         }
 

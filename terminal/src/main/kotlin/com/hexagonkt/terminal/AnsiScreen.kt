@@ -1,5 +1,6 @@
 package com.hexagonkt.terminal
 
+import com.hexagonkt.core.Ansi.CSI
 import com.hexagonkt.terminal.AnsiScreen.Region.FULL
 
 /**
@@ -11,11 +12,11 @@ object AnsiScreen {
     enum class Region { END, START, FULL, FULL_BUFFER }
 
     fun clear(flag: Region = FULL): String =
-        "${Ansi.CSI}${flag.ordinal}J"
+        "$CSI${flag.ordinal}J"
 
     fun lineClear(flag: Region = FULL): String =
-        "${Ansi.CSI}${flag.ordinal}K"
+        "$CSI${flag.ordinal}K"
 
     fun privateMode(flag: Boolean = true): String =
-        "${Ansi.CSI}?1049${if (flag) 'h' else 'l'}"
+        "$CSI?1049${if (flag) 'h' else 'l'}"
 }

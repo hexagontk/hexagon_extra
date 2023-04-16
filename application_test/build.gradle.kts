@@ -1,8 +1,4 @@
 
-plugins {
-    id("org.graalvm.buildtools.native") version("0.9.19")
-}
-
 val gradleScripts = properties["gradleScripts"]
 
 apply(from = "$gradleScripts/kotlin.gradle")

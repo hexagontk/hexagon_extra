@@ -11,11 +11,12 @@
  */
 
 plugins {
-    kotlin("jvm") version("1.8.10") apply(false)
+    kotlin("jvm") version("1.8.20") apply(false)
 
     id("idea")
     id("eclipse")
-    id("org.jetbrains.dokka") version("1.7.20")
+    id("org.jetbrains.dokka") version("1.8.10")
+    id("org.graalvm.buildtools.native") version("0.9.21") apply(false)
     id("io.gitlab.arturbosch.detekt") version("1.22.0") apply(false)
 }
 

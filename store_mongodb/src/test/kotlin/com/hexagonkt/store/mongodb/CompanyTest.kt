@@ -3,8 +3,8 @@ package com.hexagonkt.store.mongodb
 import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.converters.convertObjects
 import com.hexagonkt.core.fieldsMapOf
-import com.hexagonkt.core.invoke
-import com.hexagonkt.core.requireKeys
+import com.hexagonkt.core.getPath
+import com.hexagonkt.core.requirePath
 import com.hexagonkt.store.Store
 import com.hexagonkt.store.mongodb.Department.DESIGN
 import com.hexagonkt.store.mongodb.Department.DEVELOPMENT
@@ -66,7 +66,7 @@ internal class CompanyTest : StoreTest<Company, String>() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
 
         ConvertersManager.register(Map::class to Person::class) {
-            Person(name = it.requireKeys(Person::name.name))
+            Person(name = it.requirePath(Person::name.name))
         }
         ConvertersManager.register(Person::class to Map::class) {
             mapOf(Person::name.name to it.name)
@@ -76,27 +76,27 @@ internal class CompanyTest : StoreTest<Company, String>() {
 
         ConvertersManager.register(Map::class to Company::class) { m ->
             Company(
-                id = m.requireKeys(Company::id),
-                foundation = m.requireKeys<LocalDateTime>(Company::foundation).toLocalDate(),
-                closeTime = m.requireKeys<LocalDateTime>(Company::closeTime).toLocalTime(),
-                openTime = m.requireKeys<Map<*,*>>(Company::openTime).let { t ->
-                    val s = t.requireKeys<LocalDateTime>(ClosedRange<*>::start).toLocalTime()
-                    val e = t.requireKeys<LocalDateTime>(ClosedRange<*>::endInclusive).toLocalTime()
+                id = m.requirePath(Company::id),
+                foundation = m.requirePath<LocalDateTime>(Company::foundation).toLocalDate(),
+                closeTime = m.requirePath<LocalDateTime>(Company::closeTime).toLocalTime(),
+                openTime = m.requirePath<Map<*,*>>(Company::openTime).let { t ->
+                    val s = t.requirePath<LocalDateTime>(ClosedRange<*>::start).toLocalTime()
+                    val e = t.requirePath<LocalDateTime>(ClosedRange<*>::endInclusive).toLocalTime()
                     s..e
                 },
-                web = URL(m.requireKeys(Company::web)),
-                clients = m<List<String>>(Company::clients)?.map { URL(it) } ?: emptyList(),
-                logo = m(Company::logo),
-                notes = m(Company::notes),
-                people = m<List<Map<*, *>>>(Company::people)
+                web = URL(m.requirePath(Company::web)),
+                clients = m.getPath<List<String>>(Company::clients)?.map { URL(it) } ?: emptyList(),
+                logo = m.getPath(Company::logo),
+                notes = m.getPath(Company::notes),
+                people = m.getPath<List<Map<*, *>>>(Company::people)
                     ?.convertObjects(Person::class)
                     ?.toSet()
                     ?: emptySet(),
-                departments = m<List<String>>(Company::departments)
+                departments = m.getPath<List<String>>(Company::departments)
                     ?.convertObjects(Department::class)
                     ?.toSet()
                     ?: emptySet(),
-                creationDate = m.requireKeys(Company::creationDate),
+                creationDate = m.requirePath(Company::creationDate),
             )
         }
 

@@ -5,6 +5,7 @@ include(
     // Utility modules
     "args",
     "converters",
+    "helpers",
     "scheduler",
     "web",
     "models",
@@ -14,11 +15,9 @@ include(
     "terminal",
 
     // Ports
-    "messaging",
     "store",
 
     // Adapters
-    "messaging_rabbitmq",
     "store_mongodb",
 
     // Tools

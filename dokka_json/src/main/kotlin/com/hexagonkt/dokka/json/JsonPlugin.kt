@@ -1,6 +1,6 @@
 package com.hexagonkt.dokka.json
 
-import com.hexagonkt.helpers.filterNotEmptyRecursive
+import com.hexagonkt.core.filterNotEmptyRecursive
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.serialize
 import org.jetbrains.dokka.CoreExtensions
@@ -8,6 +8,7 @@ import org.jetbrains.dokka.model.*
 import org.jetbrains.dokka.model.doc.*
 import org.jetbrains.dokka.plugability.DokkaContext
 import org.jetbrains.dokka.plugability.DokkaPlugin
+import org.jetbrains.dokka.plugability.PluginApiPreviewAcknowledgement
 import org.jetbrains.dokka.transformers.documentation.DocumentableTransformer
 import java.io.File
 
@@ -112,4 +113,7 @@ class JsonPlugin : DokkaPlugin() {
 
     private fun joinBodies(c: DocTag) =
         c.childrenOfType<Text>().joinToString(transform = Text::body)
+
+    override fun pluginApiPreviewAcknowledgement(): PluginApiPreviewAcknowledgement =
+        PluginApiPreviewAcknowledgement
 }
