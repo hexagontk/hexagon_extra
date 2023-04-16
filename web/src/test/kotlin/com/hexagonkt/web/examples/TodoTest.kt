@@ -12,7 +12,6 @@ import com.hexagonkt.logging.jul.JulLoggingAdapter
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.HttpClientSettings
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
-import com.hexagonkt.http.client.model.HttpClientResponse
 import com.hexagonkt.http.model.*
 import com.hexagonkt.http.server.HttpServer
 import com.hexagonkt.http.server.HttpServerPort
@@ -203,7 +202,7 @@ abstract class TodoTest(adapter: HttpServerPort) {
     }
 
     private fun assertResponseContains(
-        response: HttpClientResponse?, status: HttpStatus, vararg content: String) {
+        response: HttpResponsePort?, status: HttpStatus, vararg content: String) {
 
         assertEquals(status, response?.status)
         content.forEach {
@@ -211,7 +210,7 @@ abstract class TodoTest(adapter: HttpServerPort) {
         }
     }
 
-    private fun assertResponseContains(response: HttpClientResponse?, vararg content: String) {
+    private fun assertResponseContains(response: HttpResponsePort?, vararg content: String) {
         assertResponseContains(response, OK_200, *content)
     }
 }

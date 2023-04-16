@@ -3,8 +3,8 @@ package com.hexagonkt.http.test
 import com.hexagonkt.http.model.NOT_FOUND_404
 import com.hexagonkt.http.server.HttpServer
 import com.hexagonkt.http.server.HttpServerPort
-import com.hexagonkt.http.server.handlers.HttpServerContext
-import com.hexagonkt.http.server.handlers.PathHandler
+import com.hexagonkt.http.handlers.HttpContext
+import com.hexagonkt.http.handlers.PathHandler
 
 /**
  * Server with dynamic handler (delegated to [path]). Root handler can be replaced at any time
@@ -18,7 +18,7 @@ data class MockServer(
     val server: HttpServer by lazy {
         HttpServer(adapter) {
             after(pattern = "*", status = NOT_FOUND_404) {
-                HttpServerContext(response = this@MockServer.path.process(request).response)
+                HttpContext(response = this@MockServer.path.process(request).response)
             }
         }
     }

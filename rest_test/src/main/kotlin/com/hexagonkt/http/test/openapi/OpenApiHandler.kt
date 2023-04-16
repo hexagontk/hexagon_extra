@@ -6,7 +6,7 @@ import com.hexagonkt.http.model.BAD_REQUEST_400
 import com.hexagonkt.http.model.HttpMethod
 import com.hexagonkt.http.model.HttpMethod.*
 import com.hexagonkt.http.model.UNAUTHORIZED_401
-import com.hexagonkt.http.server.handlers.*
+import com.hexagonkt.http.handlers.*
 
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -86,7 +86,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         if (mediaType.example != null) mediaType.example
         else mediaType.examples?.toList()?.get(0)?.second?.value
 
-    private fun verifyAuth(operation: Operation, call: HttpServerContext): HttpServerContext? {
+    private fun verifyAuth(operation: Operation, call: HttpContext): HttpContext? {
         if (operation.security == null || operation.security.size == 0
             || containsEmptySecurityRequirement(operation)) return null
 
@@ -103,10 +103,10 @@ internal class OpenApiHandler(pathToSpec: String) {
         operation.security.any { it.size == 0 }
 
     private fun verifySecurityRequirement(
-        securityRequirement: SecurityRequirement, call: HttpServerContext): Boolean =
+        securityRequirement: SecurityRequirement, call: HttpContext): Boolean =
             securityRequirement.keys.all { verifySecurityScheme(it, call) }
 
-    private fun verifySecurityScheme(schemeName: String, call: HttpServerContext): Boolean {
+    private fun verifySecurityScheme(schemeName: String, call: HttpContext): Boolean {
         val securityScheme = openAPISpec.components.securitySchemes[schemeName]
             ?: error("The OpenAPI Spec contains no security scheme component for $schemeName")
 
@@ -117,7 +117,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         }
     }
 
-    private fun validateApiKey(securityScheme: SecurityScheme, call: HttpServerContext): Boolean =
+    private fun validateApiKey(securityScheme: SecurityScheme, call: HttpContext): Boolean =
         when (securityScheme.`in`) {
             SecurityScheme.In.QUERY ->
                 call.request.queryParameters[securityScheme.name]?.value?.isNotBlank() ?: fail
@@ -129,7 +129,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 error("Unknown `in` value found in OpenAPI Spec for security scheme")
         }
 
-    private fun validateHttpAuth(securityScheme: SecurityScheme, call: HttpServerContext): Boolean =
+    private fun validateHttpAuth(securityScheme: SecurityScheme, call: HttpContext): Boolean =
         when (securityScheme.scheme.lowercase()) {
             "basic" -> {
                 call.request.headers["authorization"]?.value?.let { authString ->
@@ -145,7 +145,7 @@ internal class OpenApiHandler(pathToSpec: String) {
                 error("Mock Server only supports Basic and Bearer HTTP Authentication")
         }
 
-    private fun verifyParams(operation: Operation, call: HttpServerContext): HttpServerContext? {
+    private fun verifyParams(operation: Operation, call: HttpContext): HttpContext? {
         operation.parameters?.forEach { parameter ->
             when (parameter.`in`) {
                 "path" -> {
@@ -202,7 +202,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         return null
     }
 
-    private fun verifyPathParam(parameter: Parameter, call: HttpServerContext): Boolean {
+    private fun verifyPathParam(parameter: Parameter, call: HttpContext): Boolean {
         if (call.pathParameters[parameter.name].isNullOrBlank()) return false
         parameter.schema.enum?.let {
             if (call.pathParameters[parameter.name] !in it) return false
@@ -210,7 +210,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         return true
     }
 
-    private fun verifyQueryParam(parameter: Parameter, call: HttpServerContext): Boolean {
+    private fun verifyQueryParam(parameter: Parameter, call: HttpContext): Boolean {
         if (call.request.queryParameters.require(parameter.name).value.isNullOrBlank()) {
             return !parameter.required
         }
@@ -220,7 +220,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         return true
     }
 
-    private fun verifyHeaderParam(parameter: Parameter, call: HttpServerContext): Boolean {
+    private fun verifyHeaderParam(parameter: Parameter, call: HttpContext): Boolean {
         if (call.request.headers[parameter.name]?.value.isNullOrBlank()) {
             return !parameter.required
         }
@@ -230,7 +230,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         return true
     }
 
-    private fun verifyCookieParam(parameter: Parameter, call: HttpServerContext): Boolean {
+    private fun verifyCookieParam(parameter: Parameter, call: HttpContext): Boolean {
         if (call.request.cookiesMap()[parameter.name] == null) {
             return !parameter.required
         }
@@ -240,7 +240,7 @@ internal class OpenApiHandler(pathToSpec: String) {
         return true
     }
 
-    private fun verifyBody(operation: Operation, call: HttpServerContext): HttpServerContext? {
+    private fun verifyBody(operation: Operation, call: HttpContext): HttpContext? {
         operation.requestBody?.let { requestBody ->
             if (requestBody.required && call.request.bodyString().isBlank()) {
                 call.send(
