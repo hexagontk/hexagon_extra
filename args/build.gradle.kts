@@ -13,5 +13,5 @@ apply(from = "$gradleScripts/detekt.gradle")
 description = "."
 
 dependencies {
-    "api"("com.hexagonkt:helpers:$version")
+    "api"(project(":helpers"))
 }

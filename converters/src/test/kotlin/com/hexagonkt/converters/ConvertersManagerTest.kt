@@ -1,9 +1,9 @@
 package com.hexagonkt.converters
 
 import com.hexagonkt.converters.ConvertersManager.convertObjects
-import com.hexagonkt.core.keys
+import com.hexagonkt.core.getPath
 import com.hexagonkt.core.fail
-import com.hexagonkt.core.requireKeys
+import com.hexagonkt.core.requirePath
 import kotlin.test.Test
 import kotlin.IllegalStateException
 import java.net.URL
@@ -43,8 +43,8 @@ internal class ConvertersManagerTest {
 
         ConvertersManager.register(Map::class to Person::class) {
             Person(
-                it.requireKeys(Person::givenName::name),
-                it.requireKeys(Person::familyName::name),
+                it.requirePath(Person::givenName::name),
+                it.requirePath(Person::familyName::name),
             )
         }
 
@@ -119,7 +119,7 @@ internal class ConvertersManagerTest {
 
         Company("1", date, time, openTime, people = setOf(Person("John", "Smith"))).let {
             val m: Map<String, *> = it.convert()
-            val persons = m.keys<Map<*, *>>(Company::people.name, 0) ?: fail
+            val persons = m.getPath<Map<*, *>>(Company::people.name, 0) ?: fail
             assertEquals("John", persons[Person::givenName.name])
             assertEquals("Smith", persons[Person::familyName.name])
         }
