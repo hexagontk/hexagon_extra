@@ -3,7 +3,7 @@ package com.hexagonkt.web.examples
 import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.converters.convert
 import com.hexagonkt.core.require
-import com.hexagonkt.core.requireKeys
+import com.hexagonkt.core.requirePath
 import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.core.logging.LoggingLevel.DEBUG
 import com.hexagonkt.core.logging.LoggingManager
@@ -150,9 +150,9 @@ abstract class TodoTest(adapter: HttpServerPort) {
         }
         ConvertersManager.register(Map::class to Task::class) {
             Task(
-                description = it.requireKeys(Task::description.name),
-                number = it.requireKeys(Task::number.name),
-                title = it.requireKeys(Task::title.name),
+                description = it.requirePath(Task::description.name),
+                number = it.requirePath(Task::number.name),
+                title = it.requirePath(Task::title.name),
             )
         }
         server.start()
