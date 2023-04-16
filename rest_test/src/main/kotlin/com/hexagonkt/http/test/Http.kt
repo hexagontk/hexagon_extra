@@ -5,8 +5,7 @@ import com.hexagonkt.http.SslSettings
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.HttpClientPort
 import com.hexagonkt.http.client.HttpClientSettings
-import com.hexagonkt.http.client.model.HttpClientRequest
-import com.hexagonkt.http.client.model.HttpClientResponse
+import com.hexagonkt.http.model.HttpRequest
 import com.hexagonkt.http.model.*
 import com.hexagonkt.http.model.HttpMethod.*
 import java.net.URL
@@ -22,6 +21,7 @@ data class Http(
 
     private val settings =
         HttpClientSettings(
+            baseUrl = URL(url),
             contentType = contentType,
             useCookies = true,
             headers = toHeaders(headers),
@@ -29,9 +29,9 @@ data class Http(
             sslSettings = sslSettings,
         )
 
-    private val http = HttpClient(adapter, URL(url), settings)//.apply { start() }
+    private val http = HttpClient(adapter, settings)//.apply { start() }
 
-    lateinit var response: HttpClientResponse
+    lateinit var response: HttpResponsePort
 
     init {
         if (block != null)
@@ -58,14 +58,14 @@ data class Http(
         formParameters: List<FormParameter> = emptyList(),
         parts: List<HttpPart> = emptyList(),
         contentType: ContentType? = this.contentType,
-    ): HttpClientResponse =
+    ): HttpResponsePort =
         http
             .apply {
                 if (!started())
                     start()
             }
             .send(
-                HttpClientRequest(
+                HttpRequest(
                     method = method,
                     path = path,
                     body = body,
@@ -84,7 +84,7 @@ data class Http(
         formParameters: List<FormParameter> = emptyList(),
         parts: List<HttpPart> = emptyList(),
         contentType: ContentType? = this.contentType,
-    ): HttpClientResponse =
+    ): HttpResponsePort =
         send(GET, path, headers, body, formParameters, parts, contentType)
 
     // TODO Test these
@@ -95,7 +95,7 @@ data class Http(
         formParameters: List<FormParameter> = emptyList(),
         parts: List<HttpPart> = emptyList(),
         contentType: ContentType? = this.contentType,
-    ): HttpClientResponse =
+    ): HttpResponsePort =
         send(PUT, path, headers, body, formParameters, parts, contentType)
 
     fun post(
@@ -105,7 +105,7 @@ data class Http(
         formParameters: List<FormParameter> = emptyList(),
         parts: List<HttpPart> = emptyList(),
         contentType: ContentType? = this.contentType,
-    ): HttpClientResponse =
+    ): HttpResponsePort =
         send(POST, path, headers, body, formParameters, parts, contentType)
 
     fun options(
@@ -115,7 +115,7 @@ data class Http(
         formParameters: List<FormParameter> = emptyList(),
         parts: List<HttpPart> = emptyList(),
         contentType: ContentType? = this.contentType,
-    ): HttpClientResponse =
+    ): HttpResponsePort =
         send(OPTIONS, path, headers, body, formParameters, parts, contentType)
 
     fun delete(
@@ -125,7 +125,7 @@ data class Http(
         formParameters: List<FormParameter> = emptyList(),
         parts: List<HttpPart> = emptyList(),
         contentType: ContentType? = this.contentType,
-    ): HttpClientResponse =
+    ): HttpResponsePort =
         send(DELETE, path, headers, body, formParameters, parts, contentType)
 
     fun patch(
@@ -135,7 +135,7 @@ data class Http(
         formParameters: List<FormParameter> = emptyList(),
         parts: List<HttpPart> = emptyList(),
         contentType: ContentType? = this.contentType,
-    ): HttpClientResponse =
+    ): HttpResponsePort =
         send(PATCH, path, headers, body, formParameters, parts, contentType)
 
     fun trace(
@@ -145,6 +145,6 @@ data class Http(
         formParameters: List<FormParameter> = emptyList(),
         parts: List<HttpPart> = emptyList(),
         contentType: ContentType? = this.contentType,
-    ): HttpClientResponse =
+    ): HttpResponsePort =
         send(TRACE, path, headers, body, formParameters, parts, contentType)
 }

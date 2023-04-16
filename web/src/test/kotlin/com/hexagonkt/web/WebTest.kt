@@ -1,12 +1,13 @@
 package com.hexagonkt.web
 
 import com.hexagonkt.http.client.HttpClient
+import com.hexagonkt.http.client.HttpClientSettings
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
 import com.hexagonkt.http.model.OK_200
 import com.hexagonkt.http.server.HttpServer
 import com.hexagonkt.http.server.HttpServerSettings
-import com.hexagonkt.http.server.handlers.PathHandler
-import com.hexagonkt.http.server.handlers.path
+import com.hexagonkt.http.handlers.PathHandler
+import com.hexagonkt.http.handlers.path
 import com.hexagonkt.http.server.jetty.JettyServletAdapter
 import com.hexagonkt.templates.TemplateManager
 import com.hexagonkt.templates.pebble.PebbleAdapter
@@ -47,7 +48,8 @@ internal class WebTest {
     }
 
     private val client by lazy {
-        HttpClient(JettyClientAdapter(), URL("http://localhost:${server.runtimePort}"))
+        val settings = HttpClientSettings(URL("http://localhost:${server.runtimePort}"))
+        HttpClient(JettyClientAdapter(), settings)
     }
 
     @BeforeAll fun start() {

@@ -8,14 +8,22 @@ jobs:
   build:
     name: Build
     permissions: read-all
-    uses: hexagonkt/.github/.github/workflows/gradle.yml@master
+    uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
       check_directory: args/build
+
+  native_test:
+    name: Native Test
+    permissions: read-all
+    uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
+    with:
+      check_directory: args/build
+      tasks: nativeTest
 
   test_publishing:
     name: Test Publishing
     permissions: read-all
-    uses: hexagonkt/.github/.github/workflows/gradle.yml@master
+    uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
       check_directory: args/build
       tasks: publishToMavenLocal

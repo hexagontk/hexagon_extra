@@ -1,6 +1,7 @@
 package com.hexagonkt.http.test.openapi
 
 import com.hexagonkt.http.client.HttpClient
+import com.hexagonkt.http.client.HttpClientSettings
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
 import com.hexagonkt.http.model.*
 import com.hexagonkt.http.server.HttpServer
@@ -18,7 +19,8 @@ internal class OpenApiHandlerTest {
     }
 
     private val client by lazy {
-        HttpClient(JettyClientAdapter(), URL("http://localhost:${server.runtimePort}"))
+        val settings = HttpClientSettings(URL("http://localhost:${server.runtimePort}"))
+        HttpClient(JettyClientAdapter(), settings)
     }
 
     @BeforeAll fun setUp() {

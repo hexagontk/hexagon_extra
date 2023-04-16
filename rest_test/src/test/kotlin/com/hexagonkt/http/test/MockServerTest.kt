@@ -2,10 +2,10 @@ package com.hexagonkt.http.test
 
 import com.hexagonkt.core.media.TEXT_PLAIN
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
-import com.hexagonkt.http.client.model.HttpClientResponse
 import com.hexagonkt.http.model.ContentType
 import com.hexagonkt.http.model.OK_200
-import com.hexagonkt.http.server.handlers.path
+import com.hexagonkt.http.handlers.path
+import com.hexagonkt.http.model.HttpResponsePort
 import com.hexagonkt.http.server.jetty.JettyServletAdapter
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -100,7 +100,7 @@ class MockServerTest {
         http.trace().assertBody("TRACE / ", headers)
     }
 
-    private fun HttpClientResponse.assertBody(
+    private fun HttpResponsePort.assertBody(
         expectedBody: String, checkedHeaders: Map<String, *>) {
 
         val bodyString = bodyString()

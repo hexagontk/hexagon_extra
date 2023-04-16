@@ -3,7 +3,7 @@ name: Nightly
 
 on:
   schedule:
-    - cron: "59 23 * * 1,3,5"
+    - cron: "59 23 * * *"
 
 jobs:
   stale:
@@ -29,11 +29,25 @@ jobs:
 
     name: Build (${{ matrix.os }})
     permissions: read-all
-    uses: hexagonkt/.github/.github/workflows/gradle.yml@master
+    uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
       os: ${{ matrix.os }}
       check_directory: args/build
       ref: develop
+
+  native_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    name: Native Test
+    permissions: read-all
+    uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
+    with:
+      os: ${{ matrix.os }}
+      ref: develop
+      tasks: nativeTest
 
   test_publishing:
     strategy:
@@ -43,7 +57,7 @@ jobs:
 
     name: Test Publishing (${{ matrix.os }})
     permissions: read-all
-    uses: hexagonkt/.github/.github/workflows/gradle.yml@master
+    uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
       os: ${{ matrix.os }}
       ref: develop
