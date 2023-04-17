@@ -15,10 +15,10 @@ apply(from = "$gradleScripts/native.gradle")
 description = "Commonly used data models (like addresses)."
 
 dependencies {
-    val javamailVersion = properties["javamailVersion"]
+    val jakartaMailVersion = properties["jakartaMailVersion"]
 
     "api"(project(":helpers"))
-    "api"("com.sun.mail:javax.mail:$javamailVersion")
+    "api"("com.sun.mail:jakarta.mail:$jakartaMailVersion")
 }
 
 tasks.named<DokkaTaskPartial>("dokkaHtmlPartial") {

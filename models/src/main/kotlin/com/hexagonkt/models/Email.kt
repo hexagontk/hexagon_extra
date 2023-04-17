@@ -1,6 +1,6 @@
 package com.hexagonkt.models
 
-import javax.mail.internet.InternetAddress
+import jakarta.mail.internet.InternetAddress
 
 data class Email(val address: String) {
 
