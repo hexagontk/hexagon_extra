@@ -1,14 +1,18 @@
 package com.hexagonkt.application.test
 
+import com.hexagonkt.helpers.exec
 import com.hexagonkt.terminal.AnsiCursor
 import com.hexagonkt.terminal.AnsiScreen
 
 fun main() {
-    val s = ProcessBuilder().command("/bin/sh", "-c", "stty raw </dev/tty").start().waitFor()
-    assert(s == 0)
+    // ps o tty=,pid= <jvm-pid>
+    // Pass variable to program (maybe in launcher) PTS=$(tty) command
+    val pts = System.getenv("PTS") ?: "/dev/pts/0"
+    "stty raw -echo -F$pts".exec()
     print(AnsiScreen.privateMode())
     val r = System.`in`
     print(AnsiCursor.HIDE)
+    print(AnsiCursor.HOME)
     while (true) {
         val c = r.read()
         if (c == 'q'.code)
@@ -16,9 +20,10 @@ fun main() {
         else
             println(c)
     }
+    print(AnsiCursor.HOME)
+    print(AnsiCursor.SHOW)
     print(AnsiScreen.clear())
-    val s1 = ProcessBuilder().command("/bin/sh", "-c", "stty cooked </dev/tty").start().waitFor()
-    assert(s1 == 0)
+    "stty cooked echo -F$pts".exec()
 }
 
 private fun terminal() {

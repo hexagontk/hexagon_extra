@@ -36,7 +36,7 @@ class MockServerTest {
             }
         }
 
-        Http("http://localhost:${mockServer.server.runtimePort}", JettyClientAdapter()) {
+        Http("http://localhost:${mockServer.server.runtimePort}", JettyClientAdapter()).request {
             get("/hello/mike")
             assertEquals(OK_200, response.status)
         }
@@ -49,7 +49,7 @@ class MockServerTest {
             }
         }
 
-        Http("http://localhost:${mockServer.server.runtimePort}", JettyClientAdapter()) {
+        Http("http://localhost:${mockServer.server.runtimePort}", JettyClientAdapter()).request {
             get("/foo")
             assertEquals(OK_200, response.status)
             assertEquals("dynamic", response.body)

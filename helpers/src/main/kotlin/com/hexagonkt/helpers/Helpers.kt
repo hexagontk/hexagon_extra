@@ -77,7 +77,7 @@ fun <T> retry(times: Int, delay: Long, block: () -> T): T {
 fun List<String>.exec(
     workingDirectory: File = File(System.getProperty("user.dir")),
     timeout: Long = Long.MAX_VALUE,
-    fail: Boolean = false,
+    fail: Boolean = true,
 ): String {
 
     val command = filter { it.isNotBlank() }.toTypedArray()
