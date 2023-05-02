@@ -11,8 +11,8 @@ import com.hexagonkt.http.model.HttpMethod.*
 import java.net.URL
 
 data class Http(
-    val url: String,
     val adapter: HttpClientPort,
+    val url: String? = null,
     val contentType: ContentType? = ContentType(APPLICATION_JSON),
     val headers: Map<String, *> = emptyMap<String, Any>(),
     val sslSettings: SslSettings? = SslSettings(),
@@ -20,7 +20,7 @@ data class Http(
 
     private val settings =
         HttpClientSettings(
-            baseUrl = URL(url),
+            baseUrl = url?.let(::URL),
             contentType = contentType,
             useCookies = true,
             headers = toHeaders(headers),
