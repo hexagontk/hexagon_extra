@@ -11,17 +11,16 @@ import com.hexagonkt.http.model.HttpMethod.*
 import java.net.URL
 
 data class Http(
-    val url: String,
     val adapter: HttpClientPort,
+    val url: String? = null,
     val contentType: ContentType? = ContentType(APPLICATION_JSON),
     val headers: Map<String, *> = emptyMap<String, Any>(),
     val sslSettings: SslSettings? = SslSettings(),
-    val block: (Http.() -> Unit)? = null,
 ) {
 
     private val settings =
         HttpClientSettings(
-            baseUrl = URL(url),
+            baseUrl = url?.let(::URL),
             contentType = contentType,
             useCookies = true,
             headers = toHeaders(headers),
@@ -29,13 +28,12 @@ data class Http(
             sslSettings = sslSettings,
         )
 
-    private val http = HttpClient(adapter, settings)//.apply { start() }
+    private val http = HttpClient(adapter, settings)
 
     lateinit var response: HttpResponsePort
 
-    init {
-        if (block != null)
-            http.use { block.invoke(this@Http) }
+    fun request(block: Http.() -> Unit) {
+        http.request { block.invoke(this@Http) }
     }
 
     private fun toHeaders(map: Map<String, *>): Headers = Headers(
@@ -87,7 +85,6 @@ data class Http(
     ): HttpResponsePort =
         send(GET, path, headers, body, formParameters, parts, contentType)
 
-    // TODO Test these
     fun put(
         path: String = "/",
         headers: Map<String, *> = emptyMap<String, Any>(),

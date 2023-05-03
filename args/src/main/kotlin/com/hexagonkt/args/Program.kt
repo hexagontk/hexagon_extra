@@ -42,7 +42,10 @@ data class Program(
             else null
         }
 
-    fun parse(args: Array<String>): Command =
+    fun parse(args: Array<out String>): Command =
+        parse(args.toList())
+
+    fun parse(args: Iterable<String>): Command =
         try {
             process(args)
         }
@@ -51,26 +54,17 @@ data class Program(
             exitProcess(e.code)
         }
 
-    internal fun process(args: Array<String>): Command {
+    internal fun process(args: Iterable<String>): Command {
         val programCommand = command.findCommand(args)
         val subcommands = programCommand.name.split(" ")
         val properties = subcommands.fold(args.toList()) { a, b -> a - b }
 
-        val parsedCommand = try {
-            programCommand.parse(properties)
-        }
-        catch (e: Exception) {
-            val helpMessage = "Use the --help option (-h) to get more information."
-            val message = "${e.message}\n\n${usage(programCommand)}\n\n$helpMessage"
-            throw CodedException(400, message, e)
-        }
-
-        if (parsedCommand.flags.contains(VERSION.addValue("true")))
+        if (programCommand.contains(VERSION, properties))
             throw CodedException(0, formatter.summary(this))
 
-        if (parsedCommand.flags.contains(HELP.addValue("true"))) {
+        if (programCommand.contains(HELP, properties)) {
             val message = listOf(
-                formatter.summary(this),
+                definition(programCommand),
                 usage(programCommand),
                 commandFormatter.detail(programCommand)
             ).joinToString("\n\n")
@@ -78,9 +72,27 @@ data class Program(
             throw CodedException(0, message)
         }
 
+        val parsedCommand = try {
+            programCommand.parse(properties)
+        }
+        catch (e: Exception) {
+            val helpMessage = "Use the --help option (-h) to get more information"
+            val message = "${e.message}\n\n${usage(programCommand)}\n\n$helpMessage"
+            throw CodedException(400, message, e)
+        }
+
         return parsedCommand
     }
 
+    private fun definition(programCommand: Command): String =
+        if (programCommand == command)
+            formatter.summary(this)
+        else
+            commandFormatter.summary(programCommand)
+
     private fun usage(programCommand: Command): String =
-        "USAGE:\n  " + commandFormatter.definition(programCommand)
+        if (programCommand == command)
+            formatter.definition(this) + commandFormatter.definition(programCommand)
+        else
+            formatter.definition(this) + command.name + " " + commandFormatter.definition(programCommand)
 }

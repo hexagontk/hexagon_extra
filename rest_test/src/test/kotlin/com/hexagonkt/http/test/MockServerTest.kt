@@ -36,7 +36,7 @@ class MockServerTest {
             }
         }
 
-        Http("http://localhost:${mockServer.server.runtimePort}", JettyClientAdapter()) {
+        Http(JettyClientAdapter(), "http://localhost:${mockServer.server.runtimePort}").request {
             get("/hello/mike")
             assertEquals(OK_200, response.status)
         }
@@ -49,7 +49,7 @@ class MockServerTest {
             }
         }
 
-        Http("http://localhost:${mockServer.server.runtimePort}", JettyClientAdapter()) {
+        Http(JettyClientAdapter(), "http://localhost:${mockServer.server.runtimePort}").request {
             get("/foo")
             assertEquals(OK_200, response.status)
             assertEquals("dynamic", response.body)
@@ -66,6 +66,40 @@ class MockServerTest {
         }
     }
 
+    @Test fun `Check all HTTP methods (absolute path)`() {
+        mockServer.path = path {
+            on("*") {
+                ok("$method $path ${request.headers}", contentType = ContentType(TEXT_PLAIN))
+            }
+        }
+
+        val port = mockServer.server.runtimePort
+        val adapter = JettyClientAdapter()
+        val headers = mapOf("alfa" to "beta", "charlie" to listOf("delta", "echo"))
+        val http = Http(adapter, headers = headers)
+
+        http.get("http://localhost:$port/hello/mike").assertBody("GET /hello/mike", headers)
+        http.get("http://localhost:$port").assertBody("GET / ", headers)
+
+        http.put("http://localhost:$port/hello/mike").assertBody("PUT /hello/mike", headers)
+        http.put("http://localhost:$port").assertBody("PUT / ", headers)
+
+        http.post("http://localhost:$port/hello/mike").assertBody("POST /hello/mike", headers)
+        http.post("http://localhost:$port").assertBody("POST / ", headers)
+
+        http.options("http://localhost:$port/hello/mike").assertBody("OPTIONS /hello/mike", headers)
+        http.options("http://localhost:$port").assertBody("OPTIONS / ", headers)
+
+        http.delete("http://localhost:$port/hello/mike").assertBody("DELETE /hello/mike", headers)
+        http.delete("http://localhost:$port").assertBody("DELETE / ", headers)
+
+        http.patch("http://localhost:$port/hello/mike").assertBody("PATCH /hello/mike", headers)
+        http.patch("http://localhost:$port").assertBody("PATCH / ", headers)
+
+        http.trace("http://localhost:$port/hello/mike").assertBody("TRACE /hello/mike", headers)
+        http.trace("http://localhost:$port").assertBody("TRACE / ", headers)
+    }
+
     @Test fun `Check all HTTP methods`() {
         mockServer.path = path {
             on("*") {
@@ -76,7 +110,7 @@ class MockServerTest {
         val url = "http://localhost:${mockServer.server.runtimePort}"
         val adapter = JettyClientAdapter()
         val headers = mapOf("alfa" to "beta", "charlie" to listOf("delta", "echo"))
-        val http = Http(url, adapter, headers = headers)
+        val http = Http(adapter, url, headers = headers)
 
         http.get("/hello/mike").assertBody("GET /hello/mike", headers)
         http.get().assertBody("GET / ", headers)

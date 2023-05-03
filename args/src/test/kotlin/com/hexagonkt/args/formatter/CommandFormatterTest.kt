@@ -38,21 +38,21 @@ internal class CommandFormatterTest {
         )
 
         val detail = """
-            COMMANDS:
+            COMMANDS
               edit     Edit config
               config   Display config
 
-            PARAMETERS:
-              <source>   [STRING]
-              <target>   [STRING]
+            PARAMETERS
+              <source>   Type: [STRING]
+              <target>   Type: [STRING]
 
-            OPTIONS:
-              -n, --name STRING     [STRING]
-              -o, --output STRING   [STRING]
+            OPTIONS
+              -n, --name STRING     Type: [STRING]
+              -o, --output STRING   Type: [STRING]
 
-            FLAGS:
-              -h, --help      Display detailed information on running this program.
-              -v, --version   Show the program's version along its description.
+            FLAGS
+              -h, --help      Display detailed information on running this program
+              -v, --version   Show the program's version along its description
         """.trimIndent().trim()
         assertEquals(detail, formatter.detail(cmd))
     }

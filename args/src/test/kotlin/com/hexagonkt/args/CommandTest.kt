@@ -93,13 +93,13 @@ internal class CommandTest {
         val ab = Command("ab", subcommands = setOf(aba, abb))
         val a = Command("a", subcommands = setOf(aa, ab))
 
-        assertEquals(aa, a.findCommand(arrayOf("aa")))
-        assertEquals(ab, a.findCommand(arrayOf("ab")))
-        assertEquals(aaa.copy(name = "aa ${aaa.name}"), a.findCommand(arrayOf("aa", "aaa")))
-        assertEquals(aba.copy(name = "ab ${aba.name}"), a.findCommand(arrayOf("ab", "aba")))
-        assertEquals(aab.copy(name = "aa ${aab.name}"), a.findCommand(arrayOf("aa", "aab")))
-        assertEquals(abb.copy(name = "ab ${abb.name}"), a.findCommand(arrayOf("ab", "abb")))
-        assertEquals(a, a.findCommand(arrayOf("ax")))
+        assertEquals(aa, a.findCommand(listOf("aa")))
+        assertEquals(ab, a.findCommand(listOf("ab")))
+        assertEquals(aaa.copy(name = "aa ${aaa.name}"), a.findCommand(listOf("aa", "aaa")))
+        assertEquals(aba.copy(name = "ab ${aba.name}"), a.findCommand(listOf("ab", "aba")))
+        assertEquals(aab.copy(name = "aa ${aab.name}"), a.findCommand(listOf("aa", "aab")))
+        assertEquals(abb.copy(name = "ab ${abb.name}"), a.findCommand(listOf("ab", "abb")))
+        assertEquals(a, a.findCommand(listOf("ax")))
     }
 
     @Test fun `Commands can parse their own options`() {

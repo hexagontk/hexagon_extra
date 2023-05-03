@@ -5,7 +5,8 @@ import com.hexagonkt.helpers.camelToSnake
 
 data class PropertyFormatter(
     val namesSeparator: String = ", ",
-    val expandRegex: Boolean = false
+    val expandRegex: Boolean = false,
+    val fieldSeparator: String = ". ",
 ) : Formatter<Property<*>> {
 
     override fun summary(component: Property<*>): String =
@@ -23,16 +24,16 @@ data class PropertyFormatter(
     override fun detail(component: Property<*>): String =
         component.let { c ->
             listOfNotNull(
-                c.description?.let { if (it.endsWith('.')) it else "$it." },
+                c.description,
                 if (component is Flag) null
-                else (c.regex?.pattern ?: c.typeName())?.let { c.format(it) },
+                else (c.regex?.pattern ?: c.typeName())?.let { "Type: " + c.format(it) },
                 c.values
                     .ifEmpty { null }
                     ?.map(Any::toString)
                     ?.let { "Default: " + if (c.multiple) c.values else c.values.first() },
             )
         }
-        .joinToString(" ")
+        .joinToString(fieldSeparator)
 
     private fun optionSummary(component: Property<*>): String =
         component.format(

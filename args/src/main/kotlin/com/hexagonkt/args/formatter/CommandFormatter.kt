@@ -2,6 +2,7 @@ package com.hexagonkt.args.formatter
 
 import com.hexagonkt.args.Command
 import com.hexagonkt.args.Formatter
+import com.hexagonkt.args.Program
 import com.hexagonkt.args.Property
 
 /**
@@ -23,7 +24,7 @@ data class CommandFormatter(
         )
         .joinToString(" ")
 
-        return "$title\n\n${component.description}"
+        return "$title\n\n${component.description ?: ""}".trim()
     }
 
     override fun definition(component: Command): String {
@@ -43,16 +44,18 @@ data class CommandFormatter(
 
     private fun <T : Any> Collection<T>.dl(
         title: String, block: (T) -> Pair<String, String>
-    ) : String =
+    ) : String {
+
         if (isEmpty())
-            ""
-        else
-            map(block)
-                .let { p ->
-                    val m = p.maxOf { it.first.length }
-                    p.map { (k, v) -> k.padEnd(m + 3, ' ') + v }
-                }
-                .joinToString("\n", "$title:\n", "\n\n") { it.trim().prependIndent(indent) }
+            return ""
+
+        return map(block)
+            .let { p ->
+                val m = p.maxOf { it.first.length }
+                p.map { (k, v) -> k.padEnd(m + 3, ' ') + v }
+            }
+            .joinToString("\n", "$title\n", "\n\n") { it.trim().prependIndent(indent) }
+    }
 
     private fun Collection<Property<*>>.dl(title: String) : String =
         dl(title) { propertyFormatter.definition(it) to propertyFormatter.detail(it) }
