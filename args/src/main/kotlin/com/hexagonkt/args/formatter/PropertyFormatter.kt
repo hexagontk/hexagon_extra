@@ -9,19 +9,19 @@ data class PropertyFormatter(
     val fieldSeparator: String = ". ",
 ) : Formatter<Property<*>> {
 
-    override fun summary(component: Property<*>, program: Program?): String =
+    override fun summary(component: Property<*>): String =
         when (component) {
             is Option<*>, is Flag -> optionSummary(component)
             is Parameter<*> -> component.format(definition(component))
         }
 
-    override fun definition(component: Property<*>, program: Program?): String =
+    override fun definition(component: Property<*>): String =
         when (component) {
             is Option<*>, is Flag -> optionDefinition(component)
             is Parameter<*> -> "<${component.name}>"
         }
 
-    override fun detail(component: Property<*>, program: Program?): String =
+    override fun detail(component: Property<*>): String =
         component.let { c ->
             listOfNotNull(
                 c.description,

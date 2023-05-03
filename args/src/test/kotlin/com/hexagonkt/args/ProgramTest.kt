@@ -78,16 +78,16 @@ internal class ProgramTest {
 
             A simple program that does things.
 
-            USAGE:
+            USAGE
               program [-v] [-h] [-f] [-o STRING] [<number>]
 
-            PARAMETERS:
+            PARAMETERS
               <number>   Type: [INT]
 
-            OPTIONS:
+            OPTIONS
               -o, --option STRING   Type: [STRING]
 
-            FLAGS:
+            FLAGS
               -v, --version   Show the program's version along its description
               -h, --help      Display detailed information on running this program
               -f, --flag
@@ -120,16 +120,16 @@ internal class ProgramTest {
 
             A simple program that does things.
 
-            USAGE:
+            USAGE
               program [-v] [-h] [-f] [-o STRING] <number>
 
-            PARAMETERS:
+            PARAMETERS
               <number>   Type: INT
 
-            OPTIONS:
+            OPTIONS
               -o, --option STRING   Type: [STRING]
 
-            FLAGS:
+            FLAGS
               -v, --version   Show the program's version along its description
               -h, --help      Display detailed information on running this program
               -f, --flag
@@ -152,7 +152,7 @@ internal class ProgramTest {
         )
 
         val h = """
-            USAGE:
+            USAGE
               program [-f] [-o STRING] [<number>]
 
             Use the --help option (-h) to get more information""".trimIndent()
@@ -260,13 +260,13 @@ internal class ProgramTest {
 
             A simple program that does things
 
-            USAGE:
+            USAGE
               program [-v] [-h]
 
-            COMMANDS:
+            COMMANDS
               cmd   A sample subcommand
 
-            FLAGS:
+            FLAGS
               -v, --version   Show the program's version along its description
               -h, --help      Display detailed information on running this program
         """.trimIndent().trim()
@@ -278,13 +278,13 @@ internal class ProgramTest {
 
             The subcommand description
 
-            USAGE:
+            USAGE
               program cmd [-h] [-1] [-2 STRING]
 
-            OPTIONS:
+            OPTIONS
               -2, --second STRING   Type: [STRING]
 
-            FLAGS:
+            FLAGS
               -h, --help    Display detailed information on running this program
               -1, --first
         """.trimIndent().trim()

@@ -38,19 +38,19 @@ internal class CommandFormatterTest {
         )
 
         val detail = """
-            COMMANDS:
+            COMMANDS
               edit     Edit config
               config   Display config
 
-            PARAMETERS:
+            PARAMETERS
               <source>   Type: [STRING]
               <target>   Type: [STRING]
 
-            OPTIONS:
+            OPTIONS
               -n, --name STRING     Type: [STRING]
               -o, --output STRING   Type: [STRING]
 
-            FLAGS:
+            FLAGS
               -h, --help      Display detailed information on running this program
               -v, --version   Show the program's version along its description
         """.trimIndent().trim()

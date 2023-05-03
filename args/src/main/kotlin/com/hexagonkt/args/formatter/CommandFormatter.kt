@@ -17,7 +17,7 @@ data class CommandFormatter(
     val propertyFormatter: Formatter<Property<*>> = PropertyFormatter()
 ) : Formatter<Command> {
 
-    override fun summary(component: Command, program: Program?): String {
+    override fun summary(component: Command): String {
         val title = listOfNotNull(
             component.name,
             component.title?.let { "- $it" },
@@ -27,13 +27,13 @@ data class CommandFormatter(
         return "$title\n\n${component.description ?: ""}".trim()
     }
 
-    override fun definition(component: Command, program: Program?): String {
+    override fun definition(component: Command): String {
         val options = component.properties.joinToString(" ") { propertyFormatter.summary(it) }
 
         return "${component.name} $options"
     }
 
-    override fun detail(component: Command, program: Program?): String {
+    override fun detail(component: Command): String {
         val commands = component.subcommands.dl("COMMANDS") { it.name to (it.title ?: "") }
         val parameters = component.parameters.dl("PARAMETERS")
         val options = component.options.dl("OPTIONS")
@@ -54,7 +54,7 @@ data class CommandFormatter(
                 val m = p.maxOf { it.first.length }
                 p.map { (k, v) -> k.padEnd(m + 3, ' ') + v }
             }
-            .joinToString("\n", "$title:\n", "\n\n") { it.trim().prependIndent(indent) }
+            .joinToString("\n", "$title\n", "\n\n") { it.trim().prependIndent(indent) }
     }
 
     private fun Collection<Property<*>>.dl(title: String) : String =

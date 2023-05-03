@@ -43,7 +43,7 @@ internal class ProgramFormatterTest {
             )
         )
 
-        assertEquals("USAGE:\n  ", formatter.definition(prg))
+        assertEquals("USAGE\n  ", formatter.definition(prg))
         assertIllegalState("Unsupported operation") { formatter.detail(prg) }
     }
 }
