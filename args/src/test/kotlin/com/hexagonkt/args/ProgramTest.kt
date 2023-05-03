@@ -82,10 +82,10 @@ internal class ProgramTest {
               program [-v] [-h] [-f] [-o STRING] [<number>]
 
             PARAMETERS:
-              <number>   [INT]
+              <number>   Type: [INT]
 
             OPTIONS:
-              -o, --option STRING   [STRING]
+              -o, --option STRING   Type: [STRING]
 
             FLAGS:
               -v, --version   Show the program's version along its description
@@ -124,10 +124,10 @@ internal class ProgramTest {
               program [-v] [-h] [-f] [-o STRING] <number>
 
             PARAMETERS:
-              <number>   INT
+              <number>   Type: INT
 
             OPTIONS:
-              -o, --option STRING   [STRING]
+              -o, --option STRING   Type: [STRING]
 
             FLAGS:
               -v, --version   Show the program's version along its description
@@ -282,7 +282,7 @@ internal class ProgramTest {
               program cmd [-h] [-1] [-2 STRING]
 
             OPTIONS:
-              -2, --second STRING   [STRING]
+              -2, --second STRING   Type: [STRING]
 
             FLAGS:
               -h, --help    Display detailed information on running this program

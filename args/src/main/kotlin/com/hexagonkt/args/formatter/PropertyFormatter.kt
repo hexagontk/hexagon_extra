@@ -26,7 +26,7 @@ data class PropertyFormatter(
             listOfNotNull(
                 c.description,
                 if (component is Flag) null
-                else (c.regex?.pattern ?: c.typeName())?.let { c.format(it) },
+                else (c.regex?.pattern ?: c.typeName())?.let { "Type: " + c.format(it) },
                 c.values
                     .ifEmpty { null }
                     ?.map(Any::toString)

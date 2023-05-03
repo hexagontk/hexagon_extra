@@ -43,12 +43,12 @@ internal class CommandFormatterTest {
               config   Display config
 
             PARAMETERS:
-              <source>   [STRING]
-              <target>   [STRING]
+              <source>   Type: [STRING]
+              <target>   Type: [STRING]
 
             OPTIONS:
-              -n, --name STRING     [STRING]
-              -o, --output STRING   [STRING]
+              -n, --name STRING     Type: [STRING]
+              -o, --output STRING   Type: [STRING]
 
             FLAGS:
               -h, --help      Display detailed information on running this program
