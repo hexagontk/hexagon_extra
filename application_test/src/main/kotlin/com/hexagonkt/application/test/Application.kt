@@ -1,20 +1,17 @@
 package com.hexagonkt.application.test
 
 import com.hexagonkt.core.Ansi.CSI
-import com.hexagonkt.helpers.exec
 import com.hexagonkt.terminal.AnsiCursor
 import com.hexagonkt.terminal.AnsiScreen
-import java.lang.management.ManagementFactory.getRuntimeMXBean
+import com.hexagonkt.terminal.Terminal
+import kotlin.Int.Companion.MAX_VALUE
 
 fun main() {
-    val pid = getRuntimeMXBean().pid
-    val pts = System.getenv("PTS") ?: "ps o tty= $pid".exec()
-
-    "stty raw -echo -F/dev/$pts".exec()
+    Terminal.raw()
     print(AnsiScreen.privateMode())
     print(AnsiCursor.HIDE)
 
-    print(AnsiCursor.position(999, 999))
+    (AnsiCursor.position(MAX_VALUE, MAX_VALUE))
     print("${CSI}6n") // Print cursor position (placed at bottom-right corner)
     print(AnsiCursor.HOME)
 
@@ -27,8 +24,9 @@ fun main() {
             print("${c.toChar()} ($c)")
     }
 
+    print(AnsiScreen.privateMode(false))
     print(AnsiCursor.HOME)
     print(AnsiCursor.SHOW)
     print(AnsiScreen.clear())
-    "stty cooked echo -F/dev/$pts".exec()
+    Terminal.cooked()
 }
