@@ -69,7 +69,7 @@ internal class PropertyFormatterTest {
             .assert(
                 "[-s REGEX]",
                 "-s, --sort REGEX",
-                "The field used to sort items. [$re] Default: $value"
+                "The field used to sort items. [$re]. Default: $value"
             )
     }
 
@@ -86,12 +86,16 @@ internal class PropertyFormatterTest {
         str.copy(optional = false, multiple = true)
             .assert("-s REGEX...", "-s, --sort REGEX", "The field used to sort items. $re...")
         str.copy(values = listOf("NAME"))
-            .assert("[-s REGEX]", "-s, --sort REGEX", "The field used to sort items. [$re] Default: NAME")
+            .assert(
+                "[-s REGEX]",
+                "-s, --sort REGEX",
+                "The field used to sort items. [$re]. Default: NAME"
+            )
         str.copy(multiple = true, values = listOf("NAME", "SIZE"))
             .assert(
                 "[-s REGEX]...",
                 "-s, --sort REGEX",
-                "The field used to sort items. [$re]... Default: [NAME, SIZE]"
+                "The field used to sort items. [$re].... Default: [NAME, SIZE]"
             )
     }
 
@@ -115,21 +119,25 @@ internal class PropertyFormatterTest {
         file.copy(optional = false, multiple = true)
             .assert("-f FILE...", "-f, --file FILE", "The file whose checksum to calculate. FILE...")
         file.copy(values = listOf(f))
-            .assert("[-f FILE]", "-f, --file FILE", "The file whose checksum to calculate. [FILE] Default: $f")
+            .assert(
+                "[-f FILE]",
+                "-f, --file FILE",
+                "The file whose checksum to calculate. [FILE]. Default: $f"
+            )
         file.copy(names = setOf("file"))
             .assert("[--file FILE]", "--file FILE", "The file whose checksum to calculate. [FILE]")
         file.copy(multiple = true, values = files)
             .assert(
                 "[-f FILE]...",
                 "-f, --file FILE",
-                "The file whose checksum to calculate. [FILE]... Default: $files"
+                "The file whose checksum to calculate. [FILE].... Default: $files"
             )
     }
 
     @Test fun `Parameters have utility constructor`() {
         val re = "NAME|SIZE|DATE"
         Parameter(String::class, "sort", "The field used to sort items", Regex(re), value = "NAME")
-            .assert("[<sort>]", "<sort>", "The field used to sort items. [$re] Default: NAME")
+            .assert("[<sort>]", "<sort>", "The field used to sort items. [$re]. Default: NAME")
     }
 
     @Test fun `Parameters with regular expressions are described correctly`() {
@@ -145,12 +153,12 @@ internal class PropertyFormatterTest {
         str.copy(optional = false, multiple = true)
             .assert("<sort>...", "<sort>", "The field used to sort items. $re...")
         str.copy(values = listOf("NAME"))
-            .assert("[<sort>]", "<sort>", "The field used to sort items. [$re] Default: NAME")
+            .assert("[<sort>]", "<sort>", "The field used to sort items. [$re]. Default: NAME")
         str.copy(multiple = true, values = listOf("NAME", "SIZE"))
             .assert(
                 "[<sort>]...",
                 "<sort>",
-                "The field used to sort items. [$re]... Default: [NAME, SIZE]"
+                "The field used to sort items. [$re].... Default: [NAME, SIZE]"
             )
     }
 
@@ -172,13 +180,13 @@ internal class PropertyFormatterTest {
             .assert(
                 "[<file>]...",
                 "<file>",
-                "The file whose checksum to calculate. [FILE]... Default: $files"
+                "The file whose checksum to calculate. [FILE].... Default: $files"
             )
         file.copy(values = files.dropLast(1))
             .assert(
                 "[<file>]",
                 "<file>",
-                "The file whose checksum to calculate. [FILE] Default: ${files.first()}"
+                "The file whose checksum to calculate. [FILE]. Default: ${files.first()}"
             )
     }
 

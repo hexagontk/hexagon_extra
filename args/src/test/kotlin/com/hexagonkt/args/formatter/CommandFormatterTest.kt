@@ -51,8 +51,8 @@ internal class CommandFormatterTest {
               -o, --output STRING   [STRING]
 
             FLAGS:
-              -h, --help      Display detailed information on running this program.
-              -v, --version   Show the program's version along its description.
+              -h, --help      Display detailed information on running this program
+              -v, --version   Show the program's version along its description
         """.trimIndent().trim()
         assertEquals(detail, formatter.detail(cmd))
     }

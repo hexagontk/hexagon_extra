@@ -58,7 +58,7 @@ data class Command(
         }
     }
 
-    fun findCommand(args: Array<String>): Command {
+    fun findCommand(args: Iterable<String>): Command {
         val line = args.joinToString(" ")
         return subcommandsMap
             .mapKeys { it.key.removePrefix("$name ") }
@@ -157,4 +157,12 @@ data class Command(
             .map { it.copy(name = name + " " + it.name) }
             .let { c -> c + c.flatMap { it.nestedSubcommands() } }
             .toSet()
+
+    fun contains(flag: Flag, args: Iterable<String>): Boolean =
+        flags
+            .flatMap { it.names }
+            .any { it in flag.names }
+            && args
+                .map { it.dropWhile { c -> c == '-' } }
+                .any { it in flag.names }
 }
