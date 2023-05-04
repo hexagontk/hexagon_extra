@@ -30,7 +30,7 @@ data class Option<T : Any>(
         values: List<T> = emptyList(),
     ) : this(
         type,
-        listOfNotNull(shortName?.toString(), name).toSet(),
+        setOfNotNull(shortName?.toString(), name),
         description,
         regex,
         optional,

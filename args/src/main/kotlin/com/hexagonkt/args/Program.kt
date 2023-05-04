@@ -7,7 +7,6 @@ import com.hexagonkt.args.formatter.ProgramFormatter
 import com.hexagonkt.helpers.CodedException
 import com.hexagonkt.helpers.requireNotBlank
 import java.io.BufferedReader
-import kotlin.system.exitProcess
 
 data class Program(
     val version: String? = null,
@@ -46,13 +45,7 @@ data class Program(
         parse(args.toList())
 
     fun parse(args: Iterable<String>): Command =
-        try {
-            process(args)
-        }
-        catch (e: CodedException) {
-            System.err.println(e.message)
-            exitProcess(e.code)
-        }
+        process(args)
 
     internal fun process(args: Iterable<String>): Command {
         val programCommand = command.findCommand(args)

@@ -92,6 +92,15 @@ data class Command(
         return copy(properties = groupedProperties.toSet())
     }
 
+    inline fun <reified T : Any> propertyValues(name: String): List<T> =
+        propertiesMap[name]?.values?.mapNotNull { it as? T } ?: emptyList()
+
+    inline fun <reified T : Any> propertyValueOrNull(name: String): T? =
+        propertyValues<T>(name).firstOrNull()
+
+    inline fun <reified T : Any> propertyValue(name: String): T =
+        propertyValueOrNull(name) ?: error("Property '$name' does not have a value")
+
     private fun checkMandatoryProperties(parsedProperties: List<Property<*>>) {
         val mandatoryProperties = properties.filterNot { it.optional }
         val names = parsedProperties.flatMap { it.names }

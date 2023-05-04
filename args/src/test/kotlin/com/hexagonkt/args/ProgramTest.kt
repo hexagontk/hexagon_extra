@@ -163,6 +163,9 @@ internal class ProgramTest {
         assertFailsWithMessage<CodedException>("Option 'none' not found\n\n$h") {
             program.process(listOf("--none"))
         }
+        program.process(listOf("1"))
+        assertEquals(9, program.parse(listOf("9")).propertyValue<Int>("number"))
+        assertEquals(listOf(9), program.parse(listOf("9")).propertyValues<Int>("number"))
     }
 
     @Test fun `Program handles subcommands`() {
@@ -228,6 +231,25 @@ internal class ProgramTest {
         )
 
         assert(program.parse(arrayOf("cmd", "-1")).flags.first().values.first())
+        assert(program.parse(arrayOf("cmd", "--first")).flags.first().values.first())
+
+        assertEquals(listOf(true), program.parse(listOf("cmd", "-1")).propertyValues<Boolean>("1"))
+        assertEquals(true, program.parse(listOf("cmd", "-1")).propertyValue<Boolean>("1"))
+        assertNull(program.parse(listOf("cmd", "-1")).propertyValueOrNull("2"))
+        assertNull(program.parse(listOf("cmd", "-1")).propertyValueOrNull("second"))
+        assertNull(program.parse(listOf("cmd", "--first")).propertyValueOrNull("2"))
+        assertNull(program.parse(listOf("cmd", "--first")).propertyValueOrNull("second"))
+        assertEquals(listOf("a"), program.parse(listOf("cmd", "-2", "a")).propertyValues<String>("2"))
+        assertEquals("a", program.parse(listOf("cmd", "-2", "a")).propertyValue<String>("2"))
+
+        assertEquals(true, program.parse(listOf("cmd", "--first")).propertyValue<Boolean>("1"))
+        assertEquals("a", program.parse(listOf("cmd", "--second", "a")).propertyValue<String>("2"))
+        assertEquals(listOf(true), program.parse(listOf("cmd", "--first")).propertyValues<Boolean>("1"))
+        assertEquals(listOf("a"), program.parse(listOf("cmd", "--second", "a")).propertyValues<String>("2"))
+        assertNull(program.parse(listOf("cmd", "-2", "a")).propertyValueOrNull("1"))
+        assertNull(program.parse(listOf("cmd", "-2", "a")).propertyValueOrNull("first"))
+        assertNull(program.parse(listOf("cmd", "--second", "a")).propertyValueOrNull("1"))
+        assertNull(program.parse(listOf("cmd", "--second", "a")).propertyValueOrNull("first"))
     }
 
     @Test fun `Program describes subcommands`() {
