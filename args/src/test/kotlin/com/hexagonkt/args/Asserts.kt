@@ -1,12 +1,13 @@
 package com.hexagonkt.args
 
+import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-inline fun <reified T : Throwable> assertFailsWithMessage(
-    message: String? = null, block: () -> Unit
+fun <T : Throwable> assertFailsWithMessage(
+    type: KClass<T>, message: String? = null, block: () -> Unit
 ): T {
-    val e = assertFailsWith<T> {
+    val e = assertFailsWith(type) {
         block()
     }
 
@@ -17,9 +18,9 @@ inline fun <reified T : Throwable> assertFailsWithMessage(
 }
 
 fun assertIllegalArgument(message: String? = null, block: () -> Unit) {
-    assertFailsWithMessage<IllegalArgumentException>(message, block)
+    assertFailsWithMessage(IllegalArgumentException::class, message, block)
 }
 
 fun assertIllegalState(message: String? = null, block: () -> Unit) {
-    assertFailsWithMessage<IllegalStateException>(message, block)
+    assertFailsWithMessage(IllegalStateException::class, message, block)
 }

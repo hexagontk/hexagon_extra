@@ -16,6 +16,9 @@ data class Option<T : Any>(
 
     companion object {
         val optionRegex = "([A-Za-z0-9]|[a-z0-9\\-]{2,})".toRegex()
+
+        private fun namesOf(shortName: Char? = null, name: String? = null): Set<String> =
+            setOfNotNull(shortName?.toString(), name)
     }
 
     constructor(
@@ -27,15 +30,7 @@ data class Option<T : Any>(
         optional: Boolean = true,
         multiple: Boolean = false,
         tag: String? = null,
-    ) : this(
-        type,
-        setOfNotNull(shortName?.toString(), name),
-        description,
-        regex,
-        optional,
-        multiple,
-        tag,
-    )
+    ) : this(type, namesOf(shortName, name), description, regex, optional, multiple, tag)
 
     constructor(
         type: KClass<T>,
@@ -45,16 +40,7 @@ data class Option<T : Any>(
         regex: Regex? = null,
         tag: String? = null,
         values: List<T>,
-    ) : this(
-        type,
-        setOfNotNull(shortName?.toString(), name),
-        description,
-        regex,
-        true,
-        true,
-        tag,
-        values
-    )
+    ) : this(type, namesOf(shortName, name), description, regex, true, true, tag, values)
 
     constructor(
         type: KClass<T>,
@@ -64,16 +50,7 @@ data class Option<T : Any>(
         regex: Regex? = null,
         tag: String? = null,
         value: T,
-    ) : this(
-        type,
-        setOfNotNull(shortName?.toString(), name),
-        description,
-        regex,
-        true,
-        false,
-        tag,
-        listOf(value)
-    )
+    ) : this(type, namesOf(shortName, name), description, regex, true, false, tag, listOf(value))
 
     init {
         check("Option", optionRegex)

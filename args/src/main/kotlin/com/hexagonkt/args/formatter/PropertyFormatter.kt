@@ -1,6 +1,9 @@
 package com.hexagonkt.args.formatter
 
-import com.hexagonkt.args.*
+import com.hexagonkt.args.Flag
+import com.hexagonkt.args.Option
+import com.hexagonkt.args.Parameter
+import com.hexagonkt.args.Property
 import com.hexagonkt.helpers.camelToSnake
 
 data class PropertyFormatter(

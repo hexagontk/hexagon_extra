@@ -20,7 +20,7 @@ data class Flag(
         name: String? = null,
         description: String? = null,
         multiple: Boolean = false,
-    ) : this(listOfNotNull(shortName?.toString(), name).toSet(), description, multiple)
+    ) : this(setOfNotNull(shortName?.toString(), name), description, multiple)
 
     init {
         check("Flag", optionRegex)

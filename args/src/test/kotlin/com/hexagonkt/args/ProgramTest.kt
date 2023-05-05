@@ -22,8 +22,8 @@ internal class ProgramTest {
             description = "A simple program that does things.",
             properties = setOf(
                 Flag('f', "flag"),
-                Option(String::class, 'o', "option"),
-                Parameter(Int::class, "number")
+                Option<String>('o', "option"),
+                Parameter<Int>("number")
             )
         )
     }
@@ -46,8 +46,8 @@ internal class ProgramTest {
             description = "A simple program that does things.",
             properties = setOf(
                 Flag('f', "flag"),
-                Option(String::class, 'o', "option"),
-                Parameter(Int::class, "number")
+                Option<String>('o', "option"),
+                Parameter<Int>("number")
             )
         ).apply {
             assertValues(listOf(true, "opt", 54), "-f -o opt 54")
@@ -64,14 +64,14 @@ internal class ProgramTest {
                 VERSION,
                 HELP,
                 Flag('f', "flag"),
-                Option(String::class, 'o', "option"),
-                Parameter(Int::class, "number")
+                Option<String>('o', "option"),
+                Parameter<Int>("number")
             )
         )
 
         val v = "program - Sample program (version 1.0.0)\n\nA simple program that does things."
-        assertFailsWithMessage<CodedException>(v) { program.process(listOf("-v")) }
-        assertFailsWithMessage<CodedException>(v) { program.process(listOf("--version")) }
+        assertFailsWithMessage(CodedException::class, v) { program.process(listOf("-v")) }
+        assertFailsWithMessage(CodedException::class, v) { program.process(listOf("--version")) }
 
         val h = """
             program - Sample program (version 1.0.0)
@@ -92,8 +92,8 @@ internal class ProgramTest {
               -h, --help      Display detailed information on running this program
               -f, --flag
         """.trimIndent().trim()
-        assertFailsWithMessage<CodedException>(h) { program.process(listOf("-h")) }
-        assertFailsWithMessage<CodedException>(h) { program.process(listOf("--help")) }
+        assertFailsWithMessage(CodedException::class, h) { program.process(listOf("-h")) }
+        assertFailsWithMessage(CodedException::class, h) { program.process(listOf("--help")) }
     }
 
     @Test fun `Program handles standard flags with required properties`() {
@@ -106,14 +106,14 @@ internal class ProgramTest {
                 VERSION,
                 HELP,
                 Flag('f', "flag"),
-                Option(String::class, 'o', "option"),
-                Parameter(Int::class, "number", optional = false)
+                Option<String>('o', "option"),
+                Parameter<Int>("number", optional = false)
             )
         )
 
         val v = "program - Sample program (version 1.0.0)\n\nA simple program that does things."
-        assertFailsWithMessage<CodedException>(v) { program.process(listOf("-v")) }
-        assertFailsWithMessage<CodedException>(v) { program.process(listOf("--version")) }
+        assertFailsWithMessage(CodedException::class, v) { program.process(listOf("-v")) }
+        assertFailsWithMessage(CodedException::class, v) { program.process(listOf("--version")) }
 
         val h = """
             program - Sample program (version 1.0.0)
@@ -134,8 +134,8 @@ internal class ProgramTest {
               -h, --help      Display detailed information on running this program
               -f, --flag
         """.trimIndent().trim()
-        assertFailsWithMessage<CodedException>(h) { program.process(listOf("-h")) }
-        assertFailsWithMessage<CodedException>(h) { program.process(listOf("--help")) }
+        assertFailsWithMessage(CodedException::class, h) { program.process(listOf("-h")) }
+        assertFailsWithMessage(CodedException::class, h) { program.process(listOf("--help")) }
     }
 
     @Test fun `Program handles errors`() {
@@ -146,8 +146,8 @@ internal class ProgramTest {
             description = "A simple program that does things.",
             properties = setOf(
                 Flag('f', "flag"),
-                Option(String::class, 'o', "option"),
-                Parameter(Int::class, "number")
+                Option<String>('o', "option"),
+                Parameter<Int>("number")
             )
         )
 
@@ -157,15 +157,15 @@ internal class ProgramTest {
 
             Use the --help option (-h) to get more information""".trimIndent()
 
-        assertFailsWithMessage<CodedException>("Unknown argument at position 2: 2\n\n$h") {
+        assertFailsWithMessage(CodedException::class, "Unknown argument at position 2: 2\n\n$h") {
             program.process(listOf("1", "2"))
         }
-        assertFailsWithMessage<CodedException>("Option 'none' not found\n\n$h") {
+        assertFailsWithMessage(CodedException::class, "Option 'none' not found\n\n$h") {
             program.process(listOf("--none"))
         }
         program.process(listOf("1"))
-        assertEquals(9, program.parse(listOf("9")).propertyValue<Int>("number"))
-        assertEquals(listOf(9), program.parse(listOf("9")).propertyValues<Int>("number"))
+        assertEquals(9, program.parse(listOf("9")).propertyValue("number"))
+        assertEquals(listOf(9), program.parse(listOf("9")).propertyValues("number"))
     }
 
     @Test fun `Program handles subcommands`() {
@@ -189,7 +189,7 @@ internal class ProgramTest {
                     name = "cmd",
                     properties = setOf(
                         Flag('1', "first"),
-                        Option(String::class, '2', "second"),
+                        Option<String>('2', "second"),
                     )
                 )
             )
@@ -202,7 +202,7 @@ internal class ProgramTest {
                     name = "cmd",
                     properties = setOf(
                         Flag('1', "first"),
-                        Option(String::class, '2', "second"),
+                        Option<String>('2', "second"),
                     )
                 )
             )
@@ -224,7 +224,7 @@ internal class ProgramTest {
                     properties = setOf(
                         HELP,
                         Flag('1', "first"),
-                        Option(String::class, '2', "second"),
+                        Option<String>('2', "second"),
                     )
                 )
             )
@@ -233,19 +233,19 @@ internal class ProgramTest {
         assert(program.parse(arrayOf("cmd", "-1")).flags.first().values.first())
         assert(program.parse(arrayOf("cmd", "--first")).flags.first().values.first())
 
-        assertEquals(listOf(true), program.parse(listOf("cmd", "-1")).propertyValues<Boolean>("1"))
-        assertEquals(true, program.parse(listOf("cmd", "-1")).propertyValue<Boolean>("1"))
+        assertEquals(listOf(true), program.parse(listOf("cmd", "-1")).propertyValues("1"))
+        assertEquals(true, program.parse(listOf("cmd", "-1")).propertyValue("1"))
         assertNull(program.parse(listOf("cmd", "-1")).propertyValueOrNull("2"))
         assertNull(program.parse(listOf("cmd", "-1")).propertyValueOrNull("second"))
         assertNull(program.parse(listOf("cmd", "--first")).propertyValueOrNull("2"))
         assertNull(program.parse(listOf("cmd", "--first")).propertyValueOrNull("second"))
-        assertEquals(listOf("a"), program.parse(listOf("cmd", "-2", "a")).propertyValues<String>("2"))
-        assertEquals("a", program.parse(listOf("cmd", "-2", "a")).propertyValue<String>("2"))
+        assertEquals(listOf("a"), program.parse(listOf("cmd", "-2", "a")).propertyValues("2"))
+        assertEquals("a", program.parse(listOf("cmd", "-2", "a")).propertyValue("2"))
 
-        assertEquals(true, program.parse(listOf("cmd", "--first")).propertyValue<Boolean>("1"))
-        assertEquals("a", program.parse(listOf("cmd", "--second", "a")).propertyValue<String>("2"))
-        assertEquals(listOf(true), program.parse(listOf("cmd", "--first")).propertyValues<Boolean>("1"))
-        assertEquals(listOf("a"), program.parse(listOf("cmd", "--second", "a")).propertyValues<String>("2"))
+        assertEquals(true, program.parse(listOf("cmd", "--first")).propertyValue("1"))
+        assertEquals("a", program.parse(listOf("cmd", "--second", "a")).propertyValue("2"))
+        assertEquals(listOf(true), program.parse(listOf("cmd", "--first")).propertyValues("1"))
+        assertEquals(listOf("a"), program.parse(listOf("cmd", "--second", "a")).propertyValues("2"))
         assertNull(program.parse(listOf("cmd", "-2", "a")).propertyValueOrNull("1"))
         assertNull(program.parse(listOf("cmd", "-2", "a")).propertyValueOrNull("first"))
         assertNull(program.parse(listOf("cmd", "--second", "a")).propertyValueOrNull("1"))
@@ -259,8 +259,8 @@ internal class ProgramTest {
             title = "Sample program",
             description = "A simple program that does things.",
             properties = setOf(
-                Option(String::class, '1', "first", value = "a"),
-                Option(String::class, '2', "second", values = listOf("b", "c")),
+                Option<String>('1', "first", value = "a"),
+                Option<String>('2', "second", values = listOf("b", "c")),
             )
         )
 
@@ -285,7 +285,7 @@ internal class ProgramTest {
             title = "Sample program",
             description = "A simple program that does things.",
             properties = setOf(
-                Parameter(Int::class, "numbers", values = listOf(2, 3)),
+                Parameter<Int>("numbers", values = listOf(2, 3)),
             )
         )
 
@@ -308,15 +308,15 @@ internal class ProgramTest {
                     properties = setOf(
                         HELP,
                         Flag('1', "first"),
-                        Option(String::class, '2', "second"),
+                        Option<String>('2', "second"),
                     )
                 )
             )
         )
 
         val v = "program - Sample program (version 1.0.0)\n\nA simple program that does things"
-        assertFailsWithMessage<CodedException>(v) { program.process(listOf("-v")) }
-        assertFailsWithMessage<CodedException>(v) { program.process(listOf("--version")) }
+        assertFailsWithMessage(CodedException::class, v) { program.process(listOf("-v")) }
+        assertFailsWithMessage(CodedException::class, v) { program.process(listOf("--version")) }
 
         val h = """
             program - Sample program (version 1.0.0)
@@ -333,8 +333,8 @@ internal class ProgramTest {
               -v, --version   Show the program's version along its description
               -h, --help      Display detailed information on running this program
         """.trimIndent().trim()
-        assertFailsWithMessage<CodedException>(h) { program.process(listOf("-h")) }
-        assertFailsWithMessage<CodedException>(h) { program.process(listOf("--help")) }
+        assertFailsWithMessage(CodedException::class, h) { program.process(listOf("-h")) }
+        assertFailsWithMessage(CodedException::class, h) { program.process(listOf("--help")) }
 
         val c = """
             cmd - A sample subcommand
@@ -351,8 +351,8 @@ internal class ProgramTest {
               -h, --help    Display detailed information on running this program
               -1, --first
         """.trimIndent().trim()
-        assertFailsWithMessage<CodedException>(c) { program.process(listOf("cmd", "-h")) }
-        assertFailsWithMessage<CodedException>(c) { program.process(listOf("cmd", "--help")) }
+        assertFailsWithMessage(CodedException::class, c) { program.process(listOf("cmd", "-h")) }
+        assertFailsWithMessage(CodedException::class, c) { program.process(listOf("cmd", "--help")) }
     }
 
     private fun Program.assertValues(values: List<*>, args: String) {
