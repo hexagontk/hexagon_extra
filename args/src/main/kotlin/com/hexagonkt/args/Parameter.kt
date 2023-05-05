@@ -12,7 +12,6 @@ data class Parameter<T : Any>(
     override val multiple: Boolean = false,
     override val tag: String? = null,
     override val values: List<T> = emptyList(),
-    override val defaultValues: List<T> = emptyList(),
 ) : Property<T> {
 
     override val names: Set<String> = setOf(name)
@@ -27,8 +26,8 @@ data class Parameter<T : Any>(
         description: String? = null,
         regex: Regex? = null,
         tag: String? = null,
-        defaultValue: T,
-    ) : this(type, name, description, regex, true, false, tag, emptyList(), listOf(defaultValue))
+        value: T,
+    ) : this(type, name, description, regex, true, false, tag, listOf(value))
 
     constructor(
         type: KClass<T>,
@@ -36,16 +35,16 @@ data class Parameter<T : Any>(
         description: String? = null,
         regex: Regex? = null,
         tag: String? = null,
-        defaultValues: List<T>,
-    ) : this(type, name, description, regex, true, true, tag, emptyList(), defaultValues)
+        values: List<T>,
+    ) : this(type, name, description, regex, true, true, tag, values)
 
     init {
         check("Parameter", parameterRegex)
     }
 
     @Suppress("UNCHECKED_CAST") // Types checked at runtime
-    override fun addValues(value: Collection<*>): Property<T> =
-        copy(values = values + value as List<T>)
+    override fun addValues(value: Property<*>): Property<T> =
+        copy(values = values + value.values as List<T>)
 
     override fun addValue(value: String): Parameter<T> =
         value.parseOrNull(type)

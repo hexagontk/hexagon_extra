@@ -12,7 +12,6 @@ data class Option<T : Any>(
     override val multiple: Boolean = false,
     override val tag: String? = null,
     override val values: List<T> = emptyList(),
-    override val defaultValues: List<T> = emptyList(),
 ) : Property<T> {
 
     companion object {
@@ -45,7 +44,7 @@ data class Option<T : Any>(
         description: String? = null,
         regex: Regex? = null,
         tag: String? = null,
-        defaultValues: List<T>,
+        values: List<T>,
     ) : this(
         type,
         setOfNotNull(shortName?.toString(), name),
@@ -54,8 +53,7 @@ data class Option<T : Any>(
         true,
         true,
         tag,
-        emptyList(),
-        defaultValues
+        values
     )
 
     constructor(
@@ -65,7 +63,7 @@ data class Option<T : Any>(
         description: String? = null,
         regex: Regex? = null,
         tag: String? = null,
-        defaultValue: T,
+        value: T,
     ) : this(
         type,
         setOfNotNull(shortName?.toString(), name),
@@ -74,8 +72,7 @@ data class Option<T : Any>(
         true,
         false,
         tag,
-        emptyList(),
-        listOf(defaultValue)
+        listOf(value)
     )
 
     init {
@@ -83,8 +80,8 @@ data class Option<T : Any>(
     }
 
     @Suppress("UNCHECKED_CAST") // Types checked at runtime
-    override fun addValues(value: Collection<*>): Property<T> =
-        copy(values = values + value as List<T>)
+    override fun addValues(value: Property<*>): Property<T> =
+        copy(values = values + value.values as List<T>)
 
     override fun addValue(value: String): Option<T> =
         value.parseOrNull(type)

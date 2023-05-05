@@ -259,8 +259,8 @@ internal class ProgramTest {
             title = "Sample program",
             description = "A simple program that does things.",
             properties = setOf(
-                Option(String::class, '1', "first", defaultValue = "a"),
-                Option(String::class, '2', "second", defaultValues = listOf("b", "c")),
+                Option(String::class, '1', "first", value = "a"),
+                Option(String::class, '2', "second", values = listOf("b", "c")),
             )
         )
 
@@ -285,7 +285,7 @@ internal class ProgramTest {
             title = "Sample program",
             description = "A simple program that does things.",
             properties = setOf(
-                Parameter(Int::class, "numbers", defaultValues = listOf(2, 3)),
+                Parameter(Int::class, "numbers", values = listOf(2, 3)),
             )
         )
 

@@ -41,8 +41,17 @@ data class Command(
     val subcommandsMap: Map<String, Command> =
         nestedSubcommands().associateBy { it.name }
 
+    private val emptyPropertiesMap: Map<String, Property<*>> =
+        propertiesMap.mapValues { (_, v) ->
+            when (v) {
+                is Option<*> -> v.copy(values = emptyList())
+                is Parameter<*> -> v.copy(values = emptyList())
+                is Flag -> v.copy(values = emptyList())
+            }
+        }
+
     private val parametersList: List<Parameter<*>> by lazy {
-        parameters.toList()
+        parameters.map { it.copy(values = emptyList()) }
     }
 
     init {
@@ -94,9 +103,8 @@ data class Command(
 
     private fun addDefaultProperties(groupedProperties: List<Property<*>>): List<Property<*>> =
         groupedProperties + properties
-            .filter { it.defaultValues.isNotEmpty() }
-            .map { it.addValues(it.defaultValues) }
-            .filter { it.names.any { n -> n !in groupedProperties.flatMap { gp -> gp.names } } }
+            .filter { it.optional && it.values.isNotEmpty() }
+            .filterNot { it.names.any { n -> n in groupedProperties.flatMap { gp -> gp.names } } }
 
     @Suppress("UNCHECKED_CAST") // Types checked at runtime
     fun <T : Any> propertyValues(name: String): List<T> =
@@ -161,7 +169,7 @@ data class Command(
     private fun parseOption(option: String, propertiesIterator: Iterator<String>): Property<*> {
         val nameValue = option.split('=', limit = 2)
         val name = nameValue.first()
-        val property = propertiesMap[name] ?: error("Option '$name' not found")
+        val property = emptyPropertiesMap[name] ?: error("Option '$name' not found")
         val value =
             if (property is Option<*>) nameValue.getOrNull(1) ?: propertiesIterator.next()
             else "true"

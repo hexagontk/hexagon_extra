@@ -26,7 +26,7 @@ inline fun <reified T : Any> Option(
     description: String? = null,
     regex: Regex? = null,
     tag: String? = null,
-    defaultValues: List<T>
+    values: List<T>
 ) : Option<T> =
     Option(
         type = T::class,
@@ -36,8 +36,7 @@ inline fun <reified T : Any> Option(
         optional = true,
         multiple = true,
         tag = tag,
-        values = emptyList(),
-        defaultValues = defaultValues
+        values = values
     )
 
 inline fun <reified T : Any> Option(
@@ -46,7 +45,7 @@ inline fun <reified T : Any> Option(
     description: String? = null,
     regex: Regex? = null,
     tag: String? = null,
-    defaultValue: T
+    value: T
 ) : Option<T> =
     Option(
         type = T::class,
@@ -56,8 +55,7 @@ inline fun <reified T : Any> Option(
         optional = true,
         multiple = false,
         tag = tag,
-        values = emptyList(),
-        defaultValues = listOf(defaultValue)
+        values = listOf(value)
     )
 
 inline fun <reified T : Any> Parameter(
@@ -75,7 +73,7 @@ inline fun <reified T : Any> Parameter(
     description: String? = null,
     regex: Regex? = null,
     tag: String? = null,
-    defaultValues: List<T>,
+    values: List<T>,
 ) : Parameter<T> =
     Parameter(
         type = T::class,
@@ -85,8 +83,7 @@ inline fun <reified T : Any> Parameter(
         optional = true,
         multiple = true,
         tag = tag,
-        values = emptyList(),
-        defaultValues = defaultValues
+        values = values
     )
 
 inline fun <reified T : Any> Parameter(
@@ -94,7 +91,7 @@ inline fun <reified T : Any> Parameter(
     description: String? = null,
     regex: Regex? = null,
     tag: String? = null,
-    defaultValue: T,
+    value: T,
 ) : Parameter<T> =
     Parameter(
         type = T::class,
@@ -104,6 +101,5 @@ inline fun <reified T : Any> Parameter(
         optional = true,
         multiple = false,
         tag = tag,
-        values = emptyList(),
-        defaultValues = listOf(defaultValue)
+        values = listOf(value)
     )

@@ -11,16 +11,16 @@ internal class OptionTest {
 
     @Test fun `Options with null optional values are correct`() {
         assertEquals(
-            Option<Boolean>('b', defaultValue = true),
-            Option<Boolean>('b', name = null, defaultValue = true)
+            Option<Boolean>('b', value = true),
+            Option<Boolean>('b', name = null, value = true)
         )
         assertEquals(
-            Option<Boolean>('b', defaultValue = true),
-            Option<Boolean>('b', description = null, defaultValue = true)
+            Option<Boolean>('b', value = true),
+            Option<Boolean>('b', description = null, value = true)
         )
         assertEquals(
-            Option<Boolean>(name = "name", defaultValue = true),
-            Option<Boolean>(null, "name", defaultValue = true)
+            Option<Boolean>(name = "name", value = true),
+            Option<Boolean>(null, "name", value = true)
         )
     }
 
@@ -46,9 +46,9 @@ internal class OptionTest {
         assertIllegalArgument(message) { Option<Int>('n', "name", regex = Regex(".*")) }
 
         val e = assertFailsWith<IllegalArgumentException> {
-            Option<String>(name = "name", regex = Regex("A"), defaultValues = listOf("a"))
+            Option<String>(name = "name", regex = Regex("A"), values = listOf("a"))
         }
-        assert(e.message?.contains("Default value should match the 'A' regex: a") ?: false)
+        assert(e.message?.contains("Value should match the 'A' regex: a") ?: false)
 
         assertFailsWith<IllegalArgumentException> { Option<Int>('n', "name", " ") }
     }
