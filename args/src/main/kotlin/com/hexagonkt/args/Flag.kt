@@ -14,6 +14,7 @@ data class Flag(
     override val optional: Boolean = true
     override val regex: Regex? = null
     override val type: KClass<Boolean> = Boolean::class
+    override val defaultValues: List<Boolean> = emptyList()
 
     constructor(
         shortName: Char? = null,
@@ -27,8 +28,8 @@ data class Flag(
     }
 
     @Suppress("UNCHECKED_CAST") // Types checked at runtime
-    override fun addValues(value: Property<*>): Property<Boolean> =
-        copy(values = values + value.values as List<Boolean>)
+    override fun addValues(value: Collection<*>): Property<Boolean> =
+        copy(values = values + value as List<Boolean>)
 
     override fun addValue(value: String): Flag =
         copy(values = values + true)

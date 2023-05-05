@@ -252,6 +252,47 @@ internal class ProgramTest {
         assertNull(program.parse(listOf("cmd", "--second", "a")).propertyValueOrNull("first"))
     }
 
+    @Test fun `Parsed command handles options default values`() {
+        val program = Program(
+            name = "program",
+            version = "1.0.0",
+            title = "Sample program",
+            description = "A simple program that does things.",
+            properties = setOf(
+                Option(String::class, '1', "first", defaultValue = "a"),
+                Option(String::class, '2', "second", defaultValues = listOf("b", "c")),
+            )
+        )
+
+        assertEquals("a", program.parse(listOf()).propertyValue("1"))
+        assertEquals("x", program.parse(listOf("-1", "x")).propertyValue("1"))
+        assertEquals("x", program.parse(listOf("--first", "x")).propertyValue("1"))
+        assertEquals(listOf("b", "c"), program.parse(listOf()).propertyValues("2"))
+        assertEquals(listOf("x", "y"), program.parse(listOf("-2", "x", "-2", "y")).propertyValues("2"))
+        assertEquals(listOf("x", "y"), program.parse(listOf("--second", "x", "--second", "y")).propertyValues("2"))
+        assertEquals("a", program.parse(listOf()).propertyValue("first"))
+        assertEquals("x", program.parse(listOf("-1", "x")).propertyValue("first"))
+        assertEquals("x", program.parse(listOf("--first", "x")).propertyValue("first"))
+        assertEquals(listOf("b", "c"), program.parse(listOf()).propertyValues("second"))
+        assertEquals(listOf("x", "y"), program.parse(listOf("-2", "x", "-2", "y")).propertyValues("second"))
+        assertEquals(listOf("x", "y"), program.parse(listOf("--second", "x", "--second", "y")).propertyValues("second"))
+    }
+
+    @Test fun `Parsed command handles parameters default values`() {
+        val program = Program(
+            name = "program",
+            version = "1.0.0",
+            title = "Sample program",
+            description = "A simple program that does things.",
+            properties = setOf(
+                Parameter(Int::class, "numbers", defaultValues = listOf(2, 3)),
+            )
+        )
+
+        assertEquals(listOf(2, 3), program.parse(listOf()).propertyValues("numbers"))
+        assertEquals(listOf(4, 5), program.parse(listOf("4", "5")).propertyValues("numbers"))
+    }
+
     @Test fun `Program describes subcommands`() {
         val program = Program(
             name = "program",

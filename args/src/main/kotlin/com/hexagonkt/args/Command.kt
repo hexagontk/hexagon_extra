@@ -87,19 +87,27 @@ data class Command(
             }
         }
 
-        val groupedProperties = parsedProperties.groupValues()
+        val groupedProperties = addDefaultProperties(parsedProperties.groupValues())
         checkMandatoryProperties(groupedProperties)
         return copy(properties = groupedProperties.toSet())
     }
 
-    inline fun <reified T : Any> propertyValues(name: String): List<T> =
+    private fun addDefaultProperties(groupedProperties: List<Property<*>>): List<Property<*>> =
+        groupedProperties + properties
+            .filter { it.defaultValues.isNotEmpty() }
+            .map { it.addValues(it.defaultValues) }
+            .filter { it.names.any { n -> n !in groupedProperties.flatMap { gp -> gp.names } } }
+
+    @Suppress("UNCHECKED_CAST") // Types checked at runtime
+    fun <T : Any> propertyValues(name: String): List<T> =
         propertiesMap[name]?.values?.mapNotNull { it as? T } ?: emptyList()
 
-    inline fun <reified T : Any> propertyValueOrNull(name: String): T? =
+    fun <T : Any> propertyValueOrNull(name: String): T? =
         propertyValues<T>(name).firstOrNull()
 
-    inline fun <reified T : Any> propertyValue(name: String): T =
-        propertyValueOrNull(name) ?: error("Property '$name' does not have a value")
+    fun <T : Any> propertyValue(name: String): T {
+        return propertyValueOrNull(name) ?: error("Property '$name' does not have a value")
+    }
 
     private fun checkMandatoryProperties(parsedProperties: List<Property<*>>) {
         val mandatoryProperties = properties.filterNot { it.optional }

@@ -11,12 +11,12 @@ internal class ParameterTest {
 
     @Test fun `Parameters with null optional fields are correct`() {
         assertEquals(
-            Parameter<String>("str", value = "val"),
-            Parameter<String>("str", regex = null, value = "val")
+            Parameter<String>("str", defaultValue = "val"),
+            Parameter<String>("str", regex = null, defaultValue = "val")
         )
         assertEquals(
-            Parameter<Boolean>("bool", value = true),
-            Parameter<Boolean>("bool", description = null, value = true)
+            Parameter<Boolean>("bool", defaultValue = true),
+            Parameter<Boolean>("bool", description = null, defaultValue = true)
         )
     }
 
@@ -34,9 +34,9 @@ internal class ParameterTest {
         }
 
         val e = assertFailsWith<IllegalArgumentException> {
-            Parameter<String>(name = "name", regex = Regex("A"), values = listOf("a"))
+            Parameter<String>(name = "name", regex = Regex("A"), defaultValues = listOf("a"))
         }
-        assert(e.message?.contains("Value should match the 'A' regex: a") ?: false)
+        assert(e.message?.contains("Default value should match the 'A' regex: a") ?: false)
 
         assertFailsWith<IllegalArgumentException> { Parameter<Int>("name", " ") }
     }

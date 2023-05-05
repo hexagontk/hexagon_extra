@@ -65,7 +65,7 @@ internal class PropertyFormatterTest {
     @Test fun `Options have utility constructor`() {
         val re = "NAME|SIZE|DATE"
         val value = "NAME"
-        Option(String::class, 's', "sort", "The field used to sort items", Regex(re), value = value)
+        Option(String::class, 's', "sort", "The field used to sort items", Regex(re), defaultValue = value)
             .assert(
                 "[-s REGEX]",
                 "-s, --sort REGEX",
@@ -85,13 +85,13 @@ internal class PropertyFormatterTest {
             .assert("-s REGEX...", "-s, --sort REGEX", "The field used to sort items. Type: $re...")
         str.copy(optional = false, multiple = true)
             .assert("-s REGEX...", "-s, --sort REGEX", "The field used to sort items. Type: $re...")
-        str.copy(values = listOf("NAME"))
+        str.copy(defaultValues = listOf("NAME"))
             .assert(
                 "[-s REGEX]",
                 "-s, --sort REGEX",
                 "The field used to sort items. Type: [$re]. Default: NAME"
             )
-        str.copy(multiple = true, values = listOf("NAME", "SIZE"))
+        str.copy(multiple = true, defaultValues = listOf("NAME", "SIZE"))
             .assert(
                 "[-s REGEX]...",
                 "-s, --sort REGEX",
@@ -118,7 +118,7 @@ internal class PropertyFormatterTest {
             .assert("-f FILE...", "-f, --file FILE", "The file whose checksum to calculate. Type: FILE...")
         file.copy(optional = false, multiple = true)
             .assert("-f FILE...", "-f, --file FILE", "The file whose checksum to calculate. Type: FILE...")
-        file.copy(values = listOf(f))
+        file.copy(defaultValues = listOf(f))
             .assert(
                 "[-f FILE]",
                 "-f, --file FILE",
@@ -126,7 +126,7 @@ internal class PropertyFormatterTest {
             )
         file.copy(names = setOf("file"))
             .assert("[--file FILE]", "--file FILE", "The file whose checksum to calculate. Type: [FILE]")
-        file.copy(multiple = true, values = files)
+        file.copy(multiple = true, defaultValues = files)
             .assert(
                 "[-f FILE]...",
                 "-f, --file FILE",
@@ -136,7 +136,7 @@ internal class PropertyFormatterTest {
 
     @Test fun `Parameters have utility constructor`() {
         val re = "NAME|SIZE|DATE"
-        Parameter(String::class, "sort", "The field used to sort items", Regex(re), value = "NAME")
+        Parameter<String>("sort", "The field used to sort items", Regex(re), defaultValue = "NAME")
             .assert(
                 "[<sort>]",
                 "<sort>",
@@ -156,9 +156,9 @@ internal class PropertyFormatterTest {
             .assert("<sort>...", "<sort>", "The field used to sort items. Type: $re...")
         str.copy(optional = false, multiple = true)
             .assert("<sort>...", "<sort>", "The field used to sort items. Type: $re...")
-        str.copy(values = listOf("NAME"))
+        str.copy(defaultValues = listOf("NAME"))
             .assert("[<sort>]", "<sort>", "The field used to sort items. Type: [$re]. Default: NAME")
-        str.copy(multiple = true, values = listOf("NAME", "SIZE"))
+        str.copy(multiple = true, defaultValues = listOf("NAME", "SIZE"))
             .assert(
                 "[<sort>]...",
                 "<sort>",
@@ -180,13 +180,13 @@ internal class PropertyFormatterTest {
             .assert("<file>...", "<file>", "The file whose checksum to calculate. Type: FILE...")
         file.copy(optional = false, multiple = true)
             .assert("<file>...", "<file>", "The file whose checksum to calculate. Type: FILE...")
-        file.copy(multiple = true, values = files)
+        file.copy(multiple = true, defaultValues = files)
             .assert(
                 "[<file>]...",
                 "<file>",
                 "The file whose checksum to calculate. Type: [FILE].... Default: $files"
             )
-        file.copy(values = files.dropLast(1))
+        file.copy(defaultValues = files.dropLast(1))
             .assert(
                 "[<file>]",
                 "<file>",

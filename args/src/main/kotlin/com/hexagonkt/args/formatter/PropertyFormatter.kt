@@ -27,10 +27,12 @@ data class PropertyFormatter(
                 c.description,
                 if (component is Flag) null
                 else (c.regex?.pattern ?: c.typeName())?.let { "Type: " + c.format(it) },
-                c.values
+                c.defaultValues
                     .ifEmpty { null }
                     ?.map(Any::toString)
-                    ?.let { "Default: " + if (c.multiple) c.values else c.values.first() },
+                    ?.let {
+                        "Default: " + if (c.multiple) c.defaultValues else c.defaultValues.first()
+                    },
             )
         }
         .joinToString(fieldSeparator)

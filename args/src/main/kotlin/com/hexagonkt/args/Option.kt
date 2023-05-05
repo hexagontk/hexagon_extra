@@ -12,6 +12,7 @@ data class Option<T : Any>(
     override val multiple: Boolean = false,
     override val tag: String? = null,
     override val values: List<T> = emptyList(),
+    override val defaultValues: List<T> = emptyList(),
 ) : Property<T> {
 
     companion object {
@@ -27,7 +28,6 @@ data class Option<T : Any>(
         optional: Boolean = true,
         multiple: Boolean = false,
         tag: String? = null,
-        values: List<T> = emptyList(),
     ) : this(
         type,
         setOfNotNull(shortName?.toString(), name),
@@ -36,7 +36,6 @@ data class Option<T : Any>(
         optional,
         multiple,
         tag,
-        values
     )
 
     constructor(
@@ -45,19 +44,47 @@ data class Option<T : Any>(
         name: String? = null,
         description: String? = null,
         regex: Regex? = null,
-        optional: Boolean = true,
-        multiple: Boolean = false,
         tag: String? = null,
-        value: T,
-    ) : this(type, shortName, name, description, regex, optional, multiple, tag, listOf(value))
+        defaultValues: List<T>,
+    ) : this(
+        type,
+        setOfNotNull(shortName?.toString(), name),
+        description,
+        regex,
+        true,
+        true,
+        tag,
+        emptyList(),
+        defaultValues
+    )
+
+    constructor(
+        type: KClass<T>,
+        shortName: Char? = null,
+        name: String? = null,
+        description: String? = null,
+        regex: Regex? = null,
+        tag: String? = null,
+        defaultValue: T,
+    ) : this(
+        type,
+        setOfNotNull(shortName?.toString(), name),
+        description,
+        regex,
+        true,
+        false,
+        tag,
+        emptyList(),
+        listOf(defaultValue)
+    )
 
     init {
         check("Option", optionRegex)
     }
 
     @Suppress("UNCHECKED_CAST") // Types checked at runtime
-    override fun addValues(value: Property<*>): Property<T> =
-        copy(values = values + value.values as List<T>)
+    override fun addValues(value: Collection<*>): Property<T> =
+        copy(values = values + value as List<T>)
 
     override fun addValue(value: String): Option<T> =
         value.parseOrNull(type)

@@ -23,10 +23,14 @@ sealed interface Property<T : Any> {
      */
     val tag: String?
     val values: List<T>
+    val defaultValues: List<T>
 
-    fun addValues(value: Property<*>): Property<T>
+    fun addValues(value: Collection<*>): Property<T>
 
     fun addValue(value: String): Property<T>
+
+    fun addValues(value: Property<*>): Property<T> =
+        addValues(value.values)
 
     fun typeText(): String =
         type.simpleName ?: error("Unknown type name")
@@ -46,17 +50,27 @@ sealed interface Property<T : Any> {
 
         require(description?.isNotBlank() ?: true) { "$component description can not be blank" }
 
-        if (regex != null)
+        if (regex != null) {
             values.forEach {
                 require(regex?.matches(it as String) ?: true) {
                     "Value should match the '${regex?.pattern}' regex: $it"
                 }
             }
+            defaultValues.forEach {
+                require(regex?.matches(it as String) ?: true) {
+                    "Default value should match the '${regex?.pattern}' regex: $it"
+                }
+            }
+        }
 
-        if (!multiple)
+        if (!multiple) {
             require(values.size <= 1) {
                 "$component '${names.first()}' can only have one value: $values"
             }
+            require(defaultValues.size <= 1) {
+                "$component '${names.first()}' can only have one default value: $values"
+            }
+        }
     }
 
     companion object {
