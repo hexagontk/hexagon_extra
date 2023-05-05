@@ -9,16 +9,7 @@ inline fun <reified T : Any> Option(
     multiple: Boolean = false,
     tag: String? = null,
 ) : Option<T> =
-    Option(
-        T::class,
-        shortName,
-        name,
-        description,
-        regex,
-        optional,
-        multiple,
-        tag,
-    )
+    Option(T::class, shortName, name, description, regex, optional, multiple, tag)
 
 inline fun <reified T : Any> Option(
     shortName: Char? = null,
@@ -28,16 +19,7 @@ inline fun <reified T : Any> Option(
     tag: String? = null,
     values: List<T>
 ) : Option<T> =
-    Option(
-        type = T::class,
-        names = setOfNotNull(shortName?.toString(), name),
-        description = description,
-        regex = regex,
-        optional = true,
-        multiple = true,
-        tag = tag,
-        values = values
-    )
+    Option(T::class, shortName, name, description, regex, tag, values)
 
 inline fun <reified T : Any> Option(
     shortName: Char? = null,
@@ -47,16 +29,7 @@ inline fun <reified T : Any> Option(
     tag: String? = null,
     value: T
 ) : Option<T> =
-    Option(
-        type = T::class,
-        names = setOfNotNull(shortName?.toString(), name),
-        description = description,
-        regex = regex,
-        optional = true,
-        multiple = false,
-        tag = tag,
-        values = listOf(value)
-    )
+    Option(T::class, shortName, name, description, regex, tag, value)
 
 inline fun <reified T : Any> Parameter(
     name: String,
@@ -75,16 +48,7 @@ inline fun <reified T : Any> Parameter(
     tag: String? = null,
     values: List<T>,
 ) : Parameter<T> =
-    Parameter(
-        type = T::class,
-        name = name,
-        description = description,
-        regex = regex,
-        optional = true,
-        multiple = true,
-        tag = tag,
-        values = values
-    )
+    Parameter(T::class, name, description, regex, tag, values)
 
 inline fun <reified T : Any> Parameter(
     name: String,
@@ -93,13 +57,4 @@ inline fun <reified T : Any> Parameter(
     tag: String? = null,
     value: T,
 ) : Parameter<T> =
-    Parameter(
-        type = T::class,
-        name = name,
-        description = description,
-        regex = regex,
-        optional = true,
-        multiple = false,
-        tag = tag,
-        values = listOf(value)
-    )
+    Parameter(T::class, name, description, regex, tag, value)

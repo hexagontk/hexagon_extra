@@ -50,7 +50,7 @@ data class Command(
             }
         }
 
-    private val parametersList: List<Parameter<*>> by lazy {
+    private val emptyParametersList: List<Parameter<*>> by lazy {
         parameters.map { it.copy(values = emptyList()) }
     }
 
@@ -137,7 +137,7 @@ data class Command(
             }
 
     private fun parseParameter(value: String, parsedParameter: Int): Property<*> =
-        (parametersList.getOrNull(parsedParameter) ?: parametersList.lastOrNull())
+        (emptyParametersList.getOrNull(parsedParameter) ?: emptyParametersList.lastOrNull())
             ?.addValue(value)
             ?: error("No parameters")
 
