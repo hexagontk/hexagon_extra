@@ -20,10 +20,10 @@ internal class CommandFormatterTest {
             setOf(
                 HELP,
                 VERSION,
-                Option(String::class, 'n', "name"),
-                Option(String::class, 'o', "output"),
-                Parameter(String::class, "source"),
-                Parameter(String::class, "target"),
+                Option<String>('n', "name"),
+                Option<String>('o', "output"),
+                Parameter<String>("source"),
+                Parameter<String>("target"),
             ),
             setOf(
                 Command("edit", "Edit config"),

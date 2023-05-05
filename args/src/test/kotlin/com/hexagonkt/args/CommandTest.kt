@@ -15,29 +15,29 @@ internal class CommandTest {
             Command(
                 name = "cmd",
                 properties = setOf(
-                    Parameter(String::class, "first", multiple = true),
-                    Parameter(Int::class, "second")
+                    Parameter<String>("first", multiple = true),
+                    Parameter<Int>("second")
                 )
             )
         }
     }
 
     @Test fun `Command creates a map of options`() {
-        val option = Option(File::class, 's', "assets")
+        val option = Option<File>('s', "assets")
         val serve = Command("serve", properties = setOf(option))
 
         assertEquals(mapOf("s" to option, "assets" to option), serve.propertiesMap)
         assertEquals(mapOf("s" to option, "assets" to option), serve.optionsMap)
         assertEquals(emptyMap(), serve.parametersMap)
 
-        val last = Parameter(String::class, "last", multiple = true)
+        val last = Parameter<String>("last", multiple = true)
         val cmd = Command("cmd", properties = setOf(last))
 
         assertEquals(mapOf("last" to last), cmd.propertiesMap)
         assertEquals(emptyMap(), cmd.optionsMap)
         assertEquals(mapOf("last" to last), cmd.parametersMap)
 
-        val first = Parameter(String::class, "first")
+        val first = Parameter<String>("first")
         val scr = Command("scr", properties = setOf(first, last))
 
         assertEquals(mapOf("first" to first, "last" to last), scr.propertiesMap)
@@ -46,9 +46,9 @@ internal class CommandTest {
     }
 
     @Test fun `Command can have options and parameters`() {
-        val option = Option(File::class, 's', "assets")
-        val last = Parameter(String::class, "last", multiple = true)
-        val first = Parameter(String::class, "first")
+        val option = Option<File>('s', "assets")
+        val last = Parameter<String>("last", multiple = true)
+        val first = Parameter<String>("first")
         val serve = Command("serve", properties = setOf(option, first, last))
 
         val options = mapOf("s" to option, "assets" to option)
@@ -107,8 +107,8 @@ internal class CommandTest {
             name = "cmd",
             properties = setOf(
                 Flag('1', "first"),
-                Option(String::class, '2', "second"),
-                Parameter(Int::class, "number"),
+                Option<String>('2', "second"),
+                Parameter<Int>("number"),
             )
         )
         .apply { checkCases() }
@@ -117,7 +117,7 @@ internal class CommandTest {
             name = "cmd",
             properties = setOf(
                 Flag('1', "first"),
-                Option(String::class, '2', "second"),
+                Option<String>('2', "second"),
             )
         )
         .apply {
@@ -141,8 +141,8 @@ internal class CommandTest {
             name = "cmd",
             properties = setOf(
                 Flag('1', "first", multiple = true),
-                Option(String::class, '2', "second", multiple = true),
-                Parameter(Int::class, "number", multiple = true),
+                Option<String>('2', "second", multiple = true),
+                Parameter<Int>("number", multiple = true),
             )
         )
         .apply {
@@ -202,8 +202,8 @@ internal class CommandTest {
         Command(
             name = "cmd",
             properties = setOf(
-                Option(String::class, '2', "second", optional = false),
-                Parameter(Int::class, "number", optional = false),
+                Option<String>('2', "second", optional = false),
+                Parameter<Int>("number", optional = false),
             )
         )
         .apply {
@@ -325,8 +325,8 @@ internal class CommandTest {
             name = "cmd",
             properties = setOf(
                 Flag('1', "first"),
-                Option(String::class, '2', "second"),
-                Parameter(Int::class, "number"),
+                Option<String>('2', "second"),
+                Parameter<Int>("number"),
             )
         )
         .apply {
@@ -339,7 +339,7 @@ internal class CommandTest {
             name = "cmd",
             properties = setOf(
                 Flag('1', "first"),
-                Option(String::class, '2', "second"),
+                Option<String>('2', "second"),
             )
         )
         .apply {
@@ -358,7 +358,7 @@ internal class CommandTest {
     }
 
     private fun Command.assertIllegalState(message: String, args: List<String>) {
-        assertFailsWithMessage<IllegalStateException>(message) { parse(args) }
+        assertFailsWithMessage(IllegalStateException::class, message) { parse(args) }
     }
 
     private fun Command.assertIllegalState(message: String, args: String) {

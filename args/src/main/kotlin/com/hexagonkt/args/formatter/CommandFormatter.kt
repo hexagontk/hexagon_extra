@@ -1,8 +1,6 @@
 package com.hexagonkt.args.formatter
 
 import com.hexagonkt.args.Command
-import com.hexagonkt.args.Formatter
-import com.hexagonkt.args.Program
 import com.hexagonkt.args.Property
 
 /**

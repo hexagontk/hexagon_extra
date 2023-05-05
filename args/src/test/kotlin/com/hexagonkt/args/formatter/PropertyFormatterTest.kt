@@ -59,13 +59,13 @@ internal class PropertyFormatterTest {
     }
 
     @Test fun `Boolean option is formatted correctly for all types`() {
-        Option(Boolean::class, 'b', "boolean", "Flag option").assert("[-b]", "-b, --boolean", "Flag option. Type: [BOOLEAN]")
+        Option<Boolean>('b', "boolean", "Flag option").assert("[-b]", "-b, --boolean", "Flag option. Type: [BOOLEAN]")
     }
 
     @Test fun `Options have utility constructor`() {
         val re = "NAME|SIZE|DATE"
         val value = "NAME"
-        Option(String::class, 's', "sort", "The field used to sort items", Regex(re), value = value)
+        Option<String>('s', "sort", "The field used to sort items", Regex(re), value = value)
             .assert(
                 "[-s REGEX]",
                 "-s, --sort REGEX",
@@ -75,7 +75,7 @@ internal class PropertyFormatterTest {
 
     @Test fun `Options with regular expressions are described correctly`() {
         val re = "NAME|SIZE|DATE"
-        val str = Option(String::class, 's', "sort", "The field used to sort items", Regex(re))
+        val str = Option<String>('s', "sort", "The field used to sort items", Regex(re))
             .assert( "[-s REGEX]", "-s, --sort REGEX", "The field used to sort items. Type: [$re]")
         str.copy(multiple = true)
             .assert("[-s REGEX]...", "-s, --sort REGEX", "The field used to sort items. Type: [$re]...")
@@ -102,7 +102,7 @@ internal class PropertyFormatterTest {
     @Test fun `Options are described correctly`() {
         val f = File("./a")
         val files = listOf(f, File("./b"))
-        val file = Option(File::class, 'f', "file", "The file whose checksum to calculate")
+        val file = Option<File>('f', "file", "The file whose checksum to calculate")
             .assert("[-f FILE]", "-f, --file FILE", "The file whose checksum to calculate. Type: [FILE]")
         file.copy(names = setOf("f"))
             .assert("[-f FILE]", "-f FILE", "The file whose checksum to calculate. Type: [FILE]")
@@ -136,7 +136,7 @@ internal class PropertyFormatterTest {
 
     @Test fun `Parameters have utility constructor`() {
         val re = "NAME|SIZE|DATE"
-        Parameter(String::class, "sort", "The field used to sort items", Regex(re), value = "NAME")
+        Parameter<String>("sort", "The field used to sort items", Regex(re), value = "NAME")
             .assert(
                 "[<sort>]",
                 "<sort>",
@@ -146,7 +146,7 @@ internal class PropertyFormatterTest {
 
     @Test fun `Parameters with regular expressions are described correctly`() {
         val re = "NAME|SIZE|DATE"
-        val str = Parameter(String::class, "sort", "The field used to sort items", Regex(re))
+        val str = Parameter<String>("sort", "The field used to sort items", Regex(re))
             .assert("[<sort>]", "<sort>", "The field used to sort items. Type: [$re]")
         str.copy(multiple = true)
             .assert("[<sort>]...", "<sort>", "The field used to sort items. Type: [$re]...")
@@ -168,7 +168,7 @@ internal class PropertyFormatterTest {
 
     @Test fun `Parameters are described correctly`() {
         val files = listOf(File("./a"), File("./b"))
-        val file = Parameter(File::class, "file", "The file whose checksum to calculate")
+        val file = Parameter<File>("file", "The file whose checksum to calculate")
             .assert("[<file>]", "<file>", "The file whose checksum to calculate. Type: [FILE]")
         file.copy(description = null)
             .assert("[<file>]", "<file>", "Type: [FILE]")

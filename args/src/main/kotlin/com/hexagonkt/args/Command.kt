@@ -41,8 +41,17 @@ data class Command(
     val subcommandsMap: Map<String, Command> =
         nestedSubcommands().associateBy { it.name }
 
-    private val parametersList: List<Parameter<*>> by lazy {
-        parameters.toList()
+    private val emptyPropertiesMap: Map<String, Property<*>> =
+        propertiesMap.mapValues { (_, v) ->
+            when (v) {
+                is Option<*> -> v.copy(values = emptyList())
+                is Parameter<*> -> v.copy(values = emptyList())
+                is Flag -> v.copy(values = emptyList())
+            }
+        }
+
+    private val emptyParametersList: List<Parameter<*>> by lazy {
+        parameters.map { it.copy(values = emptyList()) }
     }
 
     init {
@@ -87,9 +96,25 @@ data class Command(
             }
         }
 
-        val groupedProperties = parsedProperties.groupValues()
+        val groupedProperties = addDefaultProperties(parsedProperties.groupValues())
         checkMandatoryProperties(groupedProperties)
         return copy(properties = groupedProperties.toSet())
+    }
+
+    private fun addDefaultProperties(groupedProperties: List<Property<*>>): List<Property<*>> =
+        groupedProperties + properties
+            .filter { it.optional && it.values.isNotEmpty() }
+            .filterNot { it.names.any { n -> n in groupedProperties.flatMap { gp -> gp.names } } }
+
+    @Suppress("UNCHECKED_CAST") // Types checked at runtime
+    fun <T : Any> propertyValues(name: String): List<T> =
+        propertiesMap[name]?.values?.mapNotNull { it as? T } ?: emptyList()
+
+    fun <T : Any> propertyValueOrNull(name: String): T? =
+        propertyValues<T>(name).firstOrNull()
+
+    fun <T : Any> propertyValue(name: String): T {
+        return propertyValueOrNull(name) ?: error("Property '$name' does not have a value")
     }
 
     private fun checkMandatoryProperties(parsedProperties: List<Property<*>>) {
@@ -112,7 +137,7 @@ data class Command(
             }
 
     private fun parseParameter(value: String, parsedParameter: Int): Property<*> =
-        (parametersList.getOrNull(parsedParameter) ?: parametersList.lastOrNull())
+        (emptyParametersList.getOrNull(parsedParameter) ?: emptyParametersList.lastOrNull())
             ?.addValue(value)
             ?: error("No parameters")
 
@@ -144,7 +169,7 @@ data class Command(
     private fun parseOption(option: String, propertiesIterator: Iterator<String>): Property<*> {
         val nameValue = option.split('=', limit = 2)
         val name = nameValue.first()
-        val property = propertiesMap[name] ?: error("Option '$name' not found")
+        val property = emptyPropertiesMap[name] ?: error("Option '$name' not found")
         val value =
             if (property is Option<*>) nameValue.getOrNull(1) ?: propertiesIterator.next()
             else "true"

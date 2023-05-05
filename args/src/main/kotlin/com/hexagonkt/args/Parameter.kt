@@ -25,10 +25,18 @@ data class Parameter<T : Any>(
         name: String,
         description: String? = null,
         regex: Regex? = null,
-        optional: Boolean = true,
         tag: String? = null,
         value: T,
-    ) : this(type, name, description, regex, optional, false, tag, listOf(value))
+    ) : this(type, name, description, regex, true, false, tag, listOf(value))
+
+    constructor(
+        type: KClass<T>,
+        name: String,
+        description: String? = null,
+        regex: Regex? = null,
+        tag: String? = null,
+        values: List<T>,
+    ) : this(type, name, description, regex, true, true, tag, values)
 
     init {
         check("Parameter", parameterRegex)
