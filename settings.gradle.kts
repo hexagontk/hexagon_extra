@@ -7,10 +7,7 @@ include(
     "converters",
     "helpers",
     "scheduler",
-    "web",
     "models",
-    "rest",
-    "rest_test",
     "injection",
     "terminal",
 
