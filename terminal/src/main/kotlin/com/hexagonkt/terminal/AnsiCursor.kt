@@ -15,6 +15,7 @@ object AnsiCursor {
     const val RESTORE: String = "\u001B${'8'}"
     const val SHOW: String = "$CSI?25h"
     const val HIDE: String = "$CSI?25l"
+    const val PRINT: String = "${CSI}6n"
 
     fun position(r: Int = 1, c: Int = 1): String =
         "$CSI${r};${c}H"
