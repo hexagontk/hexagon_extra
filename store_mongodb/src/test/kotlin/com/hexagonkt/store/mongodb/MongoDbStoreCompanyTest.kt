@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS
 import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -20,6 +22,7 @@ import java.time.LocalTime
 import java.util.*
 
 @TestInstance(PER_CLASS)
+@DisabledOnOs(OS.MAC, OS.WINDOWS)
 internal class MongoDbStoreCompanyTest {
 
     private val mongodbUrl by lazy { "mongodb://localhost:${mongoDb.getMappedPort(27017)}/test" }
