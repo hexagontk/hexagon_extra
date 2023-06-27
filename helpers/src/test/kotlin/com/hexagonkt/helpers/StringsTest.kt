@@ -5,7 +5,7 @@ import com.hexagonkt.helpers.StringsTest.Size.S
 import com.hexagonkt.helpers.StringsTest.Size.X_L
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty
+import org.junit.jupiter.api.condition.DisabledInNativeImage
 import kotlin.test.Test
 import kotlin.IllegalArgumentException
 import kotlin.test.*
@@ -59,7 +59,7 @@ internal class StringsTest {
     }
 
     @Test
-    @DisabledIfSystemProperty(named = "nativeTest", matches = "true")
+    @DisabledInNativeImage
     fun `Find groups takes care of 'nulls'`() {
         val reEmpty = mockk<Regex>()
         every { reEmpty.find(any()) } returns null
