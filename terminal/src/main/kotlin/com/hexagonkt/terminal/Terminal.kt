@@ -6,8 +6,8 @@ import java.lang.management.ManagementFactory.getRuntimeMXBean
 import kotlin.Int.Companion.MAX_VALUE
 
 object Terminal {
-    val pid: Long by lazy { getRuntimeMXBean().pid }
-    val pts: String by lazy { getenv("PTS") ?: "ps o tty= $pid".exec() }
+    private val pid: Long by lazy { getRuntimeMXBean().pid }
+    private val pts: String by lazy { getenv("PTS") ?: "ps o tty= $pid".exec() }
 
     fun raw() {
         "stty raw -echo -F/dev/$pts".exec()

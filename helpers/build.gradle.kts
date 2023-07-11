@@ -13,7 +13,12 @@ apply(from = "$gradleScripts/native.gradle")
 description = "Hexagon helpers."
 
 dependencies {
+    val scriptMockkVersion = findProperty("mockkVersion")
+
     "api"("com.hexagonkt:core:$version")
 
     "testImplementation"("org.jetbrains.kotlin:kotlin-reflect")
+    "testImplementation"("io.mockk:mockk:$scriptMockkVersion") {
+        exclude(group = "org.jetbrains.kotlin")
+    }
 }
