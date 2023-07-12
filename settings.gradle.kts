@@ -19,6 +19,7 @@ include(
 
     // Tools
     "dokka_json",
+    "processor",
 
     // Testing
     "application_test",

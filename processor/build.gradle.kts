@@ -11,15 +11,13 @@ apply(from = "$gradleScripts/dokka.gradle")
 apply(from = "$gradleScripts/detekt.gradle")
 apply(from = "$gradleScripts/native.gradle")
 
-description = "Hexagon helpers."
+description = "Data classes processor."
 
 dependencies {
-    val scriptMockkVersion = findProperty("mockkVersion")
+    "api"("org.jetbrains.kotlin:kotlin-reflect")
 
-    "api"("com.hexagonkt:core:$version")
-
-    "testImplementation"("org.jetbrains.kotlin:kotlin-reflect")
-    "testImplementation"("io.mockk:mockk:$scriptMockkVersion") {
-        exclude(group = "org.jetbrains.kotlin")
-    }
+    "api"(project(":models"))
+    "api"("com.hexagonkt:http:$version")
+    "api"("com.hexagonkt:serialization_jackson_json:$version")
+    "api"("com.hexagonkt:serialization_jackson_yaml:$version")
 }
