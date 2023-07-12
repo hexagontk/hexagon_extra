@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "59 23 * * *"
 
+permissions:
+  contents: read
+
 jobs:
   stale:
     runs-on: ubuntu-latest
@@ -28,7 +31,6 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     name: Build (${{ matrix.os }})
-    permissions: read-all
     uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
       os: ${{ matrix.os }}
@@ -42,7 +44,6 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     name: Native Test
-    permissions: read-all
     uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
       os: ${{ matrix.os }}
@@ -56,7 +57,6 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     name: Test Publishing (${{ matrix.os }})
-    permissions: read-all
     uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
       os: ${{ matrix.os }}

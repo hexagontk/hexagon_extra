@@ -11,13 +11,13 @@
  */
 
 plugins {
-    kotlin("jvm") version("1.8.21") apply(false)
+    kotlin("jvm") version("1.9.0") apply(false)
 
     id("idea")
     id("eclipse")
-    id("org.jetbrains.dokka") version("1.8.10")
-    id("org.graalvm.buildtools.native") version("0.9.21") apply(false)
-    id("io.gitlab.arturbosch.detekt") version("1.22.0") apply(false)
+    id("org.jetbrains.dokka") version("1.8.20")
+    id("org.graalvm.buildtools.native") version("0.9.23") apply(false)
+    id("io.gitlab.arturbosch.detekt") version("1.23.0") apply(false)
 }
 
 ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagonkt/hexagon/$version/gradle")

@@ -1,6 +1,6 @@
 package com.hexagonkt.helpers
 
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty
+import org.junit.jupiter.api.condition.DisabledInNativeImage
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -19,7 +19,7 @@ internal class MapResourceBundleTest {
     )
 
     @Test
-    @DisabledIfSystemProperty(named = "nativeTest", matches = "true")
+    @DisabledInNativeImage
     fun `UrlResourceBundle loads parameters from classpath`() {
 
         resourceBundle<SampleBundle>(localeOf("es", "ES")).let {

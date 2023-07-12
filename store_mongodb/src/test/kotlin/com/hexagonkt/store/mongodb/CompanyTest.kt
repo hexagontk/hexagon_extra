@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeAll
 import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS
 import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -19,6 +21,7 @@ import java.time.LocalTime
 import java.util.*
 
 @TestInstance(PER_CLASS)
+@DisabledOnOs(OS.MAC, OS.WINDOWS)
 internal class CompanyTest : StoreTest<Company, String>() {
     private val company = Company(
         id = "id",

@@ -1,0 +1,25 @@
+{
+  "$schema" : "https://json-schema.org/draft-07/schema",
+  "$id" : "https://example.com",
+  "$ref" : "#/$defs/Demo",
+  "$defs" : {
+    "Demo" : {
+      "type" : "object",
+      "additionalProperties" : false,
+      "properties" : {
+        "$schema" : {
+          "title" : "Schema used for the document",
+          "description" : "Used to deal with different versions. It also eases the use on some editors",
+          "type" : "string",
+          "format" : "URI"
+        },
+        "Text" : {
+          "type" : "string"
+        },
+        "Option" : {
+          "type" : "boolean"
+        }
+      }
+    }
+  }
+}

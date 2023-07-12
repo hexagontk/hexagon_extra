@@ -5,7 +5,7 @@ import com.hexagonkt.helpers.StringsTest.Size.S
 import com.hexagonkt.helpers.StringsTest.Size.X_L
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty
+import org.junit.jupiter.api.condition.DisabledInNativeImage
 import kotlin.test.Test
 import kotlin.IllegalArgumentException
 import kotlin.test.*
@@ -59,7 +59,7 @@ internal class StringsTest {
     }
 
     @Test
-    @DisabledIfSystemProperty(named = "nativeTest", matches = "true")
+    @DisabledInNativeImage
     fun `Find groups takes care of 'nulls'`() {
         val reEmpty = mockk<Regex>()
         every { reEmpty.find(any()) } returns null
@@ -75,85 +75,6 @@ internal class StringsTest {
         every { reNullGroup.find(any()) } returns matchResult
 
         assert(reNullGroup.findGroups("").isEmpty())
-    }
-
-    @Test fun `Filter variables returns the given string if no parameters are set`() {
-        val template = "User #{user}"
-
-        assertEquals(template, template.filterVars(mapOf<Any, Any>()))
-        assertEquals(template, template.filterVars())
-    }
-
-    @Test fun `Filter variables returns the same string if no variables are defined in it`() {
-        val template = "User no vars"
-
-        assertEquals(template, template.filterVars())
-        assertEquals(template, template.filterVars("vars" to "value"))
-        assertEquals(template, template.filterVars(mapOf<Any, Any>()))
-    }
-
-    @Test fun `Filter variables returns the same string if variable values are not found`() {
-        val template = "User #{user}"
-
-        assertEquals(template, template.filterVars("key" to "value"))
-    }
-
-    @Test fun `Filter variables ignores empty parameters`() {
-        val result = "{{email}}: User {{user}} aka {{user}} <{{email}}>".filterVars(
-            null to "Void",
-            "" to "John",
-            "email" to "john@example.co"
-        )
-
-        assertEquals("john@example.co: User {{user}} aka {{user}} <john@example.co>", result)
-    }
-
-    @Test fun `Filter variables replaces all occurrences of variables with their values`() {
-        val result = "{{email}}: User {{user}} aka {{user}} <{{email}}>".filterVars(
-            "user" to "John",
-            "email" to "john@example.co"
-        )
-
-        assertEquals("john@example.co: User John aka John <john@example.co>", result)
-    }
-
-    @Test fun `Filter returns the given string if no parameters are set`() {
-        val template = "User #{user}"
-
-        assertEquals(template, template.filter("#{", "}"))
-    }
-
-    @Test fun `Filter returns the same string if no variables are defined in it`() {
-        val template = "User no vars"
-
-        assertEquals(template, template.filter("#{", "}"))
-        assertEquals(template, template.filter("#{", "}", "vars" to "value"))
-    }
-
-    @Test fun `Filter returns the same string if variable values are not found`() {
-        val template = "User #{user}"
-
-        assertEquals(template, template.filter("#{", "}", "key" to "value"))
-    }
-
-    @Test fun `Filter ignores empty parameters`() {
-        val result = "{{email}}: User {{user}} aka {{user}} <{{email}}>".filter(
-            "{{", "}}",
-            "" to "John",
-            "email" to "john@example.co"
-        )
-
-        assertEquals("john@example.co: User {{user}} aka {{user}} <john@example.co>", result)
-    }
-
-    @Test fun `Filter replaces all occurrences of variables with their values`() {
-        val result = "{{email}}: User {{user}} aka {{user}} <{{email}}>".filter(
-            "{{", "}}",
-            "user" to "John",
-            "email" to "john@example.co"
-        )
-
-        assertEquals("john@example.co: User John aka John <john@example.co>", result)
     }
 
     @Test fun `Converting empty text to camel case fails`() {

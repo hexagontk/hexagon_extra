@@ -34,10 +34,8 @@
 The libraries inside this repository provide extra features not included in the main repository.
 
 ## Build
-IMPORTANT: For `rabbitmq` container to work properly, you should follow the
-[Docker setup documentation] (inside the "With Docker" section)
-
-[Docker setup documentation]: https://www.rabbitmq.com/install-debian.html
+Hexagon extra build process requires [Docker installed](https://docs.docker.com/engine/install). The
+project also needs a JDK 17+ to compile.
 
 ## Thanks
 This project is supported by:

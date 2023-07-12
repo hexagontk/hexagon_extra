@@ -1,0 +1,23 @@
+[
+  {
+    "name": "com.hexagonkt.processor.TypeTest$SampleClass",
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "com.hexagonkt.processor.FieldTest$SampleField",
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "com.hexagonkt.processor.schema.SchemaGeneratorTest$Companion$Demo",
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  }
+]
