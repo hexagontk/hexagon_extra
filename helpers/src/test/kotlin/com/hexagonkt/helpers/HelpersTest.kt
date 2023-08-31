@@ -2,13 +2,12 @@ package com.hexagonkt.helpers
 
 import com.hexagonkt.core.*
 import kotlin.test.Test
-import java.net.URL
 import kotlin.test.*
 
 internal class HelpersTest {
 
     @Test fun `Properties can be loaded from URLs`() {
-        val properties = properties(URL("classpath:build.properties"))
+        val properties = properties(urlOf("classpath:build.properties"))
         assertEquals("hexagon", properties["project"])
         assertEquals("core", properties["module"])
         assertEquals("1.0.0", properties["version"])
@@ -18,7 +17,7 @@ internal class HelpersTest {
         assertNull(properties["invalid"])
 
         assertFailsWith<ResourceNotFoundException> {
-            properties(URL("classpath:invalid.properties"))
+            properties(urlOf("classpath:invalid.properties"))
         }
     }
 
@@ -27,7 +26,7 @@ internal class HelpersTest {
             check(
                 "Test multiple exceptions",
                 { require(false) { "Sample error" } },
-                { out("Good block") },
+                { println("Good block") },
                 { error("Bad state") },
             )
         }
@@ -39,23 +38,9 @@ internal class HelpersTest {
 
         check(
             "No exception thrown",
-            { out("Good block") },
-            { out("Shouldn't throw an exception") },
+            { println("Good block") },
+            { println("Shouldn't throw an exception") },
         )
-    }
-
-    @Test fun `Print stdout helper`() {
-        assertEquals("text\n", "echo text".exec().out("command output: "))
-        assertEquals("text\n", "echo text".exec().out())
-        assertEquals(null, null.out())
-        assertEquals("text", "text".out())
-    }
-
-    @Test fun `Print stderr helper`() {
-        assertEquals("text\n", "echo text".exec().err("command output: "))
-        assertEquals("text\n", "echo text".exec().err())
-        assertEquals(null, null.err())
-        assertEquals("text", "text".err())
     }
 
     @Test fun `Process execution works as expected`() {
@@ -65,6 +50,7 @@ internal class HelpersTest {
         assertFailsWith<IllegalStateException> { "sleep 2".exec(timeout = 1) }
         assertFailsWith<CodedException> { "false".exec(fail = true) }
 
+        assertEquals("test", "echo test".shell().trim())
         assert("false".exec().isEmpty())
         assert("sleep 1".exec().isEmpty())
         assertEquals("str\n", "echo str".exec())

@@ -3,33 +3,14 @@ package com.hexagonkt.helpers
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
+import java.lang.System.getenv
 import java.net.*
 import java.util.*
 import java.util.concurrent.TimeUnit.SECONDS
 
 /**
- * Print receiver to stdout. Convenient utility to debug variables quickly.
- *
- * @receiver Reference to the object to print. Can be `null`.
- * @param prefix String to print before the actual object information. Empty string by default.
- * @return Receiver's reference. Returned to allow method call chaining.
- */
-fun <T> T.out(prefix: String = ""): T =
-    apply { println("$prefix$this") }
-
-/**
- * Print receiver to stderr. Convenient utility to debug variables quickly.
- *
- * @receiver Reference to the object to print. Can be `null`.
- * @param prefix String to print before the actual object information. Empty string by default.
- * @return Receiver's reference. Returned to allow method call chaining.
- */
-fun <T> T.err(prefix: String = ""): T =
-    apply { System.err.println("$prefix$this") }
-
-/**
  * Load a '*.properties' file from a URL transforming the content into a plain map. If the resource
- * can not be found, a [ResourceNotFoundException] is thrown.
+ * can not be found, a [com.hexagonkt.core.ResourceNotFoundException] is thrown.
  *
  * @param url URL pointing to the file to load.
  * @return Map containing the properties file data.
@@ -130,6 +111,24 @@ fun String.exec(
         .split(" ")
         .map { it.trim() }
         .toList()
+        .exec(workingDirectory, timeout, fail)
+
+/**
+ * Executes a command in a shell (allowing to use pipes, redirections, etc.).
+ *
+ * TODO
+ *
+ * @param workingDirectory
+ * @param timeout
+ * @param fail
+ * @return
+ */
+fun String.shell(
+    workingDirectory: File = File(System.getProperty("user.dir")),
+    timeout: Long = Long.MAX_VALUE,
+    fail: Boolean = false,
+): String =
+    listOf(getenv("SHELL"), "-c", replace("""(\s+\\\s*)?\n""".toRegex(), ""))
         .exec(workingDirectory, timeout, fail)
 
 // ERROR HANDLING //////////////////////////////////////////////////////////////////////////////////

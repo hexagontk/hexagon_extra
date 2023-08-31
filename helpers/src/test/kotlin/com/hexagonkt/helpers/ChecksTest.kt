@@ -1,5 +1,6 @@
 package com.hexagonkt.helpers
 
+import com.hexagonkt.core.urlOf
 import kotlin.test.Test
 import kotlin.IllegalArgumentException
 import java.net.URL
@@ -13,8 +14,8 @@ internal class ChecksTest {
         val text: String? = "text",
         val texts: List<String>? = listOf("text 1", "text 2"),
         val date: LocalDate? = LocalDate.now(),
-        val url: URL? = URL("https://example.com"),
-        val urls: List<URL>? = listOf(URL("https://example.com")),
+        val url: URL? = urlOf("https://example.com"),
+        val urls: List<URL>? = listOf(urlOf("https://example.com")),
         val integer: Int? = 1,
         val decimal: Double? = 1.0,
     )
@@ -36,8 +37,8 @@ internal class ChecksTest {
         val data = DataClass(
             text = " ",
             texts = listOf("text", " "),
-            url = URL("https://example.com/not-found"),
-            urls = listOf(URL("https://example.com"), URL("https://example.com/not-found")),
+            url = urlOf("https://example.com/not-found"),
+            urls = listOf(urlOf("https://example.com"), urlOf("https://example.com/not-found")),
             integer = 0,
             decimal = 0.0,
         )

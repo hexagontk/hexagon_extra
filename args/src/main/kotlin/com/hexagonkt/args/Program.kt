@@ -53,10 +53,11 @@ data class Program(
         if (programCommand.contains(VERSION, properties))
             throw CodedException(0, formatter.summary(this, programCommand))
 
-        if (programCommand.contains(HELP, properties)) {
-            val message = formatter.help(this, programCommand)
-            throw CodedException(0, message)
-        }
+        if (programCommand.contains(HELP, properties))
+            throw CodedException(0, formatter.help(this, programCommand))
+
+        if (command.subcommands.isNotEmpty() && programCommand == command)
+            throw CodedException(400, formatter.help(this, programCommand))
 
         val parsedCommand = try {
             programCommand.parse(properties)

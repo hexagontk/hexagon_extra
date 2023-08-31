@@ -89,7 +89,7 @@ internal class ProgramTest {
 
             FLAGS
               -v, --version   Show the program's version along its description
-              -h, --help      Display detailed information on running this program
+              -h, --help      Display detailed information on running this command
               -f, --flag
         """.trimIndent().trim()
         assertFailsWithMessage(CodedException::class, h) { program.process(listOf("-h")) }
@@ -131,7 +131,7 @@ internal class ProgramTest {
 
             FLAGS
               -v, --version   Show the program's version along its description
-              -h, --help      Display detailed information on running this program
+              -h, --help      Display detailed information on running this command
               -f, --flag
         """.trimIndent().trim()
         assertFailsWithMessage(CodedException::class, h) { program.process(listOf("-h")) }
@@ -324,14 +324,14 @@ internal class ProgramTest {
             A simple program that does things
 
             USAGE
-              program [-v] [-h]
+              program [-v] [-h] cmd
 
             COMMANDS
               cmd   A sample subcommand
 
             FLAGS
               -v, --version   Show the program's version along its description
-              -h, --help      Display detailed information on running this program
+              -h, --help      Display detailed information on running this command
         """.trimIndent().trim()
         assertFailsWithMessage(CodedException::class, h) { program.process(listOf("-h")) }
         assertFailsWithMessage(CodedException::class, h) { program.process(listOf("--help")) }
@@ -348,11 +348,14 @@ internal class ProgramTest {
               -2, --second STRING   Type: [STRING]
 
             FLAGS
-              -h, --help    Display detailed information on running this program
+              -h, --help    Display detailed information on running this command
               -1, --first
         """.trimIndent().trim()
         assertFailsWithMessage(CodedException::class, c) { program.process(listOf("cmd", "-h")) }
         assertFailsWithMessage(CodedException::class, c) { program.process(listOf("cmd", "--help")) }
+
+        assertFailsWithMessage(CodedException::class, h) { program.process(listOf("unknown")) }
+        assertFailsWithMessage(CodedException::class, h) { program.process(emptyList()) }
     }
 
     private fun Program.assertValues(values: List<*>, args: String) {

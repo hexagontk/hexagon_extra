@@ -2,11 +2,11 @@ package com.hexagonkt.store.mongodb
 
 import com.hexagonkt.converters.convertObjects
 import com.hexagonkt.core.fail
+import com.hexagonkt.core.urlOf
 import com.hexagonkt.store.Store
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
-import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -65,7 +65,7 @@ abstract class StoreTest<T : Any, K : Any> {
             assert(store.deleteOne(key))
             assertEquals(0L, store.count())
             assertFalse(store.replaceOne(entity))
-            assertFalse(store.updateOne(key, mapOf("web" to URL("http://update.example.org"))))
+            assertFalse(store.updateOne(key, mapOf("web" to urlOf("http://update.example.org"))))
             assertFalse(store.deleteOne(key))
             assertNull(store.findOne(key))
             assertNull(store.findOne(key, listOf("web")))
