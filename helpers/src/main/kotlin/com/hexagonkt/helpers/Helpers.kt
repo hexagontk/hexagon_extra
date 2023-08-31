@@ -128,7 +128,7 @@ fun String.shell(
     timeout: Long = Long.MAX_VALUE,
     fail: Boolean = false,
 ): String =
-    listOf(getenv("SHELL"), "-c", replace("""(\s+\\\s*)?\n""".toRegex(), ""))
+    listOf(getenv("SHELL") ?: "bash", "-c", replace("""(\s+\\\s*)?\n""".toRegex(), ""))
         .exec(workingDirectory, timeout, fail)
 
 // ERROR HANDLING //////////////////////////////////////////////////////////////////////////////////
