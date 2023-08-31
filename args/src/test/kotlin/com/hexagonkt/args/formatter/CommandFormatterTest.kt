@@ -33,7 +33,7 @@ internal class CommandFormatterTest {
 
         assertEquals("cmd - CMD Title\n\nDescription of the cmd command", formatter.summary(cmd))
         assertEquals(
-            "cmd [-h] [-v] [-n STRING] [-o STRING] [<source>] [<target>]",
+            "cmd [-h] [-v] [-n STRING] [-o STRING] [<source>] [<target>] edit|config",
             formatter.definition(cmd)
         )
 
@@ -51,7 +51,7 @@ internal class CommandFormatterTest {
               -o, --output STRING   Type: [STRING]
 
             FLAGS
-              -h, --help      Display detailed information on running this program
+              -h, --help      Display detailed information on running this command
               -v, --version   Show the program's version along its description
         """.trimIndent().trim()
         assertEquals(detail, formatter.detail(cmd))

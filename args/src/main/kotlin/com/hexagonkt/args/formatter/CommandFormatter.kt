@@ -27,8 +27,12 @@ data class CommandFormatter(
 
     override fun definition(component: Command): String {
         val options = component.properties.joinToString(" ") { propertyFormatter.summary(it) }
+        val componentSubcommands = component.subcommands
+        val subcommands =
+            if (componentSubcommands.isEmpty()) ""
+            else componentSubcommands.joinToString("|", " ") { it.name }
 
-        return "${component.name} $options"
+        return "${component.name} $options$subcommands"
     }
 
     override fun detail(component: Command): String {

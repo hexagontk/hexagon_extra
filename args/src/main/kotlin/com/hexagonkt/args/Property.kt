@@ -61,6 +61,6 @@ sealed interface Property<T : Any> {
 
     companion object {
         val VERSION: Flag = Flag('v', "version", "Show the program's version along its description")
-        val HELP: Flag = Flag('h', "help", "Display detailed information on running this program")
+        val HELP: Flag = Flag('h', "help", "Display detailed information on running this command")
     }
 }

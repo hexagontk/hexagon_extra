@@ -2,10 +2,7 @@ package com.hexagonkt.store.mongodb
 
 import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.converters.convertObjects
-import com.hexagonkt.core.fail
-import com.hexagonkt.core.fieldsMapOf
-import com.hexagonkt.core.getPath
-import com.hexagonkt.core.requirePath
+import com.hexagonkt.core.*
 import com.hexagonkt.store.Store
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.BeforeAll
@@ -15,7 +12,6 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import org.junit.jupiter.api.condition.DisabledOnOs
 import org.junit.jupiter.api.condition.OS
-import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -41,7 +37,7 @@ internal class MongoDbStoreCompanyTest {
                 foundation = LocalDate.of(2014, 1, 25),
                 closeTime = LocalTime.of(11, 42),
                 openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-                web = URL("http://$it.example.org"),
+                web = urlOf("http://$it.example.org"),
                 people = setOf(
                     Person(name = "John"),
                     Person(name = "Mike")
@@ -50,7 +46,7 @@ internal class MongoDbStoreCompanyTest {
         }
 
     private fun changeObject(obj: Company) =
-        obj.copy(web = URL("http://change.example.org"))
+        obj.copy(web = urlOf("http://change.example.org"))
 
     @BeforeAll fun initialize() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
@@ -74,8 +70,8 @@ internal class MongoDbStoreCompanyTest {
                     val e = t.requirePath<LocalDateTime>(ClosedRange<*>::endInclusive).toLocalTime()
                     s..e
                 },
-                web = URL(m.requirePath(Company::web)),
-                clients = m.getPath<List<String>>(Company::clients)?.map { URL(it) } ?: emptyList(),
+                web = urlOf(m.requirePath(Company::web)),
+                clients = m.getPath<List<String>>(Company::clients)?.map { urlOf(it) } ?: emptyList(),
                 logo = m.getPath(Company::logo),
                 notes = m.getPath(Company::notes),
                 people = m.getPath<List<Map<*, *>>>(Company::people)
@@ -137,7 +133,7 @@ internal class MongoDbStoreCompanyTest {
 
             // Ensures unmodified instance is also "updated"
             assert(store.updateOne(key, mapOf("web" to changedCompany.web)))
-            assert(store.updateOne(key, mapOf("web" to URL("http://update.example.org"))))
+            assert(store.updateOne(key, mapOf("web" to urlOf("http://update.example.org"))))
             assert(store.findOne(key, fields)?.get("web") == "http://update.example.org")
 
             val keyName = store.key.name
@@ -145,7 +141,7 @@ internal class MongoDbStoreCompanyTest {
             assert(store.findOne(key) == store.findOne(mapOf(keyName to key)))
 
             assert(store.updateOne(key,
-                Company::web to URL("http://update1.example.org"),
+                Company::web to urlOf("http://update1.example.org"),
                 Company::foundation to LocalDate.of(2015, 1, 1),
                 Company::creationDate to LocalDateTime.of(2015, 1, 1, 23, 59)
             ))
@@ -155,7 +151,7 @@ internal class MongoDbStoreCompanyTest {
                 assert(get("creationDate") == LocalDateTime.of(2015, 1, 1, 23, 59))
             }
             store.findOne(key)?.apply {
-                assert(web == URL("http://update1.example.org"))
+                assert(web == urlOf("http://update1.example.org"))
                 assert(foundation == LocalDate.of(2015, 1, 1))
                 assert(creationDate == LocalDateTime.of(2015, 1, 1, 23, 59))
             }
@@ -164,7 +160,7 @@ internal class MongoDbStoreCompanyTest {
             assert(store.deleteOne(key))
             assert(store.count() == 0L)
             assert(!store.replaceOne(entity))
-            assert(!store.updateOne(key, mapOf("web" to URL("http://update.example.org"))))
+            assert(!store.updateOne(key, mapOf("web" to urlOf("http://update.example.org"))))
             assert(!store.deleteOne(key))
             assert(store.findOne(key) == null)
             assert(store.findOne(key, listOf("web")) == null)
@@ -231,7 +227,7 @@ internal class MongoDbStoreCompanyTest {
                     foundation = LocalDate.of(2014, 1, 25),
                     closeTime = LocalTime.of(11, 42),
                     openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-                    web = URL("http://example.org"),
+                    web = urlOf("http://example.org"),
                     people = setOf(
                         Person(name = "John"),
                         Person(name = "Mike")
@@ -246,23 +242,23 @@ internal class MongoDbStoreCompanyTest {
     private fun checkFindAllObjects() {
         val results = store.findAll(4, 8, mapOf("id" to false))
         assert(results.size == 2)
-        assert(results.all { it.web == URL("http://change.example.org") })
+        assert(results.all { it.web == urlOf("http://change.example.org") })
 
         val results3 = store.findAll(limit = 4, sort = mapOf("id" to false))
         assert(results3.size == 4)
-        assert(results3.all { it.web == URL("http://change.example.org") })
+        assert(results3.all { it.web == urlOf("http://change.example.org") })
 
         val results4 = store.findAll(skip = 4, sort = mapOf("id" to false))
         assert(results4.size == 6)
-        assert(results4.all { it.web == URL("http://change.example.org") })
+        assert(results4.all { it.web == urlOf("http://change.example.org") })
 
         val results5 = store.findAll(sort = mapOf("id" to false))
         assert(results5.size == 10)
-        assert(results5.all { it.web == URL("http://change.example.org") })
+        assert(results5.all { it.web == urlOf("http://change.example.org") })
 
         val results6 = store.findAll()
         assert(results6.size == 10)
-        assert(results6.all { it.web == URL("http://change.example.org") })
+        assert(results6.all { it.web == urlOf("http://change.example.org") })
     }
 
     private fun checkFindAllFields() {
@@ -294,23 +290,23 @@ internal class MongoDbStoreCompanyTest {
 
         val results = store.findMany(filter, 4, 8, mapOf("id" to false))
         assert(results.size == 2)
-        assert(results.all { it.web == URL("http://change.example.org") })
+        assert(results.all { it.web == urlOf("http://change.example.org") })
 
         val results3 = store.findMany(filter, limit = 4, sort = mapOf("id" to false))
         assert(results3.size == 4)
-        assert(results3.all { it.web == URL("http://change.example.org") })
+        assert(results3.all { it.web == urlOf("http://change.example.org") })
 
         val results4 = store.findMany(filter, skip = 4, sort = mapOf("id" to false))
         assert(results4.size == 6)
-        assert(results4.all { it.web == URL("http://change.example.org") })
+        assert(results4.all { it.web == urlOf("http://change.example.org") })
 
         val results5 = store.findMany(filter, sort = mapOf("id" to false))
         assert(results5.size == 10)
-        assert(results5.all { it.web == URL("http://change.example.org") })
+        assert(results5.all { it.web == urlOf("http://change.example.org") })
 
         val results6 = store.findMany(filter)
         assert(results6.size == 10)
-        assert(results6.all { it.web == URL("http://change.example.org") })
+        assert(results6.all { it.web == urlOf("http://change.example.org") })
     }
 
     private fun checkFindFields() {

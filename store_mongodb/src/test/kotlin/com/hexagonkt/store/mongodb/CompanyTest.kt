@@ -5,6 +5,7 @@ import com.hexagonkt.converters.convertObjects
 import com.hexagonkt.core.fieldsMapOf
 import com.hexagonkt.core.getPath
 import com.hexagonkt.core.requirePath
+import com.hexagonkt.core.urlOf
 import com.hexagonkt.store.Store
 import com.hexagonkt.store.mongodb.Department.DESIGN
 import com.hexagonkt.store.mongodb.Department.DEVELOPMENT
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import org.junit.jupiter.api.condition.DisabledOnOs
 import org.junit.jupiter.api.condition.OS
-import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -28,10 +28,10 @@ internal class CompanyTest : StoreTest<Company, String>() {
         foundation = LocalDate.of(2014, 1, 25),
         closeTime = LocalTime.of(11, 42),
         openTime = LocalTime.of(8, 30)..LocalTime.of(14, 51),
-        web = URL("http://example.org"),
+        web = urlOf("http://example.org"),
         clients = listOf(
-            URL("http://c1.example.org"),
-            URL("http://c2.example.org")
+            urlOf("http://c1.example.org"),
+            urlOf("http://c2.example.org")
         ),
         logo = byteArrayOf(0, 1, 2),
         notes = "notes",
@@ -48,7 +48,7 @@ internal class CompanyTest : StoreTest<Company, String>() {
         foundation = LocalDate.of(2014, 1, 25),
         closeTime = LocalTime.of(11, 42),
         openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-        web = URL("http://example.org"),
+        web = urlOf("http://example.org"),
         people = setOf(
             Person(name = "John"),
             Person(name = "Mike")
@@ -63,7 +63,7 @@ internal class CompanyTest : StoreTest<Company, String>() {
         MongoDbStore(Company::class, Company::id, mongodbUrl, "companies")
 
     override fun changeObject(obj: Company) =
-        obj.copy(web = URL("http://change.example.org"))
+        obj.copy(web = urlOf("http://change.example.org"))
 
     @BeforeAll fun initialize() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
@@ -87,8 +87,8 @@ internal class CompanyTest : StoreTest<Company, String>() {
                     val e = t.requirePath<LocalDateTime>(ClosedRange<*>::endInclusive).toLocalTime()
                     s..e
                 },
-                web = URL(m.requirePath(Company::web)),
-                clients = m.getPath<List<String>>(Company::clients)?.map { URL(it) } ?: emptyList(),
+                web = urlOf(m.requirePath(Company::web)),
+                clients = m.getPath<List<String>>(Company::clients)?.map { urlOf(it) } ?: emptyList(),
                 logo = m.getPath(Company::logo),
                 notes = m.getPath(Company::notes),
                 people = m.getPath<List<Map<*, *>>>(Company::people)

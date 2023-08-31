@@ -1,17 +1,13 @@
 package com.hexagonkt.store.hashmap
 
 import com.hexagonkt.converters.ConvertersManager
-import com.hexagonkt.core.getPath
-import com.hexagonkt.core.fail
-import com.hexagonkt.core.fieldsMapOf
-import com.hexagonkt.core.requirePath
+import com.hexagonkt.core.*
 import com.hexagonkt.store.Company
 import com.hexagonkt.store.Person
 import com.hexagonkt.store.Store
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
-import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -67,7 +63,7 @@ internal class HashMapStoreTest {
             foundation = LocalDate.of(2014, 1, 25),
             closeTime = LocalTime.of(11, 42),
             openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-            web = URL("http://example.org"),
+            web = urlOf("http://example.org"),
             people = setOf(
                 Person(name = "John"),
                 Person(name = "Mike")
@@ -82,7 +78,7 @@ internal class HashMapStoreTest {
             foundation = LocalDate.of(2019, 11, 1),
             closeTime = LocalTime.of(11, 42),
             openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-            web = URL("http://new-example.org"),
+            web = urlOf("http://new-example.org"),
             people = setOf(
                 Person(name = "Jane"),
                 Person(name = "James")
@@ -94,7 +90,7 @@ internal class HashMapStoreTest {
             foundation = LocalDate.of(2019, 11, 1),
             closeTime = LocalTime.of(11, 42),
             openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-            web = URL("http://other-example.org"),
+            web = urlOf("http://other-example.org"),
             people = setOf(
                 Person(name = "Albert"),
                 Person(name = "Paula")
@@ -118,7 +114,7 @@ internal class HashMapStoreTest {
             foundation = LocalDate.of(2014, 1, 25),
             closeTime = LocalTime.of(11, 42),
             openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-            web = URL("http://example.org"),
+            web = urlOf("http://example.org"),
             people = setOf(
                 Person(name = "John"),
                 Person(name = "Mike")
@@ -131,7 +127,7 @@ internal class HashMapStoreTest {
         assert(store.findOne(2.toString()) == null)
 
         assert(store.replaceOne(company)) // Ensures unmodified instance is also "replaced"
-        val changedCompany = company.copy(web = URL("http://change.example.org"))
+        val changedCompany = company.copy(web = urlOf("http://change.example.org"))
         assert(store.replaceOne(changedCompany))
         val storedModifiedCompany = store.findOne(id)
         assert(storedModifiedCompany == changedCompany)
@@ -141,14 +137,14 @@ internal class HashMapStoreTest {
 
         // Ensures unmodified instance is also "updated"
         assert(store.updateOne(key, mapOf("web" to changedCompany.web)))
-        assert(store.updateOne(key, mapOf("web" to URL("http://update.example.org"))))
+        assert(store.updateOne(key, mapOf("web" to urlOf("http://update.example.org"))))
         assert(store.findOne(key, fields)?.get("web").toString() == "http://update.example.org")
 
         assert(store.findOne(key, fields) == store.findOne(mapOf(store.key.name to key), fields))
         assert(store.findOne(key) == store.findOne(mapOf(store.key.name to key)))
 
         assert(store.updateOne(key,
-            Company::web to URL("http://update1.example.org"),
+            Company::web to urlOf("http://update1.example.org"),
             Company::foundation to LocalDate.of(2015, 1, 1),
             Company::creationDate to LocalDateTime.of(2015, 1, 1, 23, 59)
         ))
@@ -162,7 +158,7 @@ internal class HashMapStoreTest {
         assert(store.deleteOne(key))
         assert(store.count() == 0L)
         assert(!store.replaceOne(company))
-        assert(!store.updateOne(key, mapOf("web" to URL("http://update.example.org"))))
+        assert(!store.updateOne(key, mapOf("web" to urlOf("http://update.example.org"))))
         assert(!store.deleteOne(key))
         assert(store.findOne(key) == null)
         assert(store.findOne(key, listOf("web")) == null)
@@ -176,7 +172,7 @@ internal class HashMapStoreTest {
                     foundation = LocalDate.of(2014, 1, 25),
                     closeTime = LocalTime.of(11, 42),
                     openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-                    web = URL("http://$it.example.org"),
+                    web = urlOf("http://$it.example.org"),
                     people = setOf(
                         Person(name = "John"),
                         Person(name = "Mike")
@@ -187,10 +183,10 @@ internal class HashMapStoreTest {
         val keys = store.insertMany(*companies.toTypedArray())
         assert(store.count() == companies.size.toLong())
 
-        val changedCompanies = companies.map { it.copy(web = URL("http://change.example.org")) }
+        val changedCompanies = companies.map { it.copy(web = urlOf("http://change.example.org")) }
         assert(store.replaceMany(*changedCompanies.toTypedArray()).size == companies.size)
         val results = store.findAll(listOf("web"))
-        assert(results.all { it["web"] == URL("http://change.example.org") })
+        assert(results.all { it["web"] == urlOf("http://change.example.org") })
 
         // TODO Improve asserts of methods below
         checkFindAllObjects()
@@ -198,7 +194,7 @@ internal class HashMapStoreTest {
         checkFindObjects()
         checkFindFields()
 
-        val updateMany = store.updateMany(mapOf("id" to keys), mapOf("web" to URL("http://update.example.org")))
+        val updateMany = store.updateMany(mapOf("id" to keys), mapOf("web" to urlOf("http://update.example.org")))
         assert(updateMany == keys.size.toLong())
         val updatedCompanies = store.findMany(mapOf("id" to keys))
         assert(updatedCompanies.all { it.web.toString() == "http://update.example.org" })
@@ -218,7 +214,7 @@ internal class HashMapStoreTest {
 
         assert(entities.map { it?.id }.all { it in keys })
 
-        store.saveMany(testEntities.map { it.copy(web = URL(it.web.toString() + "/modified")) })
+        store.saveMany(testEntities.map { it.copy(web = urlOf(it.web.toString() + "/modified")) })
     }
 
     @Test fun `Insert one record returns the proper key`() {
@@ -229,7 +225,7 @@ internal class HashMapStoreTest {
             foundation = LocalDate.of(2014, 1, 25),
             closeTime = LocalTime.of(11, 42),
             openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-            web = URL("http://example.org"),
+            web = urlOf("http://example.org"),
             people = setOf(
                 Person(name = "John"),
                 Person(name = "Mike")
@@ -249,7 +245,7 @@ internal class HashMapStoreTest {
                 foundation = LocalDate.of(2014, 1, 25),
                 closeTime = LocalTime.of(11, 42),
                 openTime = LocalTime.of(8, 30)..LocalTime.of(14, 36),
-                web = URL("http://$it.example.org"),
+                web = urlOf("http://$it.example.org"),
                 people = setOf(
                     Person(name = "John"),
                     Person(name = "Mike")
@@ -260,23 +256,23 @@ internal class HashMapStoreTest {
     private fun checkFindAllObjects() {
         val results = store.findAll(4, 8, mapOf("id" to false))
         assert(results.size == 2)
-        assert(results.all { it.web == URL("http://change.example.org") })
+        assert(results.all { it.web == urlOf("http://change.example.org") })
 
         val results3 = store.findAll(limit = 4, sort = mapOf("id" to false))
         assert(results3.size == 4)
-        assert(results3.all { it.web == URL("http://change.example.org") })
+        assert(results3.all { it.web == urlOf("http://change.example.org") })
 
         val results4 = store.findAll(skip = 4, sort = mapOf("id" to false))
         assert(results4.size == 6)
-        assert(results4.all { it.web == URL("http://change.example.org") })
+        assert(results4.all { it.web == urlOf("http://change.example.org") })
 
         val results5 = store.findAll(sort = mapOf("id" to false))
         assert(results5.size == 10)
-        assert(results5.all { it.web == URL("http://change.example.org") })
+        assert(results5.all { it.web == urlOf("http://change.example.org") })
 
         val results6 = store.findAll()
         assert(results6.size == 10)
-        assert(results6.all { it.web == URL("http://change.example.org") })
+        assert(results6.all { it.web == urlOf("http://change.example.org") })
     }
 
     private fun checkFindAllFields() {
@@ -284,23 +280,23 @@ internal class HashMapStoreTest {
 
         val results = store.findAll(fields, 4, 8, mapOf("id" to false))
         assert(results.size == 2)
-        assert(results.all { it["web"] == URL("http://change.example.org") })
+        assert(results.all { it["web"] == urlOf("http://change.example.org") })
 
         val results3 = store.findAll(fields, limit = 4, sort = mapOf("id" to false))
         assert(results3.size == 4)
-        assert(results3.all { it["web"] == URL("http://change.example.org") })
+        assert(results3.all { it["web"] == urlOf("http://change.example.org") })
 
         val results4 = store.findAll(fields, skip = 4, sort = mapOf("id" to false))
         assert(results4.size == 6)
-        assert(results4.all { it["web"] == URL("http://change.example.org") })
+        assert(results4.all { it["web"] == urlOf("http://change.example.org") })
 
         val results5 = store.findAll(fields, sort = mapOf("id" to false))
         assert(results5.size == 10)
-        assert(results5.all { it["web"] == URL("http://change.example.org") })
+        assert(results5.all { it["web"] == urlOf("http://change.example.org") })
 
         val results6 = store.findAll(fields)
         assert(results6.size == 10)
-        assert(results6.all { it["web"] == URL("http://change.example.org") })
+        assert(results6.all { it["web"] == urlOf("http://change.example.org") })
     }
 
     private fun checkFindObjects() {
@@ -308,23 +304,23 @@ internal class HashMapStoreTest {
 
         val results = store.findMany(filter, 4, 8, mapOf("id" to false))
         assert(results.size == 2)
-        assert(results.all { it.web == URL("http://change.example.org") })
+        assert(results.all { it.web == urlOf("http://change.example.org") })
 
         val results3 = store.findMany(filter, limit = 4, sort = mapOf("id" to false))
         assert(results3.size == 4)
-        assert(results3.all { it.web == URL("http://change.example.org") })
+        assert(results3.all { it.web == urlOf("http://change.example.org") })
 
         val results4 = store.findMany(filter, skip = 4, sort = mapOf("id" to false))
         assert(results4.size == 6)
-        assert(results4.all { it.web == URL("http://change.example.org") })
+        assert(results4.all { it.web == urlOf("http://change.example.org") })
 
         val results5 = store.findMany(filter, sort = mapOf("id" to false))
         assert(results5.size == 10)
-        assert(results5.all { it.web == URL("http://change.example.org") })
+        assert(results5.all { it.web == urlOf("http://change.example.org") })
 
         val results6 = store.findMany(filter)
         assert(results6.size == 10)
-        assert(results6.all { it.web == URL("http://change.example.org") })
+        assert(results6.all { it.web == urlOf("http://change.example.org") })
     }
 
     private fun checkFindFields() {
@@ -333,22 +329,22 @@ internal class HashMapStoreTest {
 
         val results = store.findMany(filter, fields, 4, 8, mapOf("id" to false))
         assert(results.size == 2)
-        assert(results.all { it["web"] == URL("http://change.example.org") })
+        assert(results.all { it["web"] == urlOf("http://change.example.org") })
 
         val results3 = store.findMany(filter, fields, limit = 4, sort = mapOf("id" to false))
         assert(results3.size == 4)
-        assert(results3.all { it["web"] == URL("http://change.example.org") })
+        assert(results3.all { it["web"] == urlOf("http://change.example.org") })
 
         val results4 = store.findMany(filter, fields, skip = 4, sort = mapOf("id" to false))
         assert(results4.size == 6)
-        assert(results4.all { it["web"] == URL("http://change.example.org") })
+        assert(results4.all { it["web"] == urlOf("http://change.example.org") })
 
         val results5 = store.findMany(filter, fields, sort = mapOf("id" to false))
         assert(results5.size == 10)
-        assert(results5.all { it["web"] == URL("http://change.example.org") })
+        assert(results5.all { it["web"] == urlOf("http://change.example.org") })
 
         val results6 = store.findMany(filter, fields)
         assert(results6.size == 10)
-        assert(results6.all { it["web"] == URL("http://change.example.org") })
+        assert(results6.all { it["web"] == urlOf("http://change.example.org") })
     }
 }
