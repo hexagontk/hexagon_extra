@@ -1,6 +1,8 @@
 package com.hexagonkt.helpers
 
 import com.hexagonkt.core.*
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS.WINDOWS
 import kotlin.test.Test
 import kotlin.test.*
 
@@ -50,10 +52,15 @@ internal class HelpersTest {
         assertFailsWith<IllegalStateException> { "sleep 2".exec(timeout = 1) }
         assertFailsWith<CodedException> { "false".exec(fail = true) }
 
-        assertEquals("test", "echo test".shell().trim())
         assert("false".exec().isEmpty())
         assert("sleep 1".exec().isEmpty())
         assertEquals("str\n", "echo str".exec())
+    }
+
+    @Test
+    @DisabledOnOs(WINDOWS)
+    fun `Shell execution works as expected`() {
+        assertEquals("test", "echo test".shell().trim())
     }
 
     @Test fun `System setting works ok`() {
