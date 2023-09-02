@@ -1,5 +1,6 @@
 package com.hexagonkt.application.test
 
+import com.hexagonkt.core.Ansi.CSI
 import com.hexagonkt.terminal.AnsiCursor
 import com.hexagonkt.terminal.AnsiScreen
 import com.hexagonkt.terminal.Terminal
@@ -10,6 +11,7 @@ fun main() {
     print(AnsiCursor.HIDE)
     print(AnsiCursor.HOME)
     print(Terminal.size())
+    print("${CSI}?1003h")
 
     val r = System.`in`
     while (true) {
@@ -20,6 +22,7 @@ fun main() {
         }
     }
 
+    print("${CSI}?1003l")
     print(AnsiScreen.privateMode(false))
     print(AnsiCursor.HOME)
     print(AnsiCursor.SHOW)
