@@ -24,6 +24,8 @@ TODO Control rendering with flags on `ArgsManager`
 
 TODO Check documentation rendering of `http` (httpie) and `sdk` (sdkman)
 
+TODO Allow interactive commands and options when something is missing
+
 ## Install the Dependency
 
 === "build.gradle"

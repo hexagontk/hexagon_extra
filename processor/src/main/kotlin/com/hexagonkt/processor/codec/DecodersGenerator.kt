@@ -4,6 +4,7 @@ import com.hexagonkt.processor.Type
 import com.hexagonkt.processor.Field
 import java.net.URI
 import java.net.URL
+import java.nio.file.Path
 import java.time.LocalDate
 import java.time.Period
 import java.time.YearMonth
@@ -51,6 +52,7 @@ data class DecodersGenerator(val dataClass: Type<*>) {
             YearMonth::class -> "YearMonth::parse"
             URL::class -> "::URL"
             URI::class -> "::URI"
+            Path::class -> "Path::of"
             Period::class -> "::parsePeriod"
             else -> ""
         }

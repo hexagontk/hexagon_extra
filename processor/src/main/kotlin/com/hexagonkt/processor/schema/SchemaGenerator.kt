@@ -9,6 +9,7 @@ import com.hexagonkt.models.Email
 import com.hexagonkt.models.Language
 import java.net.URI
 import java.net.URL
+import java.nio.file.Path
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.Period
@@ -41,7 +42,8 @@ data class SchemaGenerator<T : Any>(
         LocalDate::class,
         Locale::class,
         URL::class,
-        URI::class
+        URI::class,
+        Path::class,
     )
 
     private val schemaProperty = Property(
