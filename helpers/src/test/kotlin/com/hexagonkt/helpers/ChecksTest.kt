@@ -1,9 +1,7 @@
 package com.hexagonkt.helpers
 
-import com.hexagonkt.core.urlOf
 import kotlin.test.Test
 import kotlin.IllegalArgumentException
-import java.net.URL
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -14,8 +12,6 @@ internal class ChecksTest {
         val text: String? = "text",
         val texts: List<String>? = listOf("text 1", "text 2"),
         val date: LocalDate? = LocalDate.now(),
-        val url: URL? = urlOf("https://example.com"),
-        val urls: List<URL>? = listOf(urlOf("https://example.com")),
         val integer: Int? = 1,
         val decimal: Double? = 1.0,
     )
@@ -27,8 +23,6 @@ internal class ChecksTest {
         data.requireBefore(DataClass::date, LocalDate.now().plusDays(1))
         data.requireBeforeOrEquals(DataClass::date)
         data.requireBeforeOrEquals(DataClass::date, LocalDate.now())
-        data.requireUrlFound(DataClass::url)
-        data.requireUrlsFound(DataClass::urls)
         data.requireGreater(DataClass::integer, 0)
         data.requireGreater(DataClass::decimal, 0.0)
     }
@@ -37,8 +31,6 @@ internal class ChecksTest {
         val data = DataClass(
             text = " ",
             texts = listOf("text", " "),
-            url = urlOf("https://example.com/not-found"),
-            urls = listOf(urlOf("https://example.com"), urlOf("https://example.com/not-found")),
             integer = 0,
             decimal = 0.0,
         )
@@ -52,12 +44,6 @@ internal class ChecksTest {
         fail("'date' must be before $today: $today") {
             data.requireBeforeOrEquals(DataClass::date, yesterday)
         }
-        fail("'url' URL must be available: https://example.com/not-found") {
-            data.requireUrlFound(DataClass::url)
-        }
-        fail("'urls' URL must be available: [https://example.com, https://example.com/not-found]") {
-            data.requireUrlsFound(DataClass::urls)
-        }
         fail("'integer' must be greater than 0: 0") {
             data.requireGreater(DataClass::integer, 0)
         }
@@ -67,13 +53,12 @@ internal class ChecksTest {
     }
 
     @Test fun `Require methods work properly with 'null' data`() {
-        val data = DataClass(null, null, null, null, null, null, null)
+        val data = DataClass(null, null, null, null, null)
         data.requireNotBlank(DataClass::text)
         data.requireNotBlanks(DataClass::texts)
         data.requireBefore(DataClass::date, LocalDate.now().plusDays(1))
         data.requireBeforeOrEquals(DataClass::date)
         data.requireBeforeOrEquals(DataClass::date, LocalDate.now())
-        data.requireUrlFound(DataClass::url)
         data.requireGreater(DataClass::integer, 0)
         data.requireGreater(DataClass::decimal, 0.0)
     }

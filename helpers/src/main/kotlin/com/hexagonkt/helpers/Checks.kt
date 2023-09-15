@@ -1,7 +1,5 @@
 package com.hexagonkt.helpers
 
-import com.hexagonkt.core.responseFound
-import java.net.URL
 import java.time.LocalDate
 import kotlin.reflect.KProperty1
 
@@ -27,20 +25,6 @@ fun <T : Any> T.requireBeforeOrEquals(
     date: LocalDate = LocalDate.now()
 ) {
     requireBefore(field, date.plusDays(1))
-}
-
-fun <T : Any> T.requireUrlFound(field: KProperty1<T, URL?>) {
-    val fieldValue = field.get(this)
-    require(fieldValue?.responseFound() ?: true) {
-        "'${field.name}' URL must be available: $fieldValue"
-    }
-}
-
-fun <T : Any> T.requireUrlsFound(field: KProperty1<T, Collection<URL>?>) {
-    val fieldValue = field.get(this) ?: emptyList()
-    require(fieldValue.all { it.responseFound() }) {
-        "'${field.name}' URL must be available: $fieldValue"
-    }
 }
 
 fun <T : Any, N : Number> T.requireGreater(field: KProperty1<T, Comparable<N>?>, min: N) {
