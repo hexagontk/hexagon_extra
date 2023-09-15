@@ -34,4 +34,15 @@ object Terminal {
         print(AnsiCursor.RESTORE)
         return builder.split(';').map { it.toInt() }.let { it.first() to it.last() }
     }
+
+    fun readEvents() {
+        val r = System.`in`
+        while (true) {
+            when (val c = r.read().toChar()) {
+                'q' -> break
+                '\u001B' -> print("ESC")
+                else -> print(c)
+            }
+        }
+    }
 }
