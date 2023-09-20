@@ -1,6 +1,6 @@
 package com.hexagonkt.terminal
 
-import com.hexagonkt.helpers.exec
+import com.hexagonkt.core.exec
 import java.lang.System.getenv
 import java.lang.management.ManagementFactory.getRuntimeMXBean
 import kotlin.Int.Companion.MAX_VALUE
@@ -33,5 +33,16 @@ object Terminal {
         }
         print(AnsiCursor.RESTORE)
         return builder.split(';').map { it.toInt() }.let { it.first() to it.last() }
+    }
+
+    fun readEvents() {
+        val r = System.`in`
+        while (true) {
+            when (val c = r.read().toChar()) {
+                'q' -> break
+                '\u001B' -> print("ESC")
+                else -> print(c)
+            }
+        }
     }
 }

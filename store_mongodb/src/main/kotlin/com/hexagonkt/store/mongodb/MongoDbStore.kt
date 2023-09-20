@@ -3,7 +3,7 @@ package com.hexagonkt.store.mongodb
 import com.hexagonkt.converters.convert
 import com.hexagonkt.core.fail
 import com.hexagonkt.core.filterNotEmpty
-import com.hexagonkt.helpers.toLocalDateTime
+import com.hexagonkt.core.toLocalDateTime
 import com.hexagonkt.store.Store
 import com.mongodb.ConnectionString
 import com.mongodb.client.FindIterable

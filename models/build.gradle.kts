@@ -17,7 +17,7 @@ description = "Commonly used data models (like addresses)."
 dependencies {
     val jakartaMailVersion = properties["jakartaMailVersion"]
 
-    "api"(project(":helpers"))
+    "api"("com.hexagonkt:core:$version")
     "api"("com.sun.mail:jakarta.mail:$jakartaMailVersion")
 }
 

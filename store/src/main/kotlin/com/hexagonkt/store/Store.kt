@@ -1,7 +1,7 @@
 package com.hexagonkt.store
 
 import com.hexagonkt.converters.convert
-import com.hexagonkt.helpers.checkSize
+import com.hexagonkt.core.checkSize
 import com.hexagonkt.serialization.parse
 import java.io.File
 import java.net.URL

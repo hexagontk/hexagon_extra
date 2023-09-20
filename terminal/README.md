@@ -7,6 +7,11 @@ TODO.
 * https://github.com/alacritty/alacritty/blob/master/docs/escape_support.md
 * https://docs.rs/tui/latest/tui
 * https://ryantravitz.com/blog/2023-02-18-pull-of-the-undercurl
+* https://sw.kovidgoyal.net/kitty/desktop-notifications
+* https://invisible-island.net/xterm/ctlseqs/ctlseqs.pdf
+* https://docs.google.com/spreadsheets/d/19W-lXWS9jYwqCK-LwgYo31GucPPxYVld_hVEcfpNpXg/edit#gid=1724051764
+* For key modifiers processing:
+  https://invisible-island.net/xterm/manpage/xterm.html#VT100-Widget-Resources:modifyKeyboard
 
 ## Install the Dependency
 

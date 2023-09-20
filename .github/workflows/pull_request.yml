@@ -12,14 +12,12 @@ jobs:
     name: Build
     uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
-      java: 20
       check_directory: args/build
 
   native_test:
     name: Native Test
     uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
-      java: 20
       check_directory: args/build
       tasks: nativeTest
 
@@ -27,6 +25,5 @@ jobs:
     name: Test Publishing
     uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
     with:
-      java: 20
       check_directory: args/build
       tasks: publishToMavenLocal -x test
