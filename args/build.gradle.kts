@@ -14,5 +14,5 @@ apply(from = "$gradleScripts/native.gradle")
 description = "."
 
 dependencies {
-    "api"(project(":helpers"))
+    "api"("com.hexagonkt:core:$version")
 }

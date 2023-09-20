@@ -3,8 +3,8 @@ package com.hexagonkt.args
 import com.hexagonkt.args.Property.Companion.HELP
 import com.hexagonkt.args.Property.Companion.VERSION
 import com.hexagonkt.args.formatter.DefaultFormatter
-import com.hexagonkt.helpers.CodedException
-import com.hexagonkt.helpers.requireNotBlank
+import com.hexagonkt.core.CodedException
+import com.hexagonkt.core.requireNotBlank
 import java.io.BufferedReader
 
 data class Program(

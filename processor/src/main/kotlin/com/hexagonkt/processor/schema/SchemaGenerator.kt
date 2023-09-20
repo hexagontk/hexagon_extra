@@ -3,7 +3,7 @@ package com.hexagonkt.processor.schema
 import com.hexagonkt.processor.Type
 import com.hexagonkt.processor.Field
 import com.hexagonkt.processor.schema.PropertyType.*
-import com.hexagonkt.helpers.camelToWords
+import com.hexagonkt.core.camelToWords
 import com.hexagonkt.models.Country
 import com.hexagonkt.models.Email
 import com.hexagonkt.models.Language

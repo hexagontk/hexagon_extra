@@ -2,7 +2,7 @@ package com.hexagonkt.args
 
 import com.hexagonkt.args.Property.Companion.HELP
 import com.hexagonkt.args.Property.Companion.VERSION
-import com.hexagonkt.helpers.CodedException
+import com.hexagonkt.core.CodedException
 import java.io.ByteArrayInputStream
 import kotlin.test.Test
 import kotlin.test.assertEquals

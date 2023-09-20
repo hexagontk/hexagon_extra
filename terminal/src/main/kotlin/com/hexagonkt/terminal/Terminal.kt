@@ -1,6 +1,6 @@
 package com.hexagonkt.terminal
 
-import com.hexagonkt.helpers.exec
+import com.hexagonkt.core.exec
 import java.lang.System.getenv
 import java.lang.management.ManagementFactory.getRuntimeMXBean
 import kotlin.Int.Companion.MAX_VALUE

@@ -1,6 +1,6 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.helpers.requireNotBlank
+import com.hexagonkt.core.requireNotBlank
 
 /**
  * A program can have multiple commands with their own set of options and positional parameters.

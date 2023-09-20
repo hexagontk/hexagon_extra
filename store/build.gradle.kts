@@ -13,7 +13,7 @@ apply(from = "$gradleScripts/native.gradle")
 
 dependencies {
     "api"(project(":converters"))
-    "api"(project(":helpers"))
+    "api"("com.hexagonkt:core:$version")
     "api"("com.hexagonkt:serialization:$version")
 
     "testImplementation"("com.hexagonkt:serialization_jackson_json:$version")
