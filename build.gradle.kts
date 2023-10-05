@@ -69,6 +69,6 @@ task("release") {
 }
 
 tasks.wrapper {
-    gradleVersion = "8.4-rc-3"
+    gradleVersion = "8.4"
     distributionType = ALL
 }
