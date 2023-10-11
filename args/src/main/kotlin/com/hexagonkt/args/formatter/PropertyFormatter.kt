@@ -4,7 +4,7 @@ import com.hexagonkt.args.Flag
 import com.hexagonkt.args.Option
 import com.hexagonkt.args.Parameter
 import com.hexagonkt.args.Property
-import com.hexagonkt.core.camelToSnake
+import com.hexagonkt.core.text.camelToSnake
 
 data class PropertyFormatter(
     val namesSeparator: String = ", ",

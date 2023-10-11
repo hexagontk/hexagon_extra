@@ -1,6 +1,6 @@
 package com.hexagonkt.terminal
 
-import com.hexagonkt.core.Ansi.CSI
+import com.hexagonkt.core.text.Ansi.CSI
 
 /**
  * Constants for console cursor handling with [ANSI](https://en.wikipedia.org/wiki/ANSI_escape_code)

@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.wrapper.Wrapper.DistributionType.ALL
+
 /*
  * Main build script, responsible for:
  *
@@ -64,4 +66,9 @@ task("release") {
         project.exec { commandLine = listOf("git", "tag", "-m", "Release $release", release) }
         project.exec { commandLine = listOf("git", "push", "--tags") }
     }
+}
+
+tasks.wrapper {
+    gradleVersion = "8.4"
+    distributionType = ALL
 }

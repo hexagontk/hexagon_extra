@@ -37,7 +37,7 @@ synchronization yourself.
 ### Example
 You can check a usage example in the following code:
 
-@code scheduler/src/test/kotlin/CronSchedulerSamplesTest.kt:sample
+@code scheduler/src/test/kotlin/CronSchedulerTest.kt:sample
 
 # Package com.hexagonkt.scheduler
 Classes for scheduling blocks of code repeatedly based on a [Cron] expression.
