@@ -1,6 +1,6 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.core.parsedClasses
+import com.hexagonkt.core.text.parsedClasses
 import kotlin.reflect.KClass
 
 /**

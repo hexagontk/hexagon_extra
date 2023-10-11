@@ -1,6 +1,6 @@
 package com.hexagonkt.terminal
 
-import com.hexagonkt.core.Ansi.CSI
+import com.hexagonkt.core.text.Ansi.CSI
 import com.hexagonkt.terminal.AnsiScreen.Region.FULL
 
 /**

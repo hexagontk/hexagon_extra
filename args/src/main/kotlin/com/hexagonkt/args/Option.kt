@@ -1,6 +1,6 @@
 package com.hexagonkt.args
 
-import com.hexagonkt.core.parseOrNull
+import com.hexagonkt.core.text.parseOrNull
 import kotlin.reflect.KClass
 
 data class Option<T : Any>(

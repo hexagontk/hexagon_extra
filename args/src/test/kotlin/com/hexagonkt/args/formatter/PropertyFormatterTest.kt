@@ -3,8 +3,8 @@ package com.hexagonkt.args.formatter
 import com.hexagonkt.args.Option
 import com.hexagonkt.args.Parameter
 import com.hexagonkt.args.Property
-import com.hexagonkt.core.camelToWords
-import com.hexagonkt.core.wordsToSnake
+import com.hexagonkt.core.text.camelToWords
+import com.hexagonkt.core.text.wordsToSnake
 import java.io.File
 import java.net.InetAddress
 import java.net.URI
