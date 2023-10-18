@@ -17,7 +17,7 @@ plugins {
 
     id("idea")
     id("eclipse")
-    id("org.jetbrains.dokka") version("1.9.0")
+    id("org.jetbrains.dokka") version("1.9.10")
     id("org.graalvm.buildtools.native") version("0.9.27") apply(false)
     id("io.gitlab.arturbosch.detekt") version("1.23.1") apply(false)
 }
