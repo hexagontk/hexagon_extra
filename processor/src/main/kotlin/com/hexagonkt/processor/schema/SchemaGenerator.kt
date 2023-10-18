@@ -22,6 +22,7 @@ import kotlin.reflect.KClass
 data class SchemaGenerator<T : Any>(
     val dataClass: Type<T>,
     val id: URI,
+    val schema: URI = URI("https://json-schema.org/draft-07/schema"),
     val documentation: Documentation? = null,
     val titleCaseNames: Boolean = false,
     val sentenceCaseEnums: Boolean = false,
@@ -60,6 +61,7 @@ data class SchemaGenerator<T : Any>(
     fun schema(): Schema =
         Schema(
             id = id,
+            schema = schema,
             property = Property(ref = "#/$definitions/${dataClass.name}"),
             defs = (dataClass.nestedDataClasses)
                 .flatMap(::struct)
