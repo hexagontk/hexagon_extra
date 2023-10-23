@@ -12,6 +12,8 @@ TODO.
 * https://docs.google.com/spreadsheets/d/19W-lXWS9jYwqCK-LwgYo31GucPPxYVld_hVEcfpNpXg/edit#gid=1724051764
 * For key modifiers processing:
   https://invisible-island.net/xterm/manpage/xterm.html#VT100-Widget-Resources:modifyKeyboard
+* https://unix.stackexchange.com/questions/4126/what-is-the-exact-difference-between-a-terminal-a-shell-a-tty-and-a-con/4132#4132
+* https://stackoverflow.com/questions/1403772/how-can-i-check-if-a-java-programs-input-output-streams-are-connected-to-a-term
 
 ## Install the Dependency
 

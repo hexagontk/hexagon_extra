@@ -2,6 +2,7 @@ package com.hexagonkt.processor
 
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
+import kotlin.reflect.KVisibility.PUBLIC
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
@@ -17,7 +18,9 @@ data class Type<T : Any>(
         dataClass.annotations.firstOrNull { it is Deprecated } as? Deprecated != null
 
     private val constructor = dataClass.primaryConstructor ?: error("Type must have a constructor")
-    val fields: List<Field> = constructor.parameters.map { Field(this, it) }
+    val fields: List<Field> = constructor.parameters
+        .filter { declaredProperties[it.name]?.visibility == PUBLIC }
+        .map { Field(this, it) }
     val firstField: Field = fields.firstOrNull() ?: error("Type must have at least a field")
     val isSingleBasicField: Boolean = fields.size == 1 && firstField.basicType
 

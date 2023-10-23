@@ -19,6 +19,8 @@ import kotlin.reflect.KClass
 // TODO When creating schema, also include calculated vals with 'read only' values and examples
 // TODO Post process Schema/Properties to replace repeated types by $ref to $def
 // TODO Use KSP? https://kotlinlang.org/docs/ksp-quickstart.html#pass-options-to-processors
+// TODO Group common fields at implemented interfaces
+// TODO Allow alternatives based on all classes constructors
 data class SchemaGenerator<T : Any>(
     val dataClass: Type<T>,
     val id: URI,
@@ -132,6 +134,8 @@ data class SchemaGenerator<T : Any>(
                     field.data -> "#/$definitions/" + fieldValueTypeName(field)
                     field.nullable && field.typeJvm == URL::class -> "#/$definitions/NullableUri"
                     field.typeJvm == URL::class -> "#/$definitions/Uri"
+                    field.nullable && field.typeJvm == URI::class -> "#/$definitions/NullableUri"
+                    field.typeJvm == URI::class -> "#/$definitions/Uri"
                     field.nullable && field.typeJvm == LocalDate::class -> "#/$definitions/NullableDate"
                     field.typeJvm == LocalDate::class -> "#/$definitions/Date"
                     field.nullable && field.typeJvm == Locale::class -> "#/$definitions/NullableLocale"
