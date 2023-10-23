@@ -1,6 +1,7 @@
 package com.hexagonkt.terminal
 
 import com.hexagonkt.core.exec
+import java.io.Console
 import java.lang.System.getenv
 import java.lang.management.ManagementFactory.getRuntimeMXBean
 import kotlin.Int.Companion.MAX_VALUE
@@ -8,6 +9,9 @@ import kotlin.Int.Companion.MAX_VALUE
 object Terminal {
     private val pid: Long by lazy { getRuntimeMXBean().pid }
     private val pts: String by lazy { getenv("PTS") ?: "ps o tty= $pid".exec() }
+
+    val console: Console? by lazy { System.console() }
+    val isTerminal: Boolean by lazy { console != null }
 
     fun raw() {
         "stty raw -echo -F/dev/$pts".exec()
