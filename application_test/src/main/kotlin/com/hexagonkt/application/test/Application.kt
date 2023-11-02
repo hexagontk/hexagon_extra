@@ -8,6 +8,10 @@ import java.io.InputStream
 import java.lang.StringBuilder
 
 fun main() {
+    terminalTest()
+}
+
+private fun terminalTest() {
     Terminal.raw()
     print(AnsiScreen.privateMode())
     print(AnsiCursor.HIDE)
@@ -18,7 +22,7 @@ fun main() {
 
     val r = System.`in`
     while (true) {
-        print(AnsiCursor.position(2,0))
+        print(AnsiCursor.position(2, 0))
         val c = r.read().toChar()
         print(AnsiScreen.lineClear())
         when (c) {
