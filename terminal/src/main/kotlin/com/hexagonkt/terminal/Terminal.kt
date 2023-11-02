@@ -1,17 +1,19 @@
 package com.hexagonkt.terminal
 
 import com.hexagonkt.core.exec
-import java.io.Console
 import java.lang.System.getenv
 import java.lang.management.ManagementFactory.getRuntimeMXBean
 import kotlin.Int.Companion.MAX_VALUE
 
+/**
+ * TODO Check:
+ *  https://wezfurlong.org/wezterm/escape-sequences.html#operating-system-command-sequences
+ *  https://docs.google.com/spreadsheets/d/19W-lXWS9jYwqCK-LwgYo31GucPPxYVld_hVEcfpNpXg/edit#gid=1724051764
+ *  https://github.com/JakeWharton/mosaic
+ */
 object Terminal {
     private val pid: Long by lazy { getRuntimeMXBean().pid }
     private val pts: String by lazy { getenv("PTS") ?: "ps o tty= $pid".exec() }
-
-    val console: Console? by lazy { System.console() }
-    val isTerminal: Boolean by lazy { console != null }
 
     fun raw() {
         "stty raw -echo -F/dev/$pts".exec()

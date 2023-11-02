@@ -1,9 +1,15 @@
 package com.hexagonkt.models
 
+import com.hexagonkt.core.toTotalDays
 import java.time.Period
 
-// TODO Take care of both periods to make sure times is a smaller amount of time than interval
 data class Frequency(
     val times: Period,
     val interval: Period,
-)
+) {
+    init {
+        require(times.toTotalDays() <= interval.toTotalDays()) {
+            "Invalid frequency, times ($times) must be smaller than interval ($interval)"
+        }
+    }
+}

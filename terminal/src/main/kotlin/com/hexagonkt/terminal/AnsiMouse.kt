@@ -2,6 +2,9 @@ package com.hexagonkt.terminal
 
 import com.hexagonkt.core.text.Ansi.CSI
 
+/**
+ * See https://github.com/kovidgoyal/kitty/commit/6777e2199e7b0ed011b2888ce94ad6abab3a5ced
+ */
 object AnsiMouse {
     const val ENABLE: String = "${CSI}?1003h"
     const val DISABLE: String = "${CSI}?1003l"
