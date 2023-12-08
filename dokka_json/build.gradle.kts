@@ -16,7 +16,8 @@ description = "."
 dependencies {
     val dokkaVersion = properties["dokkaVersion"]
 
-    "api"("com.hexagonkt:serialization_jackson_json:$version")
+    "api"("com.hexagonkt:core:$version")
+    "api"("com.fasterxml.jackson.core:jackson-databind:2.15.3")
     "api"("org.jetbrains.dokka:dokka-base:$dokkaVersion")
     "compileOnly"("org.jetbrains.dokka:dokka-core:$dokkaVersion")
 

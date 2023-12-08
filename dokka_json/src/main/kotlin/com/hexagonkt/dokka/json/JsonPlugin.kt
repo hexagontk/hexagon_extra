@@ -1,8 +1,7 @@
 package com.hexagonkt.dokka.json
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.hexagonkt.core.filterNotEmptyRecursive
-import com.hexagonkt.serialization.jackson.json.Json
-import com.hexagonkt.serialization.serialize
 import org.jetbrains.dokka.CoreExtensions
 import org.jetbrains.dokka.model.*
 import org.jetbrains.dokka.model.doc.*
@@ -26,6 +25,8 @@ class JsonPlugin : DokkaPlugin() {
         }
     }
 
+    private val mapper: ObjectMapper = ObjectMapper()
+
     private fun processModule(module: DModule, context: DokkaContext): DModule =
         module.apply {
             val name = module.name
@@ -47,7 +48,7 @@ class JsonPlugin : DokkaPlugin() {
                 "packages" to packages
             )
 
-            file.writeText(map.filterNotEmptyRecursive().serialize(Json))
+            mapper.writeValue(file.writer(), map.filterNotEmptyRecursive())
         }
 
     private fun processPackage(pack: DPackage): Map<String, *> {

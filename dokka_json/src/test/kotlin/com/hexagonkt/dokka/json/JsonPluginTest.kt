@@ -1,9 +1,7 @@
 package com.hexagonkt.dokka.json
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.hexagonkt.core.requirePath
-import com.hexagonkt.serialization.SerializationManager
-import com.hexagonkt.serialization.jackson.json.Json
-import com.hexagonkt.serialization.parseMap
 import org.jetbrains.dokka.base.testApi.testRunner.BaseAbstractTest
 import kotlin.test.Test
 import org.junit.jupiter.api.condition.EnabledOnOs
@@ -69,8 +67,8 @@ class JsonPluginTest : BaseAbstractTest() {
             }
         }
 
-        SerializationManager.defaultFormat = Json
-        val json = File("build/dokka").resolve("module_mod.json").parseMap()
+        val mapper = ObjectMapper()
+        val json = mapper.readValue(File("build/dokka").resolve("module_mod.json"), Map::class.java)
         assertEquals("mod", json.requirePath("name"))
     }
 }
