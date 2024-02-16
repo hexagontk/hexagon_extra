@@ -18,8 +18,8 @@ plugins {
     id("idea")
     id("eclipse")
     id("org.jetbrains.dokka") version("1.9.10")
-    id("org.graalvm.buildtools.native") version("0.9.28") apply(false)
-    id("io.gitlab.arturbosch.detekt") version("1.23.4") apply(false)
+    id("org.graalvm.buildtools.native") version("0.10.0") apply(false)
+    id("io.gitlab.arturbosch.detekt") version("1.23.5") apply(false)
 }
 
 ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagonkt/hexagon/$version/gradle")
@@ -69,6 +69,6 @@ task("release") {
 }
 
 tasks.wrapper {
-    gradleVersion = "8.5"
+    gradleVersion = "8.6"
     distributionType = ALL
 }
