@@ -12,9 +12,11 @@ include(
     "terminal",
 
     // Ports
+    "messaging",
     "store",
 
     // Adapters
+    "messaging_rabbitmq",
     "store_mongodb",
 
     // Tools
