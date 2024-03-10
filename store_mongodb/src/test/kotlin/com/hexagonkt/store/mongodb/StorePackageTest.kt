@@ -66,6 +66,6 @@ internal data class Company(
     }
 }
 
-internal val mongoDb: MongoDBContainer = MongoDBContainer(DockerImageName.parse("mongo:6.0-jammy"))
+internal val mongoDb: MongoDBContainer = MongoDBContainer(DockerImageName.parse("mongo:7.0-jammy"))
     .withExposedPorts(27017)
     .apply { start() }
