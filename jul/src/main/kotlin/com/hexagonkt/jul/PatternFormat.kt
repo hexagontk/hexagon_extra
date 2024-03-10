@@ -1,4 +1,4 @@
-package com.hexagonkt.logging.jul
+package com.hexagonkt.jul
 
 import com.hexagonkt.core.text.AnsiColor.DEFAULT
 import com.hexagonkt.core.text.AnsiColor.YELLOW
