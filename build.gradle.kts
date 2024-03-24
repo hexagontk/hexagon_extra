@@ -22,7 +22,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version("1.23.5") apply(false)
 }
 
-ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagonkt/hexagon/$version/gradle")
+ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagontk/hexagon/$version/gradle")
 
 defaultTasks("build")
 
@@ -69,6 +69,6 @@ task("release") {
 }
 
 tasks.wrapper {
-    gradleVersion = "8.6"
+    gradleVersion = "8.7"
     distributionType = ALL
 }
