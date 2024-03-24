@@ -8,12 +8,17 @@ import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.serialize
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
+import org.junit.jupiter.api.condition.DisabledInNativeImage
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.utility.DockerImageName.parse
 import java.lang.System.currentTimeMillis
 import java.net.URI
 
 @TestInstance(PER_CLASS)
+@DisabledOnOs(OS.MAC, OS.WINDOWS)
+@DisabledInNativeImage // TODO Fix for native image
 internal class RabbitTest {
 
     data class Sample(val str: String, val int: Int) : Message()

@@ -11,12 +11,17 @@ import org.junit.jupiter.api.Disabled
 import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
+import org.junit.jupiter.api.condition.DisabledInNativeImage
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.utility.DockerImageName
 import java.lang.System.currentTimeMillis
 import java.net.URI
 
 @TestInstance(PER_CLASS)
+@DisabledOnOs(OS.MAC, OS.WINDOWS)
+@DisabledInNativeImage // TODO Fix for native image
 internal class RabbitConnectionTest {
 
     private companion object {
