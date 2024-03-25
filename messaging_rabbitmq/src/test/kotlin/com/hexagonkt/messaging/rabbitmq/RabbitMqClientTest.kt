@@ -12,10 +12,13 @@ import org.junit.jupiter.api.BeforeAll
 import kotlin.test.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS
 import java.net.URI
 import kotlin.test.assertFailsWith
 
 @TestInstance(PER_CLASS)
+@DisabledOnOs(OS.MAC, OS.WINDOWS)
 internal class RabbitMqClientTest {
 
     private val log: Logger = Logger(this::class)
