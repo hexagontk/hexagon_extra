@@ -19,7 +19,7 @@ plugins {
     id("eclipse")
     id("org.jetbrains.dokka") version("1.9.20")
     id("org.graalvm.buildtools.native") version("0.10.1") apply(false)
-    id("io.gitlab.arturbosch.detekt") version("1.23.5") apply(false)
+    id("io.gitlab.arturbosch.detekt") version("1.23.6") apply(false)
 }
 
 ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagontk/hexagon/$version/gradle")
