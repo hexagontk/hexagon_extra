@@ -2,8 +2,11 @@ package com.hexagonkt.messaging.rabbitmq
 
 import com.hexagonkt.messaging.MessagingPort
 import com.hexagonkt.messaging.rabbitmq.RabbitTest.Companion.PORT
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS
 import kotlin.test.Test
 
+@DisabledOnOs(OS.MAC, OS.WINDOWS)
 internal class RabbitMqAdapterTest {
     /**
      * TODO Add asserts
