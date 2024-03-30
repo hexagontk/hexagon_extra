@@ -37,7 +37,7 @@ task("setUp") {
     doLast {
         exec { commandLine("docker version".split(" ")) }
 
-        val dotfiles = "https://raw.githubusercontent.com/hexagonkt/.github/master"
+        val dotfiles = "https://raw.githubusercontent.com/hexagontk/.github/master"
         exec { commandLine("curl $dotfiles/.gitignore -o .gitignore".split(" ")) }
         exec { commandLine("curl $dotfiles/commit_template.txt -o .git/message".split(" ")) }
         exec { commandLine("curl $dotfiles/.editorconfig -o .editorconfig".split(" ")) }

@@ -11,6 +11,6 @@ permissions:
 jobs:
   build:
     name: Build
-    uses: hexagonkt/.github/.github/workflows/graalvm_gradle.yml@master
+    uses: hexagontk/.github/.github/workflows/graalvm_gradle.yml@master
     with:
       check_directory: args/build
