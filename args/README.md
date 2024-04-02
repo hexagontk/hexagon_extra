@@ -56,6 +56,16 @@ Check:
 * Control rendering with flags on `ArgsManager`
 * Check documentation rendering of `http` (httpie) and `sdk` (sdkman)
 * Allow interactive commands and options when something is missing
+* Add command aliases (convert name to a list)
+* Set default command on program definition (as a list or names to resolve the command)
+* Add a parameter to fetch parameters from System Properties on missing parameters
+* Loading of options from files (see below) must be done outside cli processing
+* '--' stops parsing options and threat everything from that point as positional parameters
+* Tags can be used to define groups (i.e.: of mutually exclusive options)
+* Add files and environment variables documentation on the program arguments
+* Add examples to program documentation
+* When an option can pick the value from an environment variable, manually load that env into System
+  properties and let the program pick values from there (see above)
 
 Allows to load a parameter from command line, environment variable or a set of files with a
 priority:
