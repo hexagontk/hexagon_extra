@@ -11,6 +11,8 @@ data class Program(
     val version: String? = null,
     val command: Command,
     val formatter: Formatter = DefaultFormatter(),
+    val systemSetting: Boolean = false,
+    val defaultCommand: List<String> = emptyList(),
 ) {
     constructor(
         name: String,

@@ -4,6 +4,8 @@ import com.hexagonkt.core.requireNotBlank
 
 /**
  * A program can have multiple commands with their own set of options and positional parameters.
+ *
+ * TODO Support aliases
  */
 data class Command(
     val name: String,
@@ -23,9 +25,7 @@ data class Command(
 
     val propertiesMap: Map<String, Property<*>> =
         properties
-            .flatMap { p ->
-                p.names.map { it to p }
-            }
+            .flatMap { p -> p.names.map { it to p } }
             .toMap()
 
     val optionsMap: Map<String, Option<*>> =
