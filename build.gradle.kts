@@ -13,16 +13,16 @@ import org.gradle.api.tasks.wrapper.Wrapper.DistributionType.ALL
  */
 
 plugins {
-    kotlin("jvm") version("1.9.22") apply(false)
+    kotlin("jvm") version("1.9.23") apply(false)
 
     id("idea")
     id("eclipse")
-    id("org.jetbrains.dokka") version("1.9.10")
-    id("org.graalvm.buildtools.native") version("0.9.28") apply(false)
-    id("io.gitlab.arturbosch.detekt") version("1.23.4") apply(false)
+    id("org.jetbrains.dokka") version("1.9.20")
+    id("org.graalvm.buildtools.native") version("0.10.1") apply(false)
+    id("io.gitlab.arturbosch.detekt") version("1.23.6") apply(false)
 }
 
-ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagonkt/hexagon/$version/gradle")
+ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagontk/hexagon/$version/gradle")
 
 defaultTasks("build")
 
@@ -37,7 +37,7 @@ task("setUp") {
     doLast {
         exec { commandLine("docker version".split(" ")) }
 
-        val dotfiles = "https://raw.githubusercontent.com/hexagonkt/.github/master"
+        val dotfiles = "https://raw.githubusercontent.com/hexagontk/.github/master"
         exec { commandLine("curl $dotfiles/.gitignore -o .gitignore".split(" ")) }
         exec { commandLine("curl $dotfiles/commit_template.txt -o .git/message".split(" ")) }
         exec { commandLine("curl $dotfiles/.editorconfig -o .editorconfig".split(" ")) }
@@ -69,6 +69,6 @@ task("release") {
 }
 
 tasks.wrapper {
-    gradleVersion = "8.5"
+    gradleVersion = "8.7"
     distributionType = ALL
 }

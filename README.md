@@ -1,7 +1,7 @@
 
 <h3 align="center">
-  <a href="https://hexagonkt.com">
-    <img alt="Hexagon" src="https://hexagonkt.com/tile-small.png" />
+  <a href="https://hexagontk.com">
+    <img alt="Hexagon" src="https://hexagontk.com/tile-small.png" />
   </a>
   <br>
   Hexagon
@@ -10,22 +10,22 @@
 <h4 align="center">The atoms of your platform</h4>
 
 <p align="center">
-  <a href="https://github.com/hexagonkt/hexagon/actions">
+  <a href="https://github.com/hexagontk/hexagon/actions">
     <img
       alt="GitHub Actions"
-      src="https://github.com/hexagonkt/hexagon/workflows/Release/badge.svg" />
+      src="https://github.com/hexagontk/hexagon/workflows/Release/badge.svg" />
   </a>
-  <a href="https://hexagonkt.com/jacoco">
-    <img src="https://hexagonkt.com/img/coverage.svg" alt="Coverage" />
+  <a href="https://hexagontk.com/jacoco">
+    <img src="https://hexagontk.com/img/coverage.svg" alt="Coverage" />
   </a>
   <a href="https://search.maven.org/search?q=g:com.hexagonkt">
-    <img src="https://hexagonkt.com/img/download.svg" alt="Maven Central Repository" />
+    <img src="https://hexagontk.com/img/download.svg" alt="Maven Central Repository" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://hexagonkt.com">Home Site</a> |
-  <a href="https://hexagonkt.com/quick_start">Quick Start</a> |
+  <a href="https://hexagontk.com">Home Site</a> |
+  <a href="https://hexagontk.com/quick_start">Quick Start</a> |
 </p>
 
 ---
@@ -50,7 +50,7 @@ This project is supported by:
 <a href="https://www.jetbrains.com/?from=Hexagon-Toolkit">
   <img
     height="96px"
-    src="https://hexagonkt.com/img/sponsors/jetbrains-variant-4.svg">
+    src="https://hexagontk.com/img/sponsors/jetbrains-variant-4.svg">
 </a>
 
 ## License

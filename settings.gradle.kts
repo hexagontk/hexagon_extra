@@ -8,12 +8,15 @@ include(
     "scheduler",
     "models",
     "injection",
+    "jul",
     "terminal",
 
     // Ports
+    "messaging",
     "store",
 
     // Adapters
+    "messaging_rabbitmq",
     "store_mongodb",
 
     // Tools
