@@ -13,13 +13,12 @@ import org.gradle.api.tasks.wrapper.Wrapper.DistributionType.ALL
  */
 
 plugins {
-//    kotlin("jvm") version("1.9.24") apply(false)
-    kotlin("jvm") version("2.0.0-RC3") apply(false)
+    kotlin("jvm") version("2.0.0") apply(false)
 
     id("idea")
     id("eclipse")
     id("org.jetbrains.dokka") version("1.9.20")
-    id("org.graalvm.buildtools.native") version("0.10.1") apply(false)
+    id("org.graalvm.buildtools.native") version("0.10.2") apply(false)
     id("io.gitlab.arturbosch.detekt") version("1.23.6") apply(false)
 }
 
