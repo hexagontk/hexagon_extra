@@ -13,13 +13,13 @@ import org.gradle.api.tasks.wrapper.Wrapper.DistributionType.ALL
  */
 
 plugins {
-    kotlin("jvm") version("2.0.0") apply(false)
+    kotlin("jvm") version(libs.versions.kotlin) apply(false)
 
     id("idea")
     id("eclipse")
-    id("org.jetbrains.dokka") version("1.9.20")
-    id("org.graalvm.buildtools.native") version("0.10.2") apply(false)
-    id("io.gitlab.arturbosch.detekt") version("1.23.6") apply(false)
+    id("org.jetbrains.dokka") version(libs.versions.dokka)
+    id("org.graalvm.buildtools.native") version(libs.versions.nativeTools) apply(false)
+    id("io.gitlab.arturbosch.detekt") version(libs.versions.detekt) apply(false)
 }
 
 ext.set("gradleScripts", "https://raw.githubusercontent.com/hexagontk/hexagon/$version/gradle")
@@ -69,6 +69,6 @@ task("release") {
 }
 
 tasks.wrapper {
-    gradleVersion = "8.7"
+    gradleVersion = libs.versions.gradleWrapper.get()
     distributionType = ALL
 }
