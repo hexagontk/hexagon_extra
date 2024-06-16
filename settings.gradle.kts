@@ -23,7 +23,7 @@ include(
     "dokka_json",
     "processor",
 
-    // Testing
+    // testing
     "application_test",
 )
 
@@ -38,6 +38,12 @@ dependencyResolutionManagement {
             version("nativeTools", "0.10.2")
             version("detekt", "1.23.6")
             version("gradleWrapper", "8.8")
+            version("mermaidDokka", "0.6.0")
+
+            // Testing
+            version("testcontainers", "1.19.8")
+            version("dockerJava", "3.3.6")
+            version("commonsCompress", "1.26.2")
 
             // messaging_rabbitmq
             version("rabbit", "5.21.0")

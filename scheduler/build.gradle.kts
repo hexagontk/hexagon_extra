@@ -14,7 +14,7 @@ apply(from = "$gradleScripts/native.gradle")
 description = "Hexagon support for repeated tasks execution based on Cron expressions."
 
 dependencies {
-    val cronutilsVersion = properties["cronutilsVersion"]
+    val cronutilsVersion = libs.versions.cronutils.get()
 
     "api"("com.hexagonkt:core:$version")
     "api"("com.cronutils:cron-utils:$cronutilsVersion")

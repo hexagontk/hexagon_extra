@@ -11,9 +11,10 @@ apply(from = "$gradleScripts/dokka.gradle")
 apply(from = "$gradleScripts/detekt.gradle")
 
 dependencies {
-    val rabbitVersion = properties["rabbitVersion"]
-    val testcontainersVersion = properties["testcontainersVersion"]
-    val metricsJmxVersion = properties["metricsJmxVersion"]
+    val rabbitVersion = libs.versions.rabbit.get()
+    val testcontainersVersion = libs.versions.testcontainers.get()
+    val metricsJmxVersion = libs.versions.metricsJmx.get()
+    val commonsCompressVersion = libs.versions.commonsCompress.get()
 
     "api"("com.hexagonkt:http:$version")
     "api"("com.hexagonkt:serialization:$version")
@@ -23,5 +24,8 @@ dependencies {
     "api"("io.dropwizard.metrics:metrics-jmx:$metricsJmxVersion")
 
     "testImplementation"("com.hexagonkt:serialization_jackson_json:$version")
-    "testImplementation"("org.testcontainers:rabbitmq:$testcontainersVersion")
+    "testImplementation"("org.apache.commons:commons-compress:$commonsCompressVersion")
+    "testImplementation"("org.testcontainers:rabbitmq:$testcontainersVersion") {
+        exclude(module = "commons-compress")
+    }
 }

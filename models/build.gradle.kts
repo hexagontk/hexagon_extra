@@ -15,7 +15,7 @@ apply(from = "$gradleScripts/native.gradle")
 description = "Commonly used data models (like addresses)."
 
 dependencies {
-    val jakartaMailVersion = properties["jakartaMailVersion"]
+    val jakartaMailVersion = libs.versions.jakartaMail.get()
 
     "api"("com.hexagonkt:core:$version")
     "api"("com.sun.mail:jakarta.mail:$jakartaMailVersion")
