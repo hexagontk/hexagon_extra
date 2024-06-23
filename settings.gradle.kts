@@ -47,7 +47,7 @@ dependencyResolutionManagement {
 
             // messaging_rabbitmq
             version("rabbit", "5.21.0")
-            version("metricsJmx", "4.2.25")
+            version("metricsJmx", "4.2.26")
 
             // scheduler
             version("cronutils", "9.2.1")
