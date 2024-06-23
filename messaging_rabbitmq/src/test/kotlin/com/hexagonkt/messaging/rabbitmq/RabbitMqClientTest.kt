@@ -4,9 +4,9 @@ import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.messaging.rabbitmq.RabbitMqClient.Companion.createConnectionFactory
 import com.hexagonkt.messaging.rabbitmq.RabbitTest.Companion.PORT
-import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.serialize
+import junit.framework.TestCase.assertEquals
 import org.junit.jupiter.api.BeforeAll
 
 import kotlin.test.Test
@@ -24,7 +24,6 @@ internal class RabbitMqClientTest {
     private val log: Logger = Logger(this::class)
 
     @BeforeAll fun setUp() {
-        SerializationManager.defaultFormat = Json
         ConvertersManager.register(Int::class to String::class) { it.toString() }
         ConvertersManager.register(ArrayList::class to List::class) { it.toList() }
     }
@@ -93,7 +92,7 @@ internal class RabbitMqClientTest {
     }
 
     @Test fun `Rabbit client disconnects properly` () {
-        val client = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"))
+        val client = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"), Json)
         assert(client.connected)
         client.close()
         assert(!client.connected)
@@ -102,7 +101,7 @@ internal class RabbitMqClientTest {
     }
 
     @Test fun `Consumers handle numbers properly` () {
-        val consumer = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"))
+        val consumer = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"), Json)
         consumer.declareQueue("int_op")
         consumer.declareQueue("long_op")
         consumer.declareQueue("list_op")
@@ -110,10 +109,13 @@ internal class RabbitMqClientTest {
         consumer.consume("long_op", String::class, String::toLong)
         consumer.consume("list_op", List::class) { it }
 
-        val client = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"))
+        val client = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"), Json)
         assert(client.call("int_op", "123") == "123")
         assert(client.call("long_op", "456") == "456")
-        assert(client.call("list_op", listOf(1, 3, 4).serialize()) == listOf(1, 3, 4).serialize())
+        assertEquals(
+            client.call("list_op", listOf(1, 3, 4).serialize(Json)),
+            listOf(1, 3, 4).serialize(Json)
+        )
 
         client.close()
         consumer.deleteQueue("int_op")
@@ -123,7 +125,7 @@ internal class RabbitMqClientTest {
     }
 
     @Test fun `Consumers handle no reply messages` () {
-        val consumer = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"))
+        val consumer = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"), Json)
         consumer.declareQueue("int_handler")
         consumer.declareQueue("long_handler")
         consumer.declareQueue("exception_handler")
@@ -131,7 +133,7 @@ internal class RabbitMqClientTest {
         consumer.consume("long_handler", String::class) { log.info { it } }
         consumer.consume("exception_handler", String::class) { throw RuntimeException(it) }
 
-        val client = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"))
+        val client = RabbitMqClient(URI("amqp://guest:guest@localhost:$PORT"), Json)
         client.publish("int_handler", "123")
         client.publish("long_handler", "456")
         client.publish("exception_handler", "error")

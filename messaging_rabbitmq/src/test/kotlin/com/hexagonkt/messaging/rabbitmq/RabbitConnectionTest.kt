@@ -2,7 +2,6 @@ package com.hexagonkt.messaging.rabbitmq
 
 import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.core.logging.Logger
-import com.hexagonkt.serialization.SerializationManager
 import com.hexagonkt.serialization.jackson.json.Json
 
 import org.junit.jupiter.api.AfterAll
@@ -40,11 +39,10 @@ internal class RabbitConnectionTest {
 
     private val log: Logger = Logger(this::class)
 
-    private val consumer: RabbitMqClient by lazy { RabbitMqClient(URI(URI)) }
-    private val client: RabbitMqClient by lazy { RabbitMqClient(URI(URI)) }
+    private val consumer: RabbitMqClient by lazy { RabbitMqClient(URI(URI), Json) }
+    private val client: RabbitMqClient by lazy { RabbitMqClient(URI(URI), Json) }
 
     @BeforeAll fun startConsumer() {
-        SerializationManager.defaultFormat = Json
         ConvertersManager.register(Long::class to String::class) { it.toString() }
 
         rabbitMq.start()

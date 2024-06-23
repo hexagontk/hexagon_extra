@@ -38,8 +38,8 @@ internal class RabbitTest {
         private const val DELAY: Long = 10L
     }
 
-    private val consumer: RabbitMqClient = RabbitMqClient(URI(URI))
-    private val client: RabbitMqClient = RabbitMqClient(URI(URI))
+    private val consumer: RabbitMqClient = RabbitMqClient(URI(URI), Json)
+    private val client: RabbitMqClient = RabbitMqClient(URI(URI), Json)
 
     @BeforeAll fun startConsumer() {
         consumer.declareQueue(QUEUE)
@@ -62,7 +62,6 @@ internal class RabbitTest {
     }
 
     @Test fun `Call return expected results` () {
-        SerializationManager.defaultFormat = Json
         ConvertersManager.register(Long::class to String::class) { it.toString() }
         val ts = currentTimeMillis().toString()
         assert(client.call(QUEUE, ts) == ts + SUFFIX)
@@ -71,7 +70,6 @@ internal class RabbitTest {
     }
 
     @Test fun `Call errors` () {
-        SerializationManager.defaultFormat = Json
         ConvertersManager.register(Map::class to Sample::class) {
             Sample(
                 str = it.requirePath(Sample::str.name),
@@ -86,8 +84,8 @@ internal class RabbitTest {
                 error("message")
         }
 
-        client.publish(QUEUE_ERROR_SAMPLE, Sample("foo", 1).serialize())
-        val result = client.call(QUEUE_ERROR_SAMPLE, Sample("no message error", 1).serialize())
+        client.publish(QUEUE_ERROR_SAMPLE, Sample("foo", 1).serialize(Json))
+        val result = client.call(QUEUE_ERROR_SAMPLE, Sample("no message error", 1).serialize(Json))
         assert(result == IllegalStateException::class.java.name)
 
         // TODO Fix the case below

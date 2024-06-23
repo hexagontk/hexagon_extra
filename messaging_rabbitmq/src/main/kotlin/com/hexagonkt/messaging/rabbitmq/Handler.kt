@@ -4,8 +4,8 @@ import com.hexagonkt.converters.convert
 import com.hexagonkt.core.retry
 import com.hexagonkt.core.logging.Logger
 import com.hexagonkt.core.media.MediaType
+import com.hexagonkt.serialization.SerializationFormat
 import com.hexagonkt.serialization.SerializationManager.formatOfOrNull
-import com.hexagonkt.serialization.SerializationManager.requireDefaultFormat
 import com.hexagonkt.serialization.parse
 import com.hexagonkt.serialization.serialize
 import com.rabbitmq.client.AMQP.BasicProperties
@@ -29,7 +29,9 @@ internal class Handler<T : Any, R : Any> internal constructor (
     channel: Channel,
     private val executor: ExecutorService,
     private val type: KClass<T>,
-    private val handler: (T) -> R) : DefaultConsumer(channel) {
+    private val handler: (T) -> R,
+    private val serializationFormat: SerializationFormat
+) : DefaultConsumer(channel) {
 
     private companion object {
 
@@ -39,7 +41,9 @@ internal class Handler<T : Any, R : Any> internal constructor (
 
     private val log: Logger = Logger(this::class)
 
-    private val client: RabbitMqClient by lazy { RabbitMqClient(connectionFactory) }
+    private val client: RabbitMqClient by lazy {
+        RabbitMqClient(connectionFactory, serializationFormat = serializationFormat)
+    }
 
     /** @see DefaultConsumer.handleDelivery */
     override fun handleDelivery(
@@ -52,7 +56,7 @@ internal class Handler<T : Any, R : Any> internal constructor (
             val contentType = properties.contentType
                 ?.let { MediaType(it) }
                 ?.let { formatOfOrNull(it) }
-                ?: requireDefaultFormat()
+                ?: serializationFormat
 
             try {
                 log.trace { "Received message ($correlationId) in $charset" }
@@ -110,7 +114,7 @@ internal class Handler<T : Any, R : Any> internal constructor (
             is String -> response
             is Int -> response.toString()
             is Long -> response.toString()
-            else -> response.serialize()
+            else -> response.serialize(serializationFormat)
         }
 
         client.publish(replyTo, output, correlationId)
