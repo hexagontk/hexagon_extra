@@ -5,6 +5,7 @@ import com.codahale.metrics.MetricRegistry
 import com.hexagonkt.http.parseQueryString
 import com.hexagonkt.core.*
 import com.hexagonkt.http.model.QueryParameters
+import com.hexagonkt.serialization.SerializationFormat
 import com.rabbitmq.client.*
 import com.rabbitmq.client.AMQP.BasicProperties
 import com.rabbitmq.client.impl.StandardMetricsCollector
@@ -27,7 +28,9 @@ import kotlin.reflect.KClass
  */
 class RabbitMqClient(
     private val connectionFactory: ConnectionFactory,
-    private val poolSize: Int = getRuntime().availableProcessors()) : Closeable {
+    private val poolSize: Int = getRuntime().availableProcessors(),
+    private val serializationFormat: SerializationFormat
+) : Closeable {
 
     internal companion object {
 
@@ -71,7 +74,8 @@ class RabbitMqClient(
     private val listener = ConnectionListener()
 
     /** . */
-    constructor (uri: URI) : this(createConnectionFactory(uri))
+    constructor (uri: URI, serializationFormat: SerializationFormat) :
+        this(createConnectionFactory(uri), serializationFormat = serializationFormat)
 
     /** . */
     val connected: Boolean get() = connection?.isOpen ?: false
@@ -121,7 +125,14 @@ class RabbitMqClient(
 
     fun <T : Any, R : Any> consume(queueName: String, type: KClass<T>, handler: (T) -> R) {
         val channel = createChannel()
-        val callback = Handler(connectionFactory, channel, threadPool, type, handler)
+        val callback = Handler(
+            connectionFactory,
+            channel,
+            threadPool,
+            type,
+            handler,
+            serializationFormat = serializationFormat
+        )
         channel.basicConsume(queueName, false, callback)
         log.info { "Consuming messages in $queueName" }
     }

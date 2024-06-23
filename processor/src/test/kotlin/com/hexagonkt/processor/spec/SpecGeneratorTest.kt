@@ -3,6 +3,7 @@ package com.hexagonkt.processor.spec
 import com.hexagonkt.processor.schema.SchemaGeneratorTest
 import com.hexagonkt.core.require
 import com.hexagonkt.core.urlOf
+import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parseMap
 import com.hexagonkt.serialization.serialize
 import org.junit.jupiter.api.*
@@ -106,6 +107,6 @@ internal class SpecGeneratorTest {
 
         val dir = "build/classes/kotlin/main"
         File("$dir/openapi").mkdirs()
-        File("$dir/openapi/spec.yml").writeText(spec.serialize())
+        File("$dir/openapi/spec.yml").writeText(spec.serialize(Json))
     }
 }

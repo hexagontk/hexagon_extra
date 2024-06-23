@@ -19,7 +19,6 @@ internal class SchemaGeneratorTest {
 
         fun createSchema() {
             SerializationManager.formats = setOf(Json, Yaml)
-            SerializationManager.defaultFormat = Json
             val schema = SchemaGenerator(
                 dataClass = Type(Demo::class),
                 id = URI("https://example.com"),
@@ -31,8 +30,8 @@ internal class SchemaGeneratorTest {
             val schemaMap = schema.toMap()
             val directory = "build/classes/kotlin/main/schemas"
             File(directory).mkdirs()
-            File("$directory/cv.schema.json").writeText(schemaMap.serialize())
-            File("$directory/cv.schema.yml").writeText(schemaMap.serialize())
+            File("$directory/cv.schema.json").writeText(schemaMap.serialize(Json))
+            File("$directory/cv.schema.yml").writeText(schemaMap.serialize(Json))
         }
     }
 

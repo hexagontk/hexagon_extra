@@ -14,10 +14,10 @@ apply(from = "$gradleScripts/detekt.gradle")
 description = "."
 
 dependencies {
-    val dokkaVersion = properties["dokkaVersion"]
+    val dokkaVersion = libs.versions.dokka.get()
 
     "api"("com.hexagonkt:core:$version")
-    "api"("com.fasterxml.jackson.core:jackson-databind:2.15.3")
+    "api"("com.fasterxml.jackson.core:jackson-databind:2.15.3") // Dokka requires this fixed version
     "api"("org.jetbrains.dokka:dokka-base:$dokkaVersion")
     "compileOnly"("org.jetbrains.dokka:dokka-core:$dokkaVersion")
 
@@ -27,7 +27,7 @@ dependencies {
     "testImplementation"("org.jetbrains.dokka:dokka-base-test-utils:$dokkaVersion") {
         exclude("org.jetbrains.kotlin")
     }
-    "testImplementation"("org.jetbrains:markdown:0.3.1") {
+    "testImplementation"("org.jetbrains:markdown:0.3.1") { // Dokka requires this fixed version
         exclude("org.jetbrains.kotlin")
     }
 }
